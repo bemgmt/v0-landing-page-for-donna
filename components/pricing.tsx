@@ -22,23 +22,26 @@ export default function Pricing() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {[
             {
-              name: "Free",
-              price: "Free",
-              description: "Join the waitlist",
-              cta: "Join Waitlist",
-              featured: true
-            },
-            {
-              name: "Pilot",
-              price: "5,000",
-              description: "Early access program",
-              cta: "Join Pilot",
+              name: "Starter",
+              price: "1,500",
+              priceUnit: "/mo",
+              description: "Perfect for small businesses getting started",
+              cta: "Get Started",
               featured: false
             },
             {
-              name: "Custom",
-              price: "Contact Us",
-              description: "Custom build/investment/partnership",
+              name: "Pro",
+              price: "5,000",
+              priceUnit: "/mo",
+              description: "Ideal for growing businesses",
+              cta: "Get Started",
+              featured: true
+            },
+            {
+              name: "Enterprise",
+              price: "12,000",
+              priceUnit: "/mo",
+              description: "For large organizations with custom needs",
               cta: "Contact Us",
               featured: false
             },
@@ -55,15 +58,8 @@ export default function Pricing() {
               {tier.featured && <div className="text-xs font-bold text-accent mb-3 uppercase">Most Popular</div>}
               <h3 className="text-xl font-bold mb-2">{tier.name}</h3>
               <div className="mb-4">
-                {tier.price === "Free" ? (
-                  <span className="text-3xl font-bold gradient-text">Free</span>
-                ) : tier.price === "Contact Us" ? (
-                  <span className="text-3xl font-bold gradient-text">Custom</span>
-                ) : (
-                  <>
-                    <span className="text-3xl font-bold gradient-text">${tier.price}</span>
-                  </>
-                )}
+                <span className="text-3xl font-bold gradient-text">${tier.price}</span>
+                {tier.priceUnit && <span className="text-lg text-foreground/70">{tier.priceUnit}</span>}
               </div>
               <div className="text-sm text-foreground/70 mb-6">{tier.description}</div>
               <button
