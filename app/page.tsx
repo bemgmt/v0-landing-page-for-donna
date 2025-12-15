@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Header from "@/components/header"
 import Hero from "@/components/hero"
 import Features from "@/components/features"
+import Scale from "@/components/scale"
 import HowItWorks from "@/components/how-it-works"
 import UseCases from "@/components/use-cases"
 import Integrations from "@/components/integrations"
@@ -64,6 +65,7 @@ export default function Home() {
         <Header />
         <Hero />
         <Features />
+        <Scale />
         <HowItWorks />
         <UseCases />
         <Integrations />
