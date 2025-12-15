@@ -80,6 +80,13 @@
       "Memory for ongoing conversations",
       "Context-aware decision logic via Donna Brain™",
       "Industry-specific knowledge bases for Real Estate, Hospitality, Professional Services, and Health & Beauty"
+    ],
+    "scalability": [
+      "DONNA-to-DONNA network coordination for multi-location and multi-team businesses",
+      "Secure inter-DONNA communication to reduce manual handoffs",
+      "Network expansion capabilities across teams, locations, or partner businesses",
+      "Eliminates duplicated work through intelligent coordination",
+      "Scales without additional hiring requirements"
     ]
   },
   "features": [
@@ -201,7 +208,8 @@
     "voice_realtime": "Verizon-powered voice infrastructure for real-time, human-like conversations.",
     "lead_generation": "Hybrid AI + human collaboration model for high-quality lead conversion.",
     "white_label_ready": "Fully customizable for agencies, enterprises, or civic organizations.",
-    "multi_agent_system": "Separate AI modules for chat, email, voice, and data — all managed through one dashboard."
+    "multi_agent_system": "Separate AI modules for chat, email, voice, and data — all managed through one dashboard.",
+    "donna_network": "DONNA-to-DONNA network coordination enables seamless multi-location and multi-team operations, reducing manual handoffs and expanding business networks without additional hiring."
   },
   "integrations": [
     "Google Calendar",
@@ -308,7 +316,15 @@
     },
     {
       "question": "Can DONNA scale with my business?",
-      "answer": "Yes! DONNA auto-scales to handle 5,000+ active sessions with 99.9% uptime guarantee. Built on AWS ECS/Fargate with multi-tenant architecture for enterprise-grade scalability."
+      "answer": "Yes! DONNA auto-scales to handle 5,000+ active sessions with 99.9% uptime guarantee. Built on AWS ECS/Fargate with multi-tenant architecture for enterprise-grade scalability. As your business grows, DONNA can also coordinate with other DONNAs across teams, locations, or businesses through our DONNA-to-DONNA network, reducing manual handoffs and eliminating duplicated work."
+    },
+    {
+      "question": "What is the DONNA-to-DONNA network?",
+      "answer": "The DONNA-to-DONNA network allows multiple DONNA instances to securely coordinate across teams, locations, or partner businesses. This reduces manual handoffs, expands your operational network, eliminates duplicated work, and keeps everything moving without slowing your team down. It's perfect for multi-location businesses, franchises, or business networks that need seamless coordination. Advanced DONNA-to-DONNA coordination is available on higher pricing plans."
+    },
+    {
+      "question": "How does DONNA work for multi-location businesses?",
+      "answer": "DONNA works as a digital employee at each location, handling calls, emails, appointments, and follow-ups automatically. For multi-location businesses, DONNAs can securely coordinate with each other through our DONNA-to-DONNA network, sharing information, routing inquiries to the right location, and maintaining consistency across your entire operation without manual intervention."
     },
     {
       "question": "Can I white-label Donna for my business?",
