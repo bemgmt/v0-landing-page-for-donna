@@ -99,15 +99,21 @@ export default function Hero() {
         <div className="max-w-2xl">
           {/* Left: Text content */}
           <div className="animate-slide-up">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
               <span className="gradient-text">Meet DONNA</span>
               <br />
-              Your AI Office Assistant That Never Sleeps
+              Digital Operations Neural Network Assistant
             </h1>
 
+            <p className="text-base md:text-lg text-foreground/80 mb-4 leading-relaxed">
+              Not a chatbot. Not a CRM. Not a workflow tool.
+            </p>
+            <p className="text-base md:text-lg text-foreground/70 mb-2 italic">
+              DONNA is your Digital Operations Layer
+            </p>
+
             <p className="text-lg md:text-xl text-foreground/90 mb-8 leading-relaxed">
-              DONNA handles calls, schedules, lead generation, emails, customer service, and more 24/7. Enhance your
-              office operations with enterprise-grade AI that actually understands your business.
+              An agentic, multi-modal AI operations platform that functions as your digital employee layer. DONNA controls tools, coordinates workflows, and connects with other DONNAs across your network—handling calls, emails, scheduling, sales, marketing, and operations 24/7.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-8">

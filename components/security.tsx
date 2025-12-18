@@ -7,6 +7,7 @@ const securityItems = [
   { icon: "✓", title: "Verizon Partnership", description: "Powered by Verizon's enterprise network for superior call quality, reliability, and nationwide coverage. Access to Verizon's 5G network and priority routing." },
   { icon: "◐", title: "SOC 2 Type II & GDPR", description: "Independently audited and certified. Full compliance with data protection regulations and industry standards." },
   { icon: "⚙", title: "Data Privacy & Security", description: "Bank-level encryption, SSL via Certificate Manager, IAM least-privilege access. Your data is yours—we never train on it." },
+  { icon: "🛡️", title: "Governance & Safety", description: "Rate limiting, abuse detection, language moderation, and human escalation. Tenant isolation, role-based access control, and complete audit trails for all actions." },
 ]
 
 export default function Security() {

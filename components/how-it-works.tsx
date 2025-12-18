@@ -11,17 +11,17 @@ const steps = [
   {
     number: "02",
     title: "Train",
-    description: "Upload your knowledge base and business documents",
+    description: "Upload your knowledge base and business documents. DONNA learns your business context and preferences",
   },
   {
     number: "03",
     title: "Deploy",
-    description: "Go live with DONNA managing your communications",
+    description: "Go live with DONNA managing your communications. DONNA controls tools, sends emails, creates documents, and executes workflows autonomously",
   },
   {
     number: "04",
     title: "Optimize",
-    description: "Review analytics and continuously improve performance",
+    description: "Review analytics and continuously improve performance. Connect with other DONNAs in your network for advanced coordination",
   },
 ]
 

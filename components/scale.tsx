@@ -25,6 +25,28 @@ export default function Scale() {
             As your business grows, DONNA can also securely coordinate with other DONNAs across teams, locations, or businesses. This reduces manual handoffs, expands your network, eliminates duplicated work, and keeps everything moving without slowing your team down.
           </p>
 
+          <div className="glass-card p-6 rounded-xl text-left max-w-2xl mx-auto mt-8">
+            <h3 className="text-xl font-bold mb-4 text-foreground">Network Benefits</h3>
+            <ul className="space-y-3 text-foreground/80">
+              <li className="flex items-start gap-3">
+                <span className="text-accent mt-1">•</span>
+                <span><strong>B2B Automation:</strong> Schedule meetings, confirm contracts, and share status updates between companies without emails</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-accent mt-1">•</span>
+                <span><strong>Cross-Promotion:</strong> Coordinate marketing campaigns and referral programs across partner businesses</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-accent mt-1">•</span>
+                <span><strong>Vendor Coordination:</strong> Streamline supply chain updates and vendor communications automatically</span>
+              </li>
+            </ul>
+          </div>
+
+          <p className="text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto">
+            All network connections are opt-in, permission-scoped, and fully auditable. You control who DONNA talks to and what information is shared.
+          </p>
+
           <p className="text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto">
             You get more time back, faster responses, and the ability to scale without hiring.
           </p>

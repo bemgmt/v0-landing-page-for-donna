@@ -6,25 +6,25 @@ const useCases = [
   {
     title: "Real Estate",
     icon: "◎",
-    description: "Transform your real estate operations with AI that handles property inquiries, schedules showings, qualifies leads, and follows up automatically. DONNA answers questions about listings, neighborhood details, pricing, and availability while seamlessly syncing with your CRM.",
+    description: "Transform your real estate operations with your digital employee that handles property inquiries, schedules showings, qualifies leads, and follows up automatically. DONNA answers questions about listings, sends emails, creates documents, and syncs with your CRM—all autonomously.",
     outcomes: ["50% faster lead response", "Schedule 3x more showings", "40% higher conversion", "Instant property information"],
   },
   {
     title: "Hospitality",
     icon: "◈",
-    description: "Elevate guest experiences with 24/7 reservation management, instant answers to common questions, room service coordination, and concierge-level support. DONNA handles booking modifications, special requests, and local recommendations while maintaining your brand's voice.",
+    description: "Elevate guest experiences with your 24/7 digital employee managing reservations, answering questions, coordinating room service, and providing concierge-level support. DONNA handles booking modifications, sends confirmations, creates invoices, and maintains your brand's voice automatically.",
     outcomes: ["24/7 reservation system", "Reduced staff workload", "Better guest experience", "Multilingual support"],
   },
   {
     title: "Professional Services",
     icon: "⬢",
-    description: "Streamline client intake and appointment management for law firms, consulting agencies, and professional practices. DONNA collects intake forms, schedules consultations, sends reminders, and manages follow-ups so your team can focus on billable work.",
+    description: "Streamline client intake and appointment management with your digital employee for law firms, consulting agencies, and professional practices. DONNA collects intake forms, schedules consultations, sends reminders, creates documents, and manages follow-ups so your team can focus on billable work.",
     outcomes: ["Streamlined intake process", "Fewer no-shows", "More billable hours", "Automated follow-ups"],
   },
   {
     title: "Health & Beauty",
     icon: "⟳",
-    description: "Manage your salon, spa, or wellness center with automated appointment booking, service inquiries, and client communication. DONNA handles scheduling, cancellations, rescheduling, package information, and sends appointment reminders to reduce no-shows.",
+    description: "Manage your salon, spa, or wellness center with your digital employee handling appointment booking, service inquiries, and client communication. DONNA controls your scheduling system, sends confirmations, processes cancellations, and creates marketing campaigns—all without manual intervention.",
     outcomes: ["Automated appointment booking", "Reduced no-shows", "24/7 client support", "Service upselling"],
   },
 ]

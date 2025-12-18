@@ -3,6 +3,7 @@ import Header from "@/components/header"
 import Hero from "@/components/hero"
 import Features from "@/components/features"
 import Scale from "@/components/scale"
+import DonnaNetwork from "@/components/donna-network"
 import HowItWorks from "@/components/how-it-works"
 import UseCases from "@/components/use-cases"
 import Integrations from "@/components/integrations"
@@ -16,8 +17,8 @@ import { generatePageMetadata } from '@/lib/metadata'
 import { softwareApplicationSchema, faqSchema } from '@/lib/schema-markup'
 
 export const metadata: Metadata = generatePageMetadata({
-  title: 'DONNA - AI-Powered Business Communication Platform',
-  description: 'Transform your business communication with DONNA\'s AI-powered voice, email, and chat assistants. Automate lead response, customer support, and appointment scheduling 24/7.',
+  title: 'DONNA - Digital Operations Neural Network Assistant',
+  description: 'DONNA is an agentic, multi-modal AI operations platform that functions as your digital employee layer. Control tools, coordinate workflows, and connect with other DONNAs across your network—handling communication, sales, marketing, and operations 24/7.',
   path: '/',
 })
 
@@ -28,20 +29,24 @@ export default function Home() {
     '@graph': [
       softwareApplicationSchema({
         name: 'DONNA',
-        description: 'AI-Powered Business Communication Platform',
+        description: 'Digital Operations Neural Network Assistant - Agentic AI operations platform',
         features: [
-          'Voice Receptionist',
-          'Email Assistant',
-          'Chatbot',
-          'Marketing Bot',
-          'Knowledge Base',
-          'Integrations',
+          'Agentic AI Operations',
+          'Multi-Modal Communication',
+          'Tool Control & Automation',
+          'DONNA-to-DONNA Network',
+          'Sales & Lead Management',
+          'Marketing Operations',
+          'Secretary & Office Operations',
+          'Workflow Automation',
+          'Knowledge Base & Memory',
+          'Enterprise Integrations',
         ],
       }),
       faqSchema([
         {
           question: 'What is DONNA?',
-          answer: 'DONNA is an AI-powered business communication platform that automates lead response, customer support, and appointment scheduling through voice, email, and chat.',
+          answer: 'DONNA (Digital Operations Neural Network Assistant) is an agentic, multi-modal AI operations platform that functions as a digital employee layer. Unlike chatbots or CRMs, DONNA controls tools, coordinates workflows, and connects with other DONNAs across networks to handle communication, sales, marketing, and operations 24/7.',
         },
         {
           question: 'How does DONNA work?',
@@ -66,6 +71,7 @@ export default function Home() {
         <Hero />
         <Features />
         <Scale />
+        <DonnaNetwork />
         <HowItWorks />
         <UseCases />
         <Integrations />

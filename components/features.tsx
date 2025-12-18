@@ -10,70 +10,105 @@ interface FeatureCard {
   description: string
 }
 
-const features: FeatureCard[] = [
+const coreCapabilities: FeatureCard[] = [
   {
-    id: "voice",
+    id: "agentic",
+    icon: "🧠",
+    title: "Agentic, Not Scripted",
+    subtitle: "AI that reasons, plans, and executes",
+    description:
+      "DONNA thinks and acts independently. It reasons through problems, creates plans, executes tasks, and learns from outcomes—not just following scripts.",
+  },
+  {
+    id: "human-loop",
+    icon: "🤝",
+    title: "Human-in-the-Loop by Design",
+    subtitle: "Automation that knows when to escalate",
+    description:
+      "DONNA handles routine tasks automatically but always knows when to hand off to humans. Review, approve, or step in with one click—you stay in control.",
+  },
+  {
+    id: "role-fluid",
+    icon: "🔄",
+    title: "Role-Fluid AI Floater",
+    subtitle: "One AI, multiple roles",
+    description:
+      "DONNA dynamically shifts between roles—sales, marketing, operations, secretary—without retraining. One digital employee that adapts to your needs.",
+  },
+  {
+    id: "tool-native",
+    icon: "⚙️",
+    title: "Tool-Native Control",
+    subtitle: "Controls tools, not just suggests",
+    description:
+      "DONNA doesn't just recommend actions—it controls your tools. Sends emails, creates documents, launches campaigns, and triggers workflows directly.",
+  },
+  {
+    id: "network-aware",
+    icon: "🌐",
+    title: "Network-Aware",
+    subtitle: "Connects with other DONNAs",
+    description:
+      "DONNA understands and communicates with other DONNAs across teams, locations, or businesses. Secure, permissioned AI-to-AI coordination.",
+  },
+  {
+    id: "multi-modal",
+    icon: "💬",
+    title: "Multi-Modal Communication",
+    subtitle: "Voice, email, SMS, chat, and more",
+    description:
+      "Seamless communication across all channels. Real-time voice with transcription, intelligent email handling, SMS, web chat, and live dashboards—all in one system.",
+  },
+]
+
+const functionalDomains: FeatureCard[] = [
+  {
+    id: "secretary",
+    icon: "📋",
+    title: "Secretary & Office Operations",
+    subtitle: "Your digital front and back office",
+    description:
+      "Inbox triage, calendar scheduling, meeting participation with transcription and summaries, follow-up automation, and task creation. DONNA handles the admin work.",
+  },
+  {
+    id: "sales",
+    icon: "💰",
+    title: "Sales & Lead Management",
+    subtitle: "From first contact to close",
+    description:
+      "Website lead qualification, email and SMS responses, objection handling, appointment booking, lead scoring, and conversation sentiment analysis. Outbound campaigns optional.",
+  },
+  {
+    id: "marketing",
+    icon: "📈",
+    title: "Marketing & Growth Operations",
+    subtitle: "Campaigns, content, and SEO",
+    description:
+      "AI-generated campaigns, landing pages, and copy. A/B testing, keyword generation, local SEO, funnel tracking, and conversion attribution—all automated.",
+  },
+  {
+    id: "automation",
     icon: "⚡",
-    title: "Real-Time Voice & Chat Interface",
-    subtitle: "Seamless, human-like communication across voice and chat",
+    title: "Automation & Workflow Engine",
+    subtitle: "Intelligent workflow automation",
     description:
-      "Donna's AWS-powered voice layer handles 4,000+ concurrent users with adaptive streaming, smart call routing, and real-time transcription. WebSocket and phone integrations enable instant responses across any device.",
+      "Trigger workflows by message intent, time, or events. Conditional logic, retry handling, human approval gates. Connect to 600+ platforms and tools.",
   },
   {
-    id: "knowledge",
-    icon: "◆",
-    title: "Intelligent Knowledge Base (AWS Quick Suite)",
-    subtitle: "Industry-specific knowledge that keeps learning",
+    id: "memory",
+    icon: "🧠",
+    title: "Data, Memory & Intelligence",
+    subtitle: "Learns and remembers",
     description:
-      "Four vertical-specific knowledge bases—Real Estate, Hospitality, Construction, and Property Management—each with 200+ curated questions and semantic understanding. Powered by AWS Bedrock + Amazon Q, with automatic data ingestion from 600+ sources.",
-  },
-  {
-    id: "multi-tenant",
-    icon: "⬢",
-    title: "Multi-Tenant Architecture",
-    subtitle: "Built for scale, isolation, and reliability",
-    description:
-      "Each client runs in its own secure environment with isolated data and compute resources. Scalable containers on AWS ECS/Fargate, governed by AWS Control Tower, with Aurora RDS for structured data and DynamoDB for real-time session state.",
-  },
-  {
-    id: "collaboration",
-    icon: "∞",
-    title: "AI + Human Collaboration",
-    subtitle: "Automation that knows when to hand off",
-    description:
-      "Donna routes conversations intelligently across industries. AI manages everyday interactions, while human operators can review, approve, or step in with one click—all within a unified dashboard. Choose full automation or hybrid mode with live human support for complex inquiries and high-value interactions.",
+      "Conversation memory per contact, organizational memory, task outcomes, and learned preferences. DONNA gets smarter with every interaction.",
   },
   {
     id: "integrations",
-    icon: "⟿",
-    title: "Automation & Integrations",
-    subtitle: "Connected to the tools your business already uses",
+    icon: "🔗",
+    title: "Enterprise Integrations",
+    subtitle: "Works with your existing tools",
     description:
-      "Instant integration with 600+ platforms—Google Workspace, QuickBooks ('Donna Books'), Slack, Zendesk, CRMs, and document systems. Choose real-time or scheduled data refresh to keep Donna's knowledge base always current.",
-  },
-  {
-    id: "security",
-    icon: "✓",
-    title: "Monitoring, Security & Compliance",
-    subtitle: "Enterprise-grade protection from day one",
-    description:
-      "Continuous monitoring with CloudWatch, X-Ray, and CloudTrail. GuardDuty and Security Hub detect threats automatically. SSL via Certificate Manager, DNS via Route 53, and IAM least-privilege access ensure data stays secure and compliant.",
-  },
-  {
-    id: "performance",
-    icon: "⚙",
-    title: "Performance & Scalability",
-    subtitle: "Built for thousands of simultaneous users",
-    description:
-      "Auto-scaling to 5,000+ active sessions, backed by optimized WebSocket and API layers. CI/CD with GitHub + CodePipeline delivers instant updates, while cost optimization keeps operations efficient.",
-  },
-  {
-    id: "onboarding",
-    icon: "◎",
-    title: "Client Onboarding & Management",
-    subtitle: "Ready for rapid deployment and growth",
-    description:
-      "Persona-based onboarding across 12 user profiles. Guided setup for Quick Suite, connectors, and workflows. Includes monitoring dashboards, admin guides, and runbooks for self-service management.",
+      "Instant integration with Google Workspace, Microsoft 365, CRMs, QuickBooks, Slack, Zendesk, and 600+ more platforms. Real-time or scheduled data sync.",
   },
 ]
 
@@ -89,35 +124,74 @@ export default function Features() {
             Powerful <span className="gradient-text">Features</span>
           </h2>
           <p className="text-foreground/60 max-w-2xl mx-auto">
-            Enterprise-grade capabilities designed for modern offices
+            Core capabilities and functional domains designed for modern operations
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, index) => (
-            <div
-              key={feature.id}
-              className="group glass-card p-6 rounded-xl border border-accent/10 hover:border-accent/30 transition-all duration-300 hover:shadow-lg hover:shadow-accent/20 cursor-pointer animate-slide-up"
-              style={{ animationDelay: `${index * 75}ms` }}
-            >
-              {/* Icon and title */}
-              <div className="mb-4">
-                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">
-                  {feature.icon}
+        {/* Core Capabilities Section */}
+        <div className="mb-20">
+          <div className="text-center mb-12">
+            <h3 className="text-2xl md:text-3xl font-bold mb-3">
+              Core <span className="gradient-text">Capabilities</span>
+            </h3>
+            <p className="text-foreground/60 max-w-2xl mx-auto">
+              The operating principles and technical foundation that make DONNA unique
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {coreCapabilities.map((feature, index) => (
+              <div
+                key={feature.id}
+                className="group glass-card p-6 rounded-xl border border-accent/10 hover:border-accent/30 transition-all duration-300 hover:shadow-lg hover:shadow-accent/20 cursor-pointer animate-slide-up"
+                style={{ animationDelay: `${index * 75}ms` }}
+              >
+                <div className="mb-4">
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-lg font-bold text-foreground mb-2">{feature.title}</h3>
+                  <p className="text-sm text-accent font-medium">{feature.subtitle}</p>
                 </div>
-                <h3 className="text-lg font-bold text-foreground mb-2">{feature.title}</h3>
-                <p className="text-sm text-accent font-medium">{feature.subtitle}</p>
+                <p className="text-sm text-foreground/70 leading-relaxed group-hover:text-foreground/80 transition-colors">
+                  {feature.description}
+                </p>
+                <div className="mt-4 h-0.5 bg-gradient-to-r from-accent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-full" />
               </div>
+            ))}
+          </div>
+        </div>
 
-              {/* Description */}
-              <p className="text-sm text-foreground/70 leading-relaxed group-hover:text-foreground/80 transition-colors">
-                {feature.description}
-              </p>
-
-              {/* Hover indicator */}
-              <div className="mt-4 h-0.5 bg-gradient-to-r from-accent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-full" />
-            </div>
-          ))}
+        {/* Functional Domains Section */}
+        <div>
+          <div className="text-center mb-12">
+            <h3 className="text-2xl md:text-3xl font-bold mb-3">
+              Functional <span className="gradient-text">Domains</span>
+            </h3>
+            <p className="text-foreground/60 max-w-2xl mx-auto">
+              Business functions DONNA handles across your organization
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {functionalDomains.map((feature, index) => (
+              <div
+                key={feature.id}
+                className="group glass-card p-6 rounded-xl border border-accent/10 hover:border-accent/30 transition-all duration-300 hover:shadow-lg hover:shadow-accent/20 cursor-pointer animate-slide-up"
+                style={{ animationDelay: `${index * 75}ms` }}
+              >
+                <div className="mb-4">
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-lg font-bold text-foreground mb-2">{feature.title}</h3>
+                  <p className="text-sm text-accent font-medium">{feature.subtitle}</p>
+                </div>
+                <p className="text-sm text-foreground/70 leading-relaxed group-hover:text-foreground/80 transition-colors">
+                  {feature.description}
+                </p>
+                <div className="mt-4 h-0.5 bg-gradient-to-r from-accent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-full" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
