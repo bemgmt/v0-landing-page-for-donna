@@ -38,39 +38,19 @@ export default function DemoForm() {
     setIsSubmitting(true)
 
     try {
-      // Get Formspree project ID and deploy key from environment variables
-      const formspreeProjectId = process.env.NEXT_PUBLIC_FORMSPREE_PROJECT_ID
-      const formspreeDeployKey = process.env.NEXT_PUBLIC_FORMSPREE_DEPLOY_KEY
-      
-      if (!formspreeProjectId) {
-        console.error("Formspree project ID not configured")
-        alert("Form configuration error. Please contact us at info@bemdonna.com")
-        setIsSubmitting(false)
-        return
-      }
-
-      // Build headers with deploy key if provided
-      const headers: HeadersInit = { 
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      }
-      
-      if (formspreeDeployKey) {
-        headers["Authorization"] = `Bearer ${formspreeDeployKey}`
-      }
-
-      // Submit to Formspree using project ID
-      const response = await fetch(`https://formspree.io/f/${formspreeProjectId}`, {
+      // Submit to SMTP API route
+      const response = await fetch("/api/send-email", {
         method: "POST",
-        headers,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
           company: formData.company,
           role: formData.role,
           useCase: formData.useCase,
-          type: formData.type === "waitlist" ? "Waitlist Signup" : "Demo Request",
-          _subject: `DONNA ${formData.type === "waitlist" ? "Waitlist Signup" : "Demo Request"} - ${formData.name}`,
+          type: formData.type,
         }),
       })
 

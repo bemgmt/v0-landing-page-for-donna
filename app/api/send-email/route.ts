@@ -20,9 +20,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create a transporter using Siteground SMTP
+    // Create a transporter using Gmail SMTP
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
+      host: process.env.SMTP_HOST || "smtp.gmail.com",
       port: parseInt(process.env.SMTP_PORT || "465"),
       secure: true, // true for 465, false for other ports
       auth: {
