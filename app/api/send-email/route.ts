@@ -21,26 +21,24 @@ export async function POST(request: NextRequest) {
     }
 
     // Create a transporter using Gmail SMTP
+    const port = parseInt(process.env.SMTP_PORT || "465")
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || "smtp.gmail.com",
-      port: parseInt(process.env.SMTP_PORT || "465"),
-      secure: true, // true for 465, false for other ports
+      port: port,
+      secure: port === 465, // true for 465, false for other ports (like 587)
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
       },
     })
 
-    // Verify SMTP connection
+    // Try to verify SMTP connection (optional - will fail gracefully if it doesn't work)
     try {
       await transporter.verify()
       console.log("SMTP connection verified")
     } catch (verifyError) {
-      console.error("SMTP verification failed:", verifyError)
-      return NextResponse.json(
-        { error: "Email server connection failed. Please contact support." },
-        { status: 500 }
-      )
+      console.warn("SMTP verification failed, but will attempt to send anyway:", verifyError)
+      // Don't return error here - sometimes verification fails but sending works
     }
 
     const mailOptions = {
@@ -60,8 +58,27 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("Sending notification email to:", process.env.SMTP_USER)
-    await transporter.sendMail(mailOptions)
-    console.log("Notification email sent successfully")
+    try {
+      await transporter.sendMail(mailOptions)
+      console.log("Notification email sent successfully")
+    } catch (sendError) {
+      console.error("Failed to send notification email:", sendError)
+      const errorMessage = sendError instanceof Error ? sendError.message : "Unknown error"
+      // Check for common Gmail errors
+      if (errorMessage.includes("Invalid login") || errorMessage.includes("authentication")) {
+        return NextResponse.json(
+          { error: "Gmail authentication failed. Please check your app-specific password." },
+          { status: 500 }
+        )
+      }
+      if (errorMessage.includes("ECONNREFUSED") || errorMessage.includes("timeout")) {
+        return NextResponse.json(
+          { error: "Could not connect to Gmail SMTP server. Please check your network connection." },
+          { status: 500 }
+        )
+      }
+      throw sendError // Re-throw to be caught by outer catch
+    }
 
     // Also send confirmation to user
     const userMailOptions = {
@@ -77,8 +94,14 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("Sending confirmation email to:", email)
-    await transporter.sendMail(userMailOptions)
-    console.log("Confirmation email sent successfully")
+    try {
+      await transporter.sendMail(userMailOptions)
+      console.log("Confirmation email sent successfully")
+    } catch (sendError) {
+      console.error("Failed to send confirmation email:", sendError)
+      // Don't fail the whole request if confirmation email fails
+      // The notification email was already sent
+    }
 
     return NextResponse.json({ message: "Email sent successfully" }, { status: 200 })
   } catch (error) {
