@@ -20,10 +20,27 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Normalize and validate SMTP host (fix common typos)
+    let smtpHost = process.env.SMTP_HOST.trim().toLowerCase()
+    
+    // Fix common typo: "stmp" -> "smtp"
+    if (smtpHost === "stmp.gmail.com") {
+      console.warn("Fixed typo in SMTP_HOST: stmp.gmail.com -> smtp.gmail.com")
+      smtpHost = "smtp.gmail.com"
+    }
+    
+    // Validate hostname
+    if (!smtpHost || smtpHost.length < 3) {
+      return NextResponse.json(
+        { error: `Invalid SMTP host: "${process.env.SMTP_HOST}". Please check your SMTP_HOST environment variable.` },
+        { status: 500 }
+      )
+    }
+
     // Create a transporter using Gmail SMTP
     const port = parseInt(process.env.SMTP_PORT || "465")
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || "smtp.gmail.com",
+      host: smtpHost,
       port: port,
       secure: port === 465, // true for 465, false for other ports (like 587)
       auth: {
@@ -71,9 +88,9 @@ export async function POST(request: NextRequest) {
           { status: 500 }
         )
       }
-      if (errorMessage.includes("ECONNREFUSED") || errorMessage.includes("timeout")) {
+      if (errorMessage.includes("ECONNREFUSED") || errorMessage.includes("timeout") || errorMessage.includes("getaddrinfo")) {
         return NextResponse.json(
-          { error: "Could not connect to Gmail SMTP server. Please check your network connection." },
+          { error: `Could not connect to SMTP server "${smtpHost}". Please check your SMTP_HOST environment variable (should be "smtp.gmail.com").` },
           { status: 500 }
         )
       }
@@ -107,6 +124,15 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Email error:", error)
     const errorMessage = error instanceof Error ? error.message : "Unknown error"
+    
+    // Check for hostname/DNS errors
+    if (errorMessage.includes("getaddrinfo") || errorMessage.includes("EBUSY") || errorMessage.includes("ENOTFOUND")) {
+      return NextResponse.json(
+        { error: `Invalid SMTP hostname. Please check your SMTP_HOST environment variable. It should be "smtp.gmail.com" (not "stmp.gmail.com").` },
+        { status: 500 }
+      )
+    }
+    
     return NextResponse.json({ error: `Failed to send email: ${errorMessage}` }, { status: 500 })
   }
 }
