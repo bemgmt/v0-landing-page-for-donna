@@ -1,0 +1,11 @@
+{
+  "forms": {
+    "contact-form": {
+      "name": "DONNA Contact Form",
+      "actions": [
+        {"type": "email", "to": "info@bemdonna.com"}
+      ]
+    }
+  }
+}
+
