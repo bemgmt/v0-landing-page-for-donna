@@ -46,11 +46,24 @@ export default function DonnaNetwork() {
   return (
     <section id="donna-network" ref={ref} className="py-20 px-4 sm:px-6 lg:px-8 bg-primary/5">
       <div className="max-w-6xl mx-auto">
+        {/* Section header with slogan */}
+        <div className="text-center mb-12 animate-fade-in">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Works Alone. Works Together. <span className="gradient-text">Grows With You.</span>
+          </h2>
+          <p className="text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto mb-6">
+            DONNA works as a digital employee inside your business — answering calls, handling emails, booking appointments, and following up automatically.
+          </p>
+          <p className="text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto mb-8">
+            As your business grows, DONNA can also securely coordinate with other DONNAs across teams, locations, or businesses. This reduces manual handoffs, expands your network, eliminates duplicated work, and keeps everything moving without slowing your team down.
+          </p>
+        </div>
+
         {/* Section header */}
         <div className="text-center mb-16 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h3 className="text-2xl md:text-3xl font-bold mb-4">
             The <span className="gradient-text">DONNA-to-DONNA Network</span>
-          </h2>
+          </h3>
           <p className="text-foreground/60 max-w-3xl mx-auto text-lg">
             A critical differentiator: DONNAs communicate, coordinate, and collaborate with each other—transforming individual AI assistants into a connected network of intelligence.
           </p>
@@ -104,8 +117,20 @@ export default function DonnaNetwork() {
 
         {/* Future Vision */}
         <div className="mt-12 text-center animate-fade-in">
-          <p className="text-foreground/60 italic max-w-2xl mx-auto">
+          <p className="text-foreground/60 italic max-w-2xl mx-auto mb-6">
             Coming soon: The DONNA Marketplace—where organizations can offer specialized services, subscribe to industry-specific DONNAs, and license vertical intelligence.
+          </p>
+          <p className="text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto mb-6">
+            You get more time back, faster responses, and the ability to scale without hiring.
+          </p>
+          <p className="text-sm text-foreground/50 italic">
+            Advanced DONNA-to-DONNA coordination is available on higher plans.{" "}
+            <a 
+              href="#pricing" 
+              className="text-accent hover:text-accent/80 transition-colors underline underline-offset-4"
+            >
+              See Plans
+            </a>
           </p>
         </div>
       </div>

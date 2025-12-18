@@ -11,58 +11,45 @@ export default function Scale() {
         {/* Section header */}
         <div className="text-center mb-12 animate-fade-in">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Works Alone. Works Together. <span className="gradient-text">Grows With You.</span>
+            Scale Without <span className="gradient-text">Limits</span>
           </h2>
         </div>
 
         {/* Body content */}
         <div className="space-y-6 text-center animate-slide-up">
           <p className="text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto">
-            DONNA works as a digital employee inside your business — answering calls, handling emails, booking appointments, and following up automatically.
+            DONNA grows with your business. Start with one digital employee handling your core operations, then scale to multiple DONNAs across departments, locations, or business units.
           </p>
 
           <p className="text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto">
-            As your business grows, DONNA can also securely coordinate with other DONNAs across teams, locations, or businesses. This reduces manual handoffs, expands your network, eliminates duplicated work, and keeps everything moving without slowing your team down.
+            Whether you're a small business or a large enterprise, DONNA adapts to your needs. No hiring delays, no training periods, no capacity limits. Your digital workforce scales instantly.
           </p>
 
           <div className="glass-card p-6 rounded-xl text-left max-w-2xl mx-auto mt-8">
-            <h3 className="text-xl font-bold mb-4 text-foreground">Network Benefits</h3>
+            <h3 className="text-xl font-bold mb-4 text-foreground">Scaling Benefits</h3>
             <ul className="space-y-3 text-foreground/80">
               <li className="flex items-start gap-3">
                 <span className="text-accent mt-1">•</span>
-                <span><strong>B2B Automation:</strong> Schedule meetings, confirm contracts, and share status updates between companies without emails</span>
+                <span><strong>Instant Deployment:</strong> Add new DONNAs in minutes, not months</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-accent mt-1">•</span>
-                <span><strong>Cross-Promotion:</strong> Coordinate marketing campaigns and referral programs across partner businesses</span>
+                <span><strong>No Capacity Limits:</strong> Handle thousands of conversations simultaneously</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-accent mt-1">•</span>
-                <span><strong>Vendor Coordination:</strong> Streamline supply chain updates and vendor communications automatically</span>
+                <span><strong>Cost Effective:</strong> Scale operations without scaling headcount</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-accent mt-1">•</span>
+                <span><strong>Consistent Quality:</strong> Every DONNA maintains the same high standards</span>
               </li>
             </ul>
           </div>
 
           <p className="text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto">
-            All network connections are opt-in, permission-scoped, and fully auditable. You control who DONNA talks to and what information is shared.
+            From startup to enterprise, DONNA provides the same reliable, intelligent service at any scale.
           </p>
-
-          <p className="text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto">
-            You get more time back, faster responses, and the ability to scale without hiring.
-          </p>
-
-          {/* Micro-callout */}
-          <div className="pt-6">
-            <p className="text-sm text-foreground/50 italic">
-              Advanced DONNA-to-DONNA coordination is available on higher plans.{" "}
-              <a 
-                href="#pricing" 
-                className="text-accent hover:text-accent/80 transition-colors underline underline-offset-4"
-              >
-                See Plans
-              </a>
-            </p>
-          </div>
         </div>
       </div>
     </section>
