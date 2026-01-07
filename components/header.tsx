@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Menu, X } from "lucide-react"
 
 export default function Header() {
@@ -21,9 +22,14 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="#" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-primary flex items-center justify-center">
-              <span className="text-sm font-bold text-foreground">D</span>
-            </div>
+            <Image
+              src="/DONNA-logo.png"
+              alt="DONNA Logo"
+              width={32}
+              height={32}
+              className="h-8 w-auto"
+              priority
+            />
             <span className="text-lg font-bold gradient-text">DONNA</span>
           </Link>
 

@@ -13,6 +13,11 @@ export const metadata: Metadata = {
   title: "DONNA - AI Office Assistant",
   description: "Your AI Office Receptionist That Never Stops",
   generator: "v0.app",
+  icons: {
+    icon: "/DONNA-logo.png",
+    shortcut: "/DONNA-logo.png",
+    apple: "/DONNA-logo.png",
+  },
 }
 
 export default function RootLayout({

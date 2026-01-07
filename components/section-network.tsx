@@ -1,0 +1,70 @@
+"use client"
+
+import { useEffect } from "react"
+import { useInView } from "react-intersection-observer"
+import { track } from "@vercel/analytics"
+
+const networkUseCases = [
+  {
+    title: "Business-to-Business Automation",
+    description: "Schedule meetings, confirm contracts, and share status updates between companies without manual emails or phone calls.",
+    icon: "🤝",
+  },
+  {
+    title: "Marketing & Growth Coordination",
+    description: "Cross-promote campaigns, verify referrals, and hand off leads between partner businesses automatically.",
+    icon: "📈",
+  },
+  {
+    title: "Operations & Vendor Management",
+    description: "Coordinate supply chain updates, vendor communications, and compliance confirmations across your network.",
+    icon: "⚙️",
+  },
+  {
+    title: "Manufacturing & Logistics",
+    description: "Coordinate production schedules, shipping updates, and inventory management between manufacturers, suppliers, and distributors.",
+    icon: "🏭",
+  },
+]
+
+export default function SectionNetwork() {
+  const { ref, inView } = useInView({ threshold: 0.3, once: true })
+
+  useEffect(() => {
+    if (inView) {
+      track("section_view", { section: 4 })
+    }
+  }, [inView])
+
+  return (
+    <section
+      ref={ref}
+      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-background"
+    >
+      <div className="max-w-7xl mx-auto w-full">
+        <div className="text-center mb-8 animate-fade-in">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            The <span className="gradient-text">DONNA-to-DONNA Network</span>
+          </h2>
+          <p className="text-foreground/60 max-w-3xl mx-auto text-lg mb-6">
+            DONNA works as a digital employee inside your business. As you grow, DONNAs securely coordinate with other DONNAs across teams, locations, or businesses—reducing manual handoffs and expanding your network.
+          </p>
+        </div>
+
+        <div className="hRail flex gap-3.5 overflow-x-auto pb-4 -mx-4 px-4" style={{ scrollSnapType: 'x mandatory' }}>
+          {networkUseCases.map((useCase, index) => (
+            <div
+              key={index}
+              className="hCard glass-card p-6 rounded-xl border border-accent/10 hover:border-accent/30 transition-all duration-300 flex-shrink-0"
+            >
+              <div className="text-4xl mb-4">{useCase.icon}</div>
+              <h4 className="text-xl font-bold mb-3 text-foreground">{useCase.title}</h4>
+              <p className="text-foreground/70 leading-relaxed">{useCase.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+

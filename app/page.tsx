@@ -1,17 +1,12 @@
 import type { Metadata } from 'next'
-import Header from "@/components/header"
-import Hero from "@/components/hero"
-import Features from "@/components/features"
-import Scale from "@/components/scale"
-import DonnaNetwork from "@/components/donna-network"
-import HowItWorks from "@/components/how-it-works"
-import UseCases from "@/components/use-cases"
-import Integrations from "@/components/integrations"
-import Security from "@/components/security"
-import Pricing from "@/components/pricing"
-import FAQ from "@/components/faq"
-import DemoForm from "@/components/demo-form"
-import Footer from "@/components/footer"
+import IntroOverlay from "@/components/intro-overlay"
+import ScrollCue from "@/components/scroll-cue"
+import SectionHero from "@/components/section-hero"
+import SectionCapabilities from "@/components/section-capabilities"
+import SectionVerticals from "@/components/section-verticals"
+import SectionNetwork from "@/components/section-network"
+import SectionProof from "@/components/section-proof"
+import SectionCTA from "@/components/section-cta"
 import Chatbot from "@/components/chatbot"
 import { generatePageMetadata } from '@/lib/metadata'
 import { softwareApplicationSchema, faqSchema } from '@/lib/schema-markup'
@@ -66,24 +61,17 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
       />
-      <main id="main-content" className="min-h-screen bg-background">
-        <Header />
-        <Hero />
-        <Features />
-        <Scale />
-        <DonnaNetwork />
-        <HowItWorks />
-        <UseCases />
-        <Integrations />
-        <Security />
-        <Pricing />
-        <FAQ />
-        <div id="demo-form">
-          <DemoForm />
-        </div>
-        <Footer />
-        <Chatbot />
+      <IntroOverlay />
+      <ScrollCue />
+      <main id="main-content" className="snap bg-background">
+        <SectionHero />
+        <SectionCapabilities />
+        <SectionVerticals />
+        <SectionNetwork />
+        <SectionProof />
+        <SectionCTA />
       </main>
+      <Chatbot />
     </>
   )
 }
