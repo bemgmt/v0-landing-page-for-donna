@@ -87,7 +87,7 @@ export default function SectionCTA() {
       className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-background"
     >
       <div ref={formRef} className="max-w-2xl mx-auto w-full">
-        <div className="glass-card p-8 rounded-xl glow-accent text-center">
+        <div className="liquid-glass-card p-8 rounded-xl text-center">
           <h2 className="text-3xl font-bold mb-2 gradient-text">
             {formData.type === "waitlist" ? "Join the Waitlist" : "Request a Demo"}
           </h2>

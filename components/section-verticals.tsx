@@ -1,10 +1,17 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
 
-const useCases = [
+interface Vertical {
+  title: string
+  icon: string
+  description: string
+  outcomes: string[]
+}
+
+const useCases: Vertical[] = [
   {
     title: "Real Estate",
     icon: "◎",
@@ -33,6 +40,7 @@ const useCases = [
 
 export default function SectionVerticals() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
+  const [selectedVertical, setSelectedVertical] = useState<number>(0)
 
   useEffect(() => {
     if (inView) {
@@ -40,12 +48,14 @@ export default function SectionVerticals() {
     }
   }, [inView])
 
+  const selectedData = useCases[selectedVertical]
+
   return (
     <section
       ref={ref}
       className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-primary/5"
     >
-      <div className="max-w-7xl mx-auto w-full">
+      <div className="max-w-6xl mx-auto w-full">
         <div className="text-center mb-8 animate-fade-in">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Built for <span className="gradient-text">Your Industry</span>
@@ -55,28 +65,51 @@ export default function SectionVerticals() {
           </p>
         </div>
 
-        <div className="hRail flex gap-3.5 overflow-x-auto pb-4 -mx-4 px-4" style={{ scrollSnapType: 'x mandatory' }}>
-          {useCases.map((useCase, index) => (
-            <div
-              key={index}
-              className="hCard glass-card p-6 rounded-xl glow-accent transition-all duration-300 flex-shrink-0"
-            >
-              <div className="text-4xl mb-4">{useCase.icon}</div>
-              <h3 className="text-xl font-bold mb-2">{useCase.title}</h3>
-              <p className="text-foreground/70 mb-4 text-sm leading-relaxed">{useCase.description}</p>
-              <div className="space-y-2">
-                {useCase.outcomes.map((outcome, i) => (
-                  <div key={i} className="flex items-center gap-2 text-sm text-accent">
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-                    {outcome}
+        {/* Centered Card Container - Apple "Significant Others" Pattern */}
+        <div className="liquid-glass-card rounded-2xl p-6 md:p-12 max-w-5xl mx-auto">
+          <div className="flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-8">
+            {/* Left Panel: Selectable List */}
+            <div className="space-y-2 order-2 md:order-1">
+              {useCases.map((vertical, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedVertical(index)}
+                  className={`w-full text-left p-4 rounded-xl transition-all duration-300 ${
+                    index === selectedVertical
+                      ? "liquid-glass border-2 border-accent/50 bg-white/15"
+                      : "liquid-glass-clear border border-white/10 hover:bg-white/10"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{vertical.icon}</span>
+                    <span className="font-semibold text-foreground">{vertical.title}</span>
                   </div>
-                ))}
+                </button>
+              ))}
+            </div>
+
+            {/* Right Panel: Dynamic Content */}
+            <div className="flex flex-col justify-center order-1 md:order-2">
+              <div
+                key={selectedVertical}
+                className="animate-fade-in-content"
+              >
+                <div className="text-5xl md:text-6xl mb-4">{selectedData.icon}</div>
+                <h3 className="text-xl md:text-2xl font-bold mb-4 text-foreground">{selectedData.title}</h3>
+                <p className="text-sm md:text-base text-foreground/80 mb-6 leading-relaxed">{selectedData.description}</p>
+                <div className="space-y-3">
+                  {selectedData.outcomes.map((outcome, i) => (
+                    <div key={i} className="flex items-center gap-3 text-accent">
+                      <div className="w-2 h-2 rounded-full bg-accent flex-shrink-0" />
+                      <span className="text-xs md:text-sm font-medium">{outcome}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>
   )
 }
-

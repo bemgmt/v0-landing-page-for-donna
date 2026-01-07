@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
+import ScrollDots from "@/components/scroll-dots"
 
 interface FeatureCard {
   id: string
@@ -65,6 +66,7 @@ const coreCapabilities: FeatureCard[] = [
 
 export default function SectionCapabilities() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
+  const railRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (inView) {
@@ -75,7 +77,7 @@ export default function SectionCapabilities() {
   return (
     <section
       ref={ref}
-      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-background"
+      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-background relative"
     >
       <div className="max-w-7xl mx-auto w-full">
         <div className="text-center mb-8 animate-fade-in">
@@ -87,25 +89,27 @@ export default function SectionCapabilities() {
           </p>
         </div>
 
-        <div className="hRail flex gap-3.5 overflow-x-auto pb-4 -mx-4 px-4" style={{ scrollSnapType: 'x mandatory' }}>
+        <div
+          ref={railRef}
+          className="hRail flex gap-3.5 overflow-x-auto pb-4 -mx-4 px-4"
+          style={{ scrollSnapType: "x mandatory" }}
+        >
           {coreCapabilities.map((feature) => (
             <div
               key={feature.id}
-              className="hCard glass-card p-6 rounded-xl border border-accent/10 hover:border-accent/30 transition-all duration-300 flex-shrink-0"
+              className="hCard liquid-glass-card p-8 rounded-xl refract-on-hover flex-shrink-0"
             >
               <div className="mb-4">
-                <div className="text-4xl mb-3">{feature.icon}</div>
-                <h3 className="text-lg font-bold text-foreground mb-2">{feature.title}</h3>
-                <p className="text-sm text-accent font-medium mb-2">{feature.subtitle}</p>
+                <div className="text-5xl mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-bold text-foreground mb-2">{feature.title}</h3>
+                <p className="text-sm text-accent font-medium mb-3">{feature.subtitle}</p>
               </div>
               <p className="text-sm text-foreground/70 leading-relaxed">{feature.description}</p>
             </div>
           ))}
         </div>
 
-        <p className="text-xs text-foreground/40 text-center mt-4 animate-fade-in">
-          Swipe to explore →
-        </p>
+        <ScrollDots containerRef={railRef} itemCount={coreCapabilities.length} />
       </div>
     </section>
   )

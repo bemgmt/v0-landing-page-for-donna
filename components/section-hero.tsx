@@ -3,6 +3,7 @@
 import { useEffect } from "react"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
+import BackgroundAnimation from "@/components/background-animation"
 
 export default function SectionHero() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
@@ -22,9 +23,10 @@ export default function SectionHero() {
   return (
     <section
       ref={ref}
-      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-background"
+      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden"
     >
-      <div className="max-w-4xl mx-auto text-center">
+      <BackgroundAnimation />
+      <div className="max-w-4xl mx-auto text-center relative z-10 pt-20">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-in">
           <span className="gradient-text">One AI. Every Industry.</span>
         </h1>
@@ -33,7 +35,7 @@ export default function SectionHero() {
         </p>
         <button
           onClick={handleCTAClick}
-          className="px-8 py-4 rounded-lg bg-accent text-background hover:bg-accent/90 transition-all duration-300 font-semibold text-lg glow-accent hover:shadow-[0_0_30px_rgba(132,204,255,0.5)] animate-slide-up"
+          className="px-8 py-4 rounded-lg liquid-glass text-foreground hover:bg-white/20 transition-all duration-300 font-semibold text-lg refract-on-hover animate-slide-up"
           style={{ animationDelay: "200ms" }}
         >
           Join the Waitlist

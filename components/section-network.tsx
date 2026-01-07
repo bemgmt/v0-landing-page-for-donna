@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
+import ScrollDots from "@/components/scroll-dots"
 
 const networkUseCases = [
   {
@@ -29,6 +30,7 @@ const networkUseCases = [
 
 export default function SectionNetwork() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
+  const railRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (inView) {
@@ -51,18 +53,24 @@ export default function SectionNetwork() {
           </p>
         </div>
 
-        <div className="hRail flex gap-3.5 overflow-x-auto pb-4 -mx-4 px-4" style={{ scrollSnapType: 'x mandatory' }}>
+        <div
+          ref={railRef}
+          className="hRail flex gap-3.5 overflow-x-auto pb-4 -mx-4 px-4"
+          style={{ scrollSnapType: "x mandatory" }}
+        >
           {networkUseCases.map((useCase, index) => (
             <div
               key={index}
-              className="hCard glass-card p-6 rounded-xl border border-accent/10 hover:border-accent/30 transition-all duration-300 flex-shrink-0"
+              className="hCard liquid-glass-card p-8 rounded-xl refract-on-hover flex-shrink-0"
             >
-              <div className="text-4xl mb-4">{useCase.icon}</div>
+              <div className="text-5xl mb-4">{useCase.icon}</div>
               <h4 className="text-xl font-bold mb-3 text-foreground">{useCase.title}</h4>
               <p className="text-foreground/70 leading-relaxed">{useCase.description}</p>
             </div>
           ))}
         </div>
+
+        <ScrollDots containerRef={railRef} itemCount={networkUseCases.length} />
       </div>
     </section>
   )

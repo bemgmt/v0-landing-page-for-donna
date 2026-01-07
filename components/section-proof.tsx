@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
+import ScrollDots from "@/components/scroll-dots"
 
 interface Stat {
   value: string
@@ -57,6 +58,7 @@ const testimonials = [
 export default function SectionProof() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
   const [counters, setCounters] = useState<Record<number, number>>({})
+  const railRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (inView) {
@@ -112,11 +114,15 @@ export default function SectionProof() {
           </p>
         </div>
 
-        <div className="hRail flex gap-3.5 overflow-x-auto pb-4 -mx-4 px-4" style={{ scrollSnapType: 'x mandatory' }}>
+        <div
+          ref={railRef}
+          className="hRail flex gap-3.5 overflow-x-auto pb-4 -mx-4 px-4"
+          style={{ scrollSnapType: "x mandatory" }}
+        >
           {allItems.map((item) => (
             <div
               key={`${item.type}-${item.index}`}
-              className="hCard glass-card p-6 rounded-xl glow-accent transition-all duration-300 flex-shrink-0"
+              className="hCard liquid-glass-card p-8 rounded-xl refract-on-hover flex-shrink-0"
             >
               {item.type === "stat" ? (
                 <>
@@ -142,6 +148,8 @@ export default function SectionProof() {
             </div>
           ))}
         </div>
+
+        <ScrollDots containerRef={railRef} itemCount={allItems.length} />
       </div>
     </section>
   )

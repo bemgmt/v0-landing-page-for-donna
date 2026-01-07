@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import IntroOverlay from "@/components/intro-overlay"
 import ScrollCue from "@/components/scroll-cue"
+import MinimalHeader from "@/components/minimal-header"
 import SectionHero from "@/components/section-hero"
 import SectionCapabilities from "@/components/section-capabilities"
 import SectionVerticals from "@/components/section-verticals"
@@ -63,6 +64,7 @@ export default function Home() {
       />
       <IntroOverlay />
       <ScrollCue />
+      <MinimalHeader />
       <main id="main-content" className="snap bg-background">
         <SectionHero />
         <SectionCapabilities />
