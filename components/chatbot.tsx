@@ -94,16 +94,19 @@ export default function Chatbot() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full animated-edge-button flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 relative"
+          className="fixed bottom-6 right-6 w-14 h-14 rounded-full animated-edge-button flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 relative"
           aria-label="Open chat"
+          style={{ zIndex: 9999, position: 'fixed' }}
         >
-          <MessageCircle className="w-6 h-6 text-foreground relative z-10" />
+          <MessageCircle className="w-6 h-6 text-white relative z-10 drop-shadow-lg" />
         </button>
       )}
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-[100] w-[420px] h-[640px] max-w-[calc(100vw-3rem)] max-h-[calc(100vh-3rem)] flex flex-col liquid-glass-card rounded-2xl shadow-2xl border border-white/20 overflow-hidden animate-slide-up">
+        <div className="fixed bottom-6 right-6 z-[9999] w-[420px] h-[640px] max-w-[calc(100vw-3rem)] max-h-[calc(100vh-3rem)] flex flex-col liquid-glass-card rounded-2xl shadow-2xl border border-white/20 overflow-hidden animate-slide-up"
+          style={{ zIndex: 9999 }}
+        >
           {/* Header */}
           <div className="liquid-glass border-b border-white/10 p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
