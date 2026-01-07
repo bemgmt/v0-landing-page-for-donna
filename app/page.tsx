@@ -74,8 +74,8 @@ export default function Home() {
         <SectionVerticals />
         <SectionNetwork />
         <SectionCTA />
+        <Footer />
       </main>
-      <Footer />
       <Chatbot />
     </>
   )

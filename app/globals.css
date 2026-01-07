@@ -438,6 +438,13 @@
     z-index: 1;
   }
 
+  /* Ensure footer is accessible */
+  main.snap::after {
+    content: '';
+    display: block;
+    height: 1px;
+  }
+
   section.snapSection {
     height: 100svh;
     scroll-snap-align: start;
@@ -611,6 +618,7 @@
     opacity: 0;
     transition: opacity 0.3s ease;
     animation: gradientRotate 3s linear infinite;
+    pointer-events: none;
   }
 
   .animated-edge-button:hover::before {
@@ -627,6 +635,20 @@
     100% {
       background-position: 0% 50%;
     }
+  }
+
+  /* Glow animation for chatbot thinking indicator */
+  @keyframes glowPulse {
+    0%, 100% {
+      box-shadow: 0 0 10px rgba(132, 204, 255, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(132, 204, 255, 0.6), 0 0 30px rgba(122, 92, 255, 0.4);
+    }
+  }
+
+  .glow-accent {
+    animation: glowPulse 2s ease-in-out infinite;
   }
 
   /* Clear icon effect */

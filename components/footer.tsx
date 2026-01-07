@@ -6,7 +6,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="liquid-glass border-t border-white/10 mt-auto relative z-20 bg-background/95 backdrop-blur-sm">
+    <footer className="snapSection liquid-glass border-t border-white/10 relative z-20 bg-background/95 backdrop-blur-sm min-h-screen flex items-center">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           {/* SEO/AEO Optimized Content */}

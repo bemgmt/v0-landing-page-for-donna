@@ -36,12 +36,16 @@ export default function MinimalHeader() {
           </div>
           <button
             onClick={() => {
+              const main = document.querySelector("main.snap")
               const form = document.getElementById("section-cta")
-              form?.scrollIntoView({ behavior: "smooth" })
+              if (form && main) {
+                const formTop = form.getBoundingClientRect().top + (main as HTMLElement).scrollTop
+                main.scrollTo({ top: formTop - 100, behavior: "smooth" })
+              }
             }}
-            className="px-4 py-2 rounded-lg liquid-glass text-sm font-medium hover:bg-white/20 transition-all"
+            className="px-4 py-2 rounded-lg animated-edge-button text-sm font-medium hover:bg-white/20 transition-all relative"
           >
-            Join Waitlist
+            <span className="relative z-10">Join Waitlist</span>
           </button>
         </div>
       </div>

@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Send, X, MessageCircle, Loader2 } from "lucide-react"
+import { Send, X, MessageCircle } from "lucide-react"
+import Image from "next/image"
 
 interface Message {
   id: string
@@ -16,7 +17,7 @@ export default function Chatbot() {
     {
       id: "welcome",
       role: "assistant",
-      content: "Hi! I'm Donna, your AI Office Assistant. How can I help you today?",
+      content: "Hi! I'm Donna, your AI Operations Assistant. How can I help you today?",
       timestamp: new Date(),
     },
   ])
@@ -93,10 +94,10 @@ export default function Chatbot() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full liquid-glass flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-white/20"
+          className="fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full animated-edge-button flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 relative"
           aria-label="Open chat"
         >
-          <MessageCircle className="w-6 h-6 text-foreground" />
+          <MessageCircle className="w-6 h-6 text-foreground relative z-10" />
         </button>
       )}
 
@@ -106,12 +107,18 @@ export default function Chatbot() {
           {/* Header */}
           <div className="liquid-glass border-b border-white/10 p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full liquid-glass-clear flex items-center justify-center border border-white/20">
-                <span className="text-xl font-bold text-foreground">🧠</span>
+              <div className="w-10 h-10 rounded-full liquid-glass-clear flex items-center justify-center border border-white/20 overflow-hidden">
+                <Image
+                  src="/DONNA-logo.png"
+                  alt="DONNA Logo"
+                  width={32}
+                  height={32}
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
                 <h3 className="font-bold text-foreground">DONNA</h3>
-                <p className="text-xs text-foreground/60">AI Office Assistant</p>
+                <p className="text-xs text-foreground/60">AI Operations Assistant</p>
               </div>
             </div>
             <button
@@ -146,8 +153,8 @@ export default function Chatbot() {
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="liquid-glass-clear border border-white/10 rounded-xl px-4 py-2.5">
-                  <Loader2 className="w-5 h-5 animate-spin text-foreground" />
+                <div className="liquid-glass-clear border border-white/10 rounded-xl px-4 py-2.5 glow-accent">
+                  <p className="text-sm text-foreground animate-pulse">...</p>
                 </div>
               </div>
             )}

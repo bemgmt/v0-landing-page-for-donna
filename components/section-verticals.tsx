@@ -74,10 +74,10 @@ export default function SectionVerticals() {
                 <button
                   key={index}
                   onClick={() => setSelectedVertical(index)}
-                  className={`w-full text-left p-4 rounded-xl transition-all duration-300 ${
+                  className={`w-full text-left p-4 rounded-xl transition-all duration-300 relative ${
                     index === selectedVertical
                       ? "liquid-glass border-2 border-accent/50 bg-white/15"
-                      : "liquid-glass-clear border border-white/10 hover:bg-white/10"
+                      : "liquid-glass-clear border border-white/10 hover:bg-white/10 animated-edge-button"
                   }`}
                 >
                   <div className="flex items-center gap-3">
