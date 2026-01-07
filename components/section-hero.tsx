@@ -25,9 +25,6 @@ export default function SectionHero() {
       className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden"
     >
       <div className="max-w-4xl mx-auto text-center relative z-10 pt-20">
-        <div className="mb-4 animate-fade-in">
-          <p className="text-lg md:text-xl lg:text-2xl text-foreground/70 font-medium">Meet DONNA</p>
-        </div>
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-in">
           <span className="gradient-text">One AI. Every Industry.</span>
         </h1>

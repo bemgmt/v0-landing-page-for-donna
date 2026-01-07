@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import IntroOverlay from "@/components/intro-overlay"
 import ScrollCue from "@/components/scroll-cue"
+import ScrollbarFade from "@/components/scrollbar-fade"
 import MinimalHeader from "@/components/minimal-header"
 import SectionHero from "@/components/section-hero"
 import SectionCapabilities from "@/components/section-capabilities"
@@ -64,6 +65,7 @@ export default function Home() {
       />
       <IntroOverlay />
       <ScrollCue />
+      <ScrollbarFade />
       <MinimalHeader />
       <div className="fixed-background" />
       <main id="main-content" className="snap relative z-10">

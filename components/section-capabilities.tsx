@@ -76,6 +76,7 @@ export default function SectionCapabilities() {
 
   return (
     <section
+      id="capabilities"
       ref={ref}
       className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative"
     >
