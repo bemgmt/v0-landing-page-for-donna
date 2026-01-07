@@ -27,6 +27,9 @@ export default function SectionHero() {
     >
       <BackgroundAnimation />
       <div className="max-w-4xl mx-auto text-center relative z-10 pt-20">
+        <div className="mb-4 animate-fade-in">
+          <p className="text-lg md:text-xl lg:text-2xl text-foreground/70 font-medium">Meet DONNA</p>
+        </div>
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-in">
           <span className="gradient-text">One AI. Every Industry.</span>
         </h1>
@@ -35,10 +38,10 @@ export default function SectionHero() {
         </p>
         <button
           onClick={handleCTAClick}
-          className="px-8 py-4 rounded-lg liquid-glass text-foreground hover:bg-white/20 transition-all duration-300 font-semibold text-lg refract-on-hover animate-slide-up"
+          className="px-8 py-4 rounded-lg animated-edge-button text-foreground hover:bg-white/20 transition-all duration-300 font-semibold text-lg refract-on-hover animate-slide-up relative z-10"
           style={{ animationDelay: "200ms" }}
         >
-          Join the Waitlist
+          <span className="relative z-10">Join the Waitlist</span>
         </button>
       </div>
     </section>

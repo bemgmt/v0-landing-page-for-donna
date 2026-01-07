@@ -6,8 +6,8 @@ import SectionHero from "@/components/section-hero"
 import SectionCapabilities from "@/components/section-capabilities"
 import SectionVerticals from "@/components/section-verticals"
 import SectionNetwork from "@/components/section-network"
-import SectionProof from "@/components/section-proof"
 import SectionCTA from "@/components/section-cta"
+import Footer from "@/components/footer"
 import Chatbot from "@/components/chatbot"
 import { generatePageMetadata } from '@/lib/metadata'
 import { softwareApplicationSchema, faqSchema } from '@/lib/schema-markup'
@@ -70,9 +70,9 @@ export default function Home() {
         <SectionCapabilities />
         <SectionVerticals />
         <SectionNetwork />
-        <SectionProof />
         <SectionCTA />
       </main>
+      <Footer />
       <Chatbot />
     </>
   )

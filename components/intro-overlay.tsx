@@ -130,7 +130,7 @@ export default function IntroOverlay() {
       <video
         id="introVideo"
         ref={videoRef}
-        className="introVideo w-full h-full object-cover"
+        className="introVideo w-full h-full object-contain md:object-cover"
         autoPlay
         muted
         playsInline

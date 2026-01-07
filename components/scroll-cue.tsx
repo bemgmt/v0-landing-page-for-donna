@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 
 export default function ScrollCue() {
   const [isVisible, setIsVisible] = useState(false)
+  const [shouldFade, setShouldFade] = useState(false)
   const [reducedMotion, setReducedMotion] = useState(false)
 
   useEffect(() => {
@@ -24,8 +25,20 @@ export default function ScrollCue() {
       setIsVisible(true)
     }
 
+    // Fade out when scrolling past header (64px)
+    const handleScroll = () => {
+      if (window.scrollY > 64) {
+        setShouldFade(true)
+      } else {
+        setShouldFade(false)
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll)
+
     return () => {
       window.removeEventListener("introComplete", handleIntroComplete)
+      window.removeEventListener("scroll", handleScroll)
     }
   }, [])
 
@@ -36,7 +49,7 @@ export default function ScrollCue() {
       id="scrollCue"
       className={`scrollCue fixed left-0 right-0 bottom-6 z-50 flex flex-col items-center gap-1.5 pointer-events-none ${
         isVisible ? "show" : ""
-      }`}
+      } ${shouldFade ? "fadeOut" : ""}`}
       aria-hidden="true"
     >
       <div
