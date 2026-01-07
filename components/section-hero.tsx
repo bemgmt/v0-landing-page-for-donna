@@ -3,7 +3,6 @@
 import { useEffect } from "react"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
-import BackgroundAnimation from "@/components/background-animation"
 
 export default function SectionHero() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
@@ -23,9 +22,8 @@ export default function SectionHero() {
   return (
     <section
       ref={ref}
-      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden"
+      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden"
     >
-      <BackgroundAnimation />
       <div className="max-w-4xl mx-auto text-center relative z-10 pt-20">
         <div className="mb-4 animate-fade-in">
           <p className="text-lg md:text-xl lg:text-2xl text-foreground/70 font-medium">Meet DONNA</p>

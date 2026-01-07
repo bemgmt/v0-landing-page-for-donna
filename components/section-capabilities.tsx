@@ -77,7 +77,7 @@ export default function SectionCapabilities() {
   return (
     <section
       ref={ref}
-      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-background relative"
+      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative"
     >
       <div className="max-w-7xl mx-auto w-full">
         <div className="text-center mb-8 animate-fade-in">
@@ -97,14 +97,14 @@ export default function SectionCapabilities() {
           {coreCapabilities.map((feature) => (
             <div
               key={feature.id}
-              className="hCard liquid-glass-card p-8 rounded-xl refract-on-hover flex-shrink-0"
+              className="hCard liquid-glass-card p-6 rounded-xl refract-on-hover flex-shrink-0 flex flex-col"
             >
-              <div className="mb-4">
-                <div className="text-5xl mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-bold text-foreground mb-2">{feature.title}</h3>
-                <p className="text-sm text-accent font-medium mb-3">{feature.subtitle}</p>
+              <div className="mb-3 flex-shrink-0">
+                <div className="text-4xl mb-3">{feature.icon}</div>
+                <h3 className="text-lg font-bold text-foreground mb-1.5 leading-tight">{feature.title}</h3>
+                <p className="text-xs text-accent font-medium mb-2">{feature.subtitle}</p>
               </div>
-              <p className="text-sm text-foreground/70 leading-relaxed">{feature.description}</p>
+              <p className="text-xs text-foreground/80 leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-6">{feature.description}</p>
             </div>
           ))}
         </div>

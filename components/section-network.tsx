@@ -41,7 +41,7 @@ export default function SectionNetwork() {
   return (
     <section
       ref={ref}
-      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-background"
+      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative"
     >
       <div className="max-w-7xl mx-auto w-full">
         <div className="text-center mb-8 animate-fade-in">
@@ -61,11 +61,11 @@ export default function SectionNetwork() {
           {networkUseCases.map((useCase, index) => (
             <div
               key={index}
-              className="hCard liquid-glass-card p-8 rounded-xl refract-on-hover flex-shrink-0"
+              className="hCard liquid-glass-card p-6 rounded-xl refract-on-hover flex-shrink-0 flex flex-col"
             >
-              <div className="text-5xl mb-4">{useCase.icon}</div>
-              <h4 className="text-xl font-bold mb-3 text-foreground">{useCase.title}</h4>
-              <p className="text-foreground/70 leading-relaxed">{useCase.description}</p>
+              <div className="text-4xl mb-3 flex-shrink-0">{useCase.icon}</div>
+              <h4 className="text-lg font-bold mb-2 text-foreground leading-tight flex-shrink-0">{useCase.title}</h4>
+              <p className="text-xs text-foreground/80 leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-6">{useCase.description}</p>
             </div>
           ))}
         </div>

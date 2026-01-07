@@ -53,7 +53,7 @@ export default function SectionVerticals() {
   return (
     <section
       ref={ref}
-      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-primary/5"
+      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative"
     >
       <div className="max-w-6xl mx-auto w-full">
         <div className="text-center mb-8 animate-fade-in">

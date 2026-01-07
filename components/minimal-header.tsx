@@ -17,7 +17,7 @@ export default function MinimalHeader() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
         isScrolled ? "liquid-glass border-b border-white/20" : "bg-transparent"
       }`}
     >

@@ -65,7 +65,8 @@ export default function Home() {
       <IntroOverlay />
       <ScrollCue />
       <MinimalHeader />
-      <main id="main-content" className="snap bg-background">
+      <div className="fixed-background" />
+      <main id="main-content" className="snap relative z-10">
         <SectionHero />
         <SectionCapabilities />
         <SectionVerticals />

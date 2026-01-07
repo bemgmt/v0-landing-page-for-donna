@@ -84,7 +84,7 @@ export default function SectionCTA() {
     <section
       id="section-cta"
       ref={ref}
-      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-background"
+      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative"
     >
       <div ref={formRef} className="max-w-2xl mx-auto w-full">
         <div className="liquid-glass-card p-8 rounded-xl text-center">

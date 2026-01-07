@@ -155,12 +155,12 @@
   }
 
   .liquid-glass-card {
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 
-      0 8px 32px rgba(0, 0, 0, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.25),
+      0 8px 32px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
       0 0 0 1px rgba(255, 255, 255, 0.05) inset;
   }
 
@@ -360,12 +360,37 @@
     }
   }
 
+  /* Fixed background image */
+  .fixed-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-image: url('/DONNA-blk.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    z-index: 0;
+    will-change: transform;
+  }
+
+  /* Parallax effect - content appears to pull up */
+  @media (prefers-reduced-motion: no-preference) {
+    main.snap {
+      transform: translateZ(0);
+    }
+  }
+
   /* Vertical scroll snap container */
   main.snap {
     height: 100svh;
     overflow-y: auto;
     scroll-snap-type: y mandatory;
     scroll-behavior: smooth;
+    position: relative;
+    z-index: 1;
   }
 
   section.snapSection {
@@ -374,6 +399,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background: transparent;
+    position: relative;
+    z-index: 1;
   }
 
   /* Horizontal swipe rail */
@@ -397,15 +425,26 @@
     border-radius: 20px;
     height: auto;
     min-height: 500px; /* Make cards taller */
+    max-height: 500px; /* Constrain height */
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
 
   @media (min-width: 900px) {
     .hCard {
       min-width: calc((100vw - 2rem) / 3 - 10px); /* Show 3 cards on desktop (accounting for padding and gap) */
       min-height: 600px; /* Taller on desktop */
+      max-height: 600px; /* Constrain height */
     }
+  }
+
+  /* Line clamp utilities */
+  .line-clamp-6 {
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   /* Morphing animations for liquid glass */
