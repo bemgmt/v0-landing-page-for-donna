@@ -6,7 +6,6 @@ import { track } from "@vercel/analytics"
 export default function IntroOverlay() {
   const [isVisible, setIsVisible] = useState(true)
   const [shouldShow, setShouldShow] = useState(false)
-  const [showEnterButton, setShowEnterButton] = useState(false)
   const isSkippedRef = useRef(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -87,12 +86,8 @@ export default function IntroOverlay() {
     setVideoSource()
 
     const handleEnded = () => {
-      // Show enter button when video ends (if not skipped)
-      if (!isSkippedRef.current) {
-        setShowEnterButton(true)
-      } else {
-        finishIntro("ended")
-      }
+      // Automatically finish intro when video ends
+      finishIntro("ended")
     }
 
     const handleError = () => {
@@ -119,7 +114,6 @@ export default function IntroOverlay() {
     if (!isVisible) return
     
     setIsVisible(false)
-    setShowEnterButton(false)
     
     // Track analytics
     if (reason === "ended") {
@@ -137,12 +131,7 @@ export default function IntroOverlay() {
 
   const handleSkip = () => {
     isSkippedRef.current = true
-    setShowEnterButton(false)
     finishIntro("skipped")
-  }
-
-  const handleEnterSite = () => {
-    finishIntro("ended")
   }
 
   if (!shouldShow) return null
@@ -178,15 +167,6 @@ export default function IntroOverlay() {
         <source src="/intro/donna_intro_720p.mp4" type="video/mp4" />
       </video>
 
-      {showEnterButton && !isSkippedRef.current && (
-        <button
-          onClick={handleEnterSite}
-          className="enter-site absolute bottom-8 z-[2] bg-accent text-accent-foreground px-8 py-4 rounded-full text-lg font-semibold hover:bg-accent/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent/50 shadow-lg hover:shadow-xl hover:scale-105 animate-fade-in"
-          aria-label="Enter site"
-        >
-          Enter Site
-        </button>
-      )}
     </div>
   )
 }

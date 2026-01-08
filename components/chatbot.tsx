@@ -25,19 +25,55 @@ export default function Chatbot() {
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [pageReadyTime, setPageReadyTime] = useState<number | null>(null)
 
-  // Show prompt after a delay if chatbot hasn't been opened
+  // Track when page is ready (after intro completes or immediately if no intro)
   useEffect(() => {
-    if (!isOpen) {
+    // Check if intro was already skipped/not shown
+    const checkIntroStatus = () => {
+      const introOverlay = document.getElementById("introOverlay")
+      if (!introOverlay || introOverlay.classList.contains("fadeOut")) {
+        // Intro already done or not showing
+        setPageReadyTime(Date.now())
+      }
+    }
+    
+    // Check immediately
+    checkIntroStatus()
+    
+    // Listen for intro completion
+    const handleIntroComplete = () => {
+      setPageReadyTime(Date.now())
+    }
+    
+    window.addEventListener("introComplete", handleIntroComplete)
+    
+    // Also check after a short delay in case intro completes quickly
+    const checkTimer = setTimeout(() => {
+      checkIntroStatus()
+    }, 1000)
+    
+    return () => {
+      window.removeEventListener("introComplete", handleIntroComplete)
+      clearTimeout(checkTimer)
+    }
+  }, [])
+
+  // Show prompt after 30 seconds of being on the page (after intro completes)
+  useEffect(() => {
+    if (!isOpen && pageReadyTime !== null) {
+      const timeSinceReady = Date.now() - pageReadyTime
+      const remainingTime = Math.max(0, 30000 - timeSinceReady)
+      
       const timer = setTimeout(() => {
         setShowPrompt(true)
-      }, 5000) // Show after 5 seconds
+      }, remainingTime)
 
       return () => clearTimeout(timer)
     } else {
       setShowPrompt(false)
     }
-  }, [isOpen])
+  }, [isOpen, pageReadyTime])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -122,14 +158,10 @@ export default function Chatbot() {
               setIsOpen(true)
               setShowPrompt(false)
             }}
-            className="w-14 h-14 rounded-full bg-accent flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 relative animate-chatbot-pulse group"
+            className="w-14 h-14 rounded-full animated-edge-button flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 relative"
             aria-label="Open chat"
           >
-            {/* Pulsing ring effect */}
-            <div className="absolute inset-0 rounded-full bg-accent opacity-75 animate-ping"></div>
-            <div className="absolute inset-0 rounded-full bg-accent opacity-50 animate-ping" style={{ animationDelay: '0.5s' }}></div>
-            
-            <MessageCircle className="w-6 h-6 text-white relative z-10 drop-shadow-lg group-hover:scale-110 transition-transform" />
+            <MessageCircle className="w-6 h-6 text-white relative z-10 drop-shadow-lg" />
           </button>
         </div>
       )}
