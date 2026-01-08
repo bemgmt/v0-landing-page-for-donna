@@ -105,7 +105,6 @@ export async function POST(request: NextRequest) {
       html: `
         <h2>Thank you, ${name}!</h2>
         <p>We've received your ${type === "waitlist" ? "waitlist signup" : "demo request"}. Our team will be in touch within 24 hours.</p>
-        <p>In the meantime, feel free to check out our documentation at <a href="#">docs.donna.ai</a></p>
         <p>Best regards,<br>The DONNA Team</p>
       `,
     }

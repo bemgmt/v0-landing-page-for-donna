@@ -5,6 +5,7 @@ import ScrollbarFade from "@/components/scrollbar-fade"
 import MinimalHeader from "@/components/minimal-header"
 import SectionHero from "@/components/section-hero"
 import SectionCapabilities from "@/components/section-capabilities"
+import SectionTools from "@/components/section-tools"
 import SectionVerticals from "@/components/section-verticals"
 import SectionNetwork from "@/components/section-network"
 import SectionCTA from "@/components/section-cta"
@@ -29,9 +30,9 @@ export default function Home() {
         description: 'Digital Operations Neural Network Assistant - Agentic AI operations platform',
         features: [
           'Agentic AI Operations',
-          'Multi-Modal Communication',
+          'Multi Modal Communication',
           'Tool Control & Automation',
-          'DONNA-to-DONNA Network',
+          'DONNA to DONNA Network',
           'Sales & Lead Management',
           'Marketing Operations',
           'Secretary & Office Operations',
@@ -71,6 +72,7 @@ export default function Home() {
       <main id="main-content" className="snap relative z-10">
         <SectionHero />
         <SectionCapabilities />
+        <SectionTools />
         <SectionVerticals />
         <SectionNetwork />
         <SectionCTA />

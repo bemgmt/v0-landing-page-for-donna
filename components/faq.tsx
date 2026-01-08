@@ -11,9 +11,9 @@ const faqs = [
       "DONNA (Digital Operations Neural Network Assistant) is an agentic, multi-modal AI operations platform that functions as a digital employee layer. Unlike chatbots or CRMs, DONNA controls tools, coordinates workflows, and connects with other DONNAs across networks to handle communication, sales, marketing, and operations 24/7.",
   },
   {
-    question: "What is the DONNA-to-DONNA Network?",
+    question: "What is the DONNA to DONNA Network?",
     answer:
-      "The DONNA-to-DONNA Network is a secure, permissioned AI-to-AI communication layer that allows DONNAs to discover one another, exchange structured requests, share outcomes, and coordinate actions across organizations. This enables B2B automation, cross-promotion, vendor coordination, and more—all without manual handoffs.",
+      "The DONNA to DONNA Network is a secure, permissioned AI to AI communication layer that allows DONNAs to discover one another, exchange structured requests, share outcomes, and coordinate actions across organizations. This enables B2B automation, cross-promotion, vendor coordination, and more—all without manual handoffs.",
   },
   {
     question: "How does DONNA control tools vs. just suggesting actions?",
@@ -28,7 +28,7 @@ const faqs = [
   {
     question: "Can DONNA work across multiple departments?",
     answer:
-      "Yes! DONNA is role-fluid, meaning it can dynamically shift between roles—sales, marketing, operations, secretary—without retraining. You can deploy multiple DONNAs for different departments, or one DONNA that handles multiple functions. DONNAs can also coordinate with each other across departments.",
+      "Yes! DONNA is role fluid, meaning it can dynamically shift between roles—sales, marketing, operations, secretary—without retraining. You can deploy multiple DONNAs for different departments, or one DONNA that handles multiple functions. DONNAs can also coordinate with each other across departments.",
   },
   {
     question: "How does DONNA ensure safety and prevent abuse?",
