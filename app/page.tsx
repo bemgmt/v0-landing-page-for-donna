@@ -30,9 +30,9 @@ export default function Home() {
         description: 'Digital Operations Neural Network Assistant - Agentic AI operations platform',
         features: [
           'Agentic AI Operations',
-          'Multi Modal Communication',
+          'Multi-Modal Communication',
           'Tool Control & Automation',
-          'DONNA to DONNA Network',
+          'DONNA-to-DONNA Network',
           'Sales & Lead Management',
           'Marketing Operations',
           'Secretary & Office Operations',

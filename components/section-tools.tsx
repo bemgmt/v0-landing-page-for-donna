@@ -105,7 +105,7 @@ const donnaTools: ToolCard[] = [
     title: "Analytics",
     description: (
       <>
-        DONNA doesn't just show you data—it analyzes patterns, identifies
+        DONNA doesn't just show you data. It analyzes patterns, identifies
         <br />
         opportunities, and recommends actions. It connects insights across all
         <br />
@@ -123,7 +123,7 @@ const donnaTools: ToolCard[] = [
         <br />
         questions, accesses your knowledge base, controls your tools, and completes
         <br />
-        tasks—not just answering FAQs but actually helping customers.
+        tasks. It's not just answering FAQs but actually helping customers.
       </>
     ),
   },

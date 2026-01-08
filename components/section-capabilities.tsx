@@ -34,7 +34,7 @@ const coreCapabilities: FeatureCard[] = [
   {
     id: "human-loop",
     icon: Users,
-    title: "Human in the Loop by Design",
+    title: "Human-in-the-Loop by Design",
     subtitle: "Automation that knows when to escalate",
     description: (
       <>
@@ -42,20 +42,20 @@ const coreCapabilities: FeatureCard[] = [
         <br />
         when to hand off to humans. Review, approve, or step in
         <br />
-        with one click—you stay in control.
+        with one click. You stay in control.
       </>
     ),
   },
   {
     id: "role-fluid",
     icon: Layers,
-    title: "Role Fluid AI Floater",
+    title: "Role-Fluid AI Floater",
     subtitle: "One AI, multiple roles",
     description: (
       <>
-        DONNA dynamically shifts between roles—sales, marketing,
+        DONNA dynamically shifts between roles, sales, marketing,
         <br />
-        operations, secretary—without retraining. One digital employee
+        operations, secretary, without retraining. One digital employee
         <br />
         that adapts to your needs.
       </>
@@ -64,11 +64,11 @@ const coreCapabilities: FeatureCard[] = [
   {
     id: "tool-native",
     icon: Wrench,
-    title: "Tool Native Control",
+    title: "Tool-Native Control",
     subtitle: "Controls tools, not just suggests",
     description: (
       <>
-        DONNA doesn't just recommend actions—it controls your tools.
+        DONNA doesn't just recommend actions. It controls your tools.
         <br />
         Sends emails, creates documents, launches campaigns, and triggers
         <br />
@@ -79,13 +79,13 @@ const coreCapabilities: FeatureCard[] = [
   {
     id: "network-aware",
     icon: Network,
-    title: "Network Aware",
+    title: "Network-Aware",
     subtitle: "Connects with other DONNAs",
     description: (
       <>
         DONNA understands and communicates with other DONNAs across
         <br />
-        teams, locations, or businesses. Secure, permissioned AI to AI
+        teams, locations, or businesses. Secure, permissioned AI-to-AI
         <br />
         coordination.
       </>
@@ -94,7 +94,7 @@ const coreCapabilities: FeatureCard[] = [
   {
     id: "multi-modal",
     icon: MessageSquare,
-    title: "Multi Modal Communication",
+    title: "Multi-Modal Communication",
     subtitle: "Voice, email, SMS, chat, and more",
     description: (
       <>
@@ -102,7 +102,7 @@ const coreCapabilities: FeatureCard[] = [
         <br />
         transcription, intelligent email handling, SMS, web chat, and live
         <br />
-        dashboards—all in one system.
+        dashboards, all in one system.
       </>
     ),
   },

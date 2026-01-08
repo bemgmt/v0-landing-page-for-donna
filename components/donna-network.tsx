@@ -4,7 +4,7 @@ import { useInView } from "react-intersection-observer"
 
 const networkUseCases = [
   {
-    title: "Business to Business Automation",
+    title: "Business-to-Business Automation",
     description: "Schedule meetings, confirm contracts, and share status updates between companies without manual emails or phone calls.",
     icon: "🤝",
   },
@@ -52,7 +52,7 @@ export default function DonnaNetwork() {
             Works Alone. Works Together. <span className="gradient-text">Grows With You.</span>
           </h2>
           <p className="text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto mb-6">
-            DONNA works as a digital employee inside your business — answering calls, handling emails, booking appointments, and following up automatically.
+            DONNA works as a digital employee inside your business, answering calls, handling emails, booking appointments, and following up automatically.
           </p>
           <p className="text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto mb-8">
             As your business grows, DONNA can also securely coordinate with other DONNAs across teams, locations, or businesses. This reduces manual handoffs, expands your network, eliminates duplicated work, and keeps everything moving without slowing your team down.
@@ -62,10 +62,10 @@ export default function DonnaNetwork() {
         {/* Section header */}
         <div className="text-center mb-16 animate-fade-in">
           <h3 className="text-2xl md:text-3xl font-bold mb-4">
-            The <span className="gradient-text">DONNA to DONNA Network</span>
+            The <span className="gradient-text">DONNA-to-DONNA Network</span>
           </h3>
           <p className="text-foreground/60 max-w-3xl mx-auto text-lg">
-            A critical differentiator: DONNAs communicate, coordinate, and collaborate with each other—transforming individual AI assistants into a connected network of intelligence.
+            A critical differentiator: DONNAs communicate, coordinate, and collaborate with each other, transforming individual AI assistants into a connected network of intelligence.
           </p>
         </div>
 
@@ -73,10 +73,10 @@ export default function DonnaNetwork() {
         <div className="glass-card p-8 rounded-xl mb-12 animate-slide-up">
           <h3 className="text-2xl font-bold mb-4 text-foreground">What is the Network?</h3>
           <p className="text-foreground/80 leading-relaxed mb-4">
-            The DONNA to DONNA Network is a secure, permissioned AI to AI communication layer that allows DONNAs to discover one another, exchange structured requests, share outcomes, and coordinate actions across organizations.
+            The DONNA-to-DONNA Network is a secure, permissioned AI-to-AI communication layer that allows DONNAs to discover one another, exchange structured requests, share outcomes, and coordinate actions across organizations.
           </p>
           <p className="text-foreground/80 leading-relaxed">
-            This transforms DONNA from a tool into a <strong className="text-foreground">marketplace of intelligence and execution</strong>—where work moves faster than humans can coordinate it.
+            This transforms DONNA from a tool into a <strong className="text-foreground">marketplace of intelligence and execution</strong>, where work moves faster than humans can coordinate it.
           </p>
         </div>
 
@@ -118,13 +118,13 @@ export default function DonnaNetwork() {
         {/* Future Vision */}
         <div className="mt-12 text-center animate-fade-in">
           <p className="text-foreground/60 italic max-w-2xl mx-auto mb-6">
-            Coming soon: The DONNA Marketplace—where organizations can offer specialized services, subscribe to industry-specific DONNAs, and license vertical intelligence.
+            Coming soon: The DONNA Marketplace, where organizations can offer specialized services, subscribe to industry-specific DONNAs, and license vertical intelligence.
           </p>
           <p className="text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto mb-6">
             You get more time back, faster responses, and the ability to scale without hiring.
           </p>
           <p className="text-sm text-foreground/50 italic">
-            Advanced DONNA to DONNA coordination is available on higher plans.{" "}
+            Advanced DONNA-to-DONNA coordination is available on higher plans.{" "}
             <a 
               href="#pricing" 
               className="text-accent hover:text-accent/80 transition-colors underline underline-offset-4"

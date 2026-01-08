@@ -476,8 +476,8 @@
     scroll-snap-align: start;
     border-radius: 20px;
     height: auto;
-    min-height: 500px; /* Make cards taller */
-    max-height: 500px; /* Constrain height */
+    min-height: 250px; /* Reduced height */
+    max-height: 250px; /* Constrain height */
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -486,8 +486,8 @@
   @media (min-width: 900px) {
     .hCard {
       min-width: calc((100vw - 2rem) / 3 - 10px); /* Show 3 cards on desktop (accounting for padding and gap) */
-      min-height: 600px; /* Taller on desktop */
-      max-height: 600px; /* Constrain height */
+      min-height: 300px; /* Reduced height on desktop */
+      max-height: 300px; /* Constrain height */
     }
   }
 
