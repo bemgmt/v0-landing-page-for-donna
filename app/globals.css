@@ -3,6 +3,32 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* CSS Reset and Isolation - Prevent parent domain styles from affecting the page */
+/* This is critical when the site is accessed from bemdonna.com */
+html {
+  /* Reset common inherited properties that might come from parent domain */
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  /* Prevent text size adjustments from parent */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* CSS Isolation */
+  isolation: isolate;
+  /* Ensure proper rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 :root {
   /* Updated design tokens for DONNA futuristic theme */
   --background: oklch(0.08 0 0); /* Ink background */
@@ -117,11 +143,50 @@
 }
 
 @layer base {
+  /* CSS Isolation - Prevent parent domain styles from affecting the page */
+  html {
+    box-sizing: border-box;
+    font-family: var(--font-sans);
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    /* Reset common inherited properties */
+    font-size: 16px;
+    line-height: 1.5;
+    color: inherit;
+  }
+  
+  html *,
+  html *::before,
+  html *::after {
+    box-sizing: border-box;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
+  
   body {
     @apply bg-background text-foreground;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Prevent parent styles from affecting layout */
+    position: relative;
+    overflow-x: hidden;
+    /* Reset any inherited transforms, filters, or other properties */
+    transform: none;
+    filter: none;
+    opacity: 1;
+    /* Ensure proper text rendering */
+    text-rendering: optimizeLegibility;
   }
 }
 
@@ -420,12 +485,22 @@
   html {
     overflow: hidden;
     height: 100%;
+    width: 100%;
+    /* Ensure isolation from parent styles */
+    isolation: isolate;
   }
 
   body {
     overflow: hidden;
     height: 100%;
+    width: 100%;
     margin: 0;
+    padding: 0;
+    /* Ensure isolation from parent styles */
+    isolation: isolate;
+    /* Reset any inherited transforms or positioning */
+    position: relative;
+    transform: none;
   }
 
   main.snap {
