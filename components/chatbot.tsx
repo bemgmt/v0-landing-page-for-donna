@@ -13,6 +13,7 @@ interface Message {
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false)
+  const [showPrompt, setShowPrompt] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
@@ -24,6 +25,19 @@ export default function Chatbot() {
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // Show prompt after a delay if chatbot hasn't been opened
+  useEffect(() => {
+    if (!isOpen) {
+      const timer = setTimeout(() => {
+        setShowPrompt(true)
+      }, 5000) // Show after 5 seconds
+
+      return () => clearTimeout(timer)
+    } else {
+      setShowPrompt(false)
+    }
+  }, [isOpen])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -92,14 +106,32 @@ export default function Chatbot() {
     <>
       {/* Floating Chat Button */}
       {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 w-14 h-14 rounded-full animated-edge-button flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 relative"
-          aria-label="Open chat"
-          style={{ zIndex: 9999, position: 'fixed' }}
-        >
-          <MessageCircle className="w-6 h-6 text-white relative z-10 drop-shadow-lg" />
-        </button>
+        <div className="fixed bottom-6 right-6 z-[9999]" style={{ position: 'fixed' }}>
+          {/* Attention-grabbing notification */}
+          {showPrompt && (
+            <div className="absolute bottom-full right-0 mb-3 animate-slide-down-bounce">
+              <div className="bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm font-semibold shadow-lg whitespace-nowrap relative">
+                <div className="absolute -bottom-1 right-6 w-2 h-2 bg-accent rotate-45"></div>
+                Ask me anything!
+              </div>
+            </div>
+          )}
+          
+          <button
+            onClick={() => {
+              setIsOpen(true)
+              setShowPrompt(false)
+            }}
+            className="w-14 h-14 rounded-full bg-accent flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 relative animate-chatbot-pulse group"
+            aria-label="Open chat"
+          >
+            {/* Pulsing ring effect */}
+            <div className="absolute inset-0 rounded-full bg-accent opacity-75 animate-ping"></div>
+            <div className="absolute inset-0 rounded-full bg-accent opacity-50 animate-ping" style={{ animationDelay: '0.5s' }}></div>
+            
+            <MessageCircle className="w-6 h-6 text-white relative z-10 drop-shadow-lg group-hover:scale-110 transition-transform" />
+          </button>
+        </div>
       )}
 
       {/* Chat Window */}

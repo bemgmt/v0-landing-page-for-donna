@@ -6,18 +6,44 @@ import { track } from "@vercel/analytics"
 export default function IntroOverlay() {
   const [isVisible, setIsVisible] = useState(true)
   const [shouldShow, setShouldShow] = useState(false)
+  const [showEnterButton, setShowEnterButton] = useState(false)
+  const isSkippedRef = useRef(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
+
+  // Check connection quality
+  const checkConnectionQuality = (): boolean => {
+    // Check if navigator.connection is available (Chrome/Edge)
+    if ('connection' in navigator) {
+      const conn = (navigator as any).connection
+      const effectiveType = conn?.effectiveType
+      // Skip if connection is slow (2g or slow-2g)
+      if (effectiveType === 'slow-2g' || effectiveType === '2g') {
+        return false
+      }
+      // Skip if saveData is enabled
+      if (conn?.saveData) {
+        return false
+      }
+    }
+    
+    // Check if navigator is online
+    if (!navigator.onLine) {
+      return false
+    }
+    
+    return true
+  }
 
   useEffect(() => {
     // Check for reduced motion preference
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     
-    // Check localStorage for intro seen
-    const introSeen = localStorage.getItem("donnaIntroSeen") === "1"
+    // Check connection quality
+    const hasGoodConnection = checkConnectionQuality()
     
-    if (reducedMotion || introSeen) {
-      // Skip intro if reduced motion or already seen
+    if (reducedMotion || !hasGoodConnection) {
+      // Skip intro if reduced motion or bad connection
       setIsVisible(false)
       setShouldShow(false)
       // Trigger scroll cue to show
@@ -26,7 +52,7 @@ export default function IntroOverlay() {
       return
     }
 
-    // Show intro
+    // Show intro on every visit (unless reduced motion or bad connection)
     setShouldShow(true)
     const video = videoRef.current
     if (!video) return
@@ -61,7 +87,12 @@ export default function IntroOverlay() {
     setVideoSource()
 
     const handleEnded = () => {
-      finishIntro("ended")
+      // Show enter button when video ends (if not skipped)
+      if (!isSkippedRef.current) {
+        setShowEnterButton(true)
+      } else {
+        finishIntro("ended")
+      }
     }
 
     const handleError = () => {
@@ -88,7 +119,7 @@ export default function IntroOverlay() {
     if (!isVisible) return
     
     setIsVisible(false)
-    localStorage.setItem("donnaIntroSeen", "1")
+    setShowEnterButton(false)
     
     // Track analytics
     if (reason === "ended") {
@@ -105,7 +136,13 @@ export default function IntroOverlay() {
   }
 
   const handleSkip = () => {
+    isSkippedRef.current = true
+    setShowEnterButton(false)
     finishIntro("skipped")
+  }
+
+  const handleEnterSite = () => {
+    finishIntro("ended")
   }
 
   if (!shouldShow) return null
@@ -140,6 +177,16 @@ export default function IntroOverlay() {
         <source src="/intro/donna_intro_480p.mp4" type="video/mp4" data-media="(max-width: 600px)" />
         <source src="/intro/donna_intro_720p.mp4" type="video/mp4" />
       </video>
+
+      {showEnterButton && !isSkippedRef.current && (
+        <button
+          onClick={handleEnterSite}
+          className="enter-site absolute bottom-8 z-[2] bg-accent text-accent-foreground px-8 py-4 rounded-full text-lg font-semibold hover:bg-accent/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent/50 shadow-lg hover:shadow-xl hover:scale-105 animate-fade-in"
+          aria-label="Enter site"
+        >
+          Enter Site
+        </button>
+      )}
     </div>
   )
 }
