@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
 import ScrollDots from "@/components/scroll-dots"
+import NetworkVisualization from "@/components/network-visualization"
 
 const networkUseCases = [
   {
@@ -44,18 +45,23 @@ export default function SectionNetwork() {
       className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative"
     >
       <div className="max-w-7xl mx-auto w-full">
-        <div className="text-center mb-8 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+        <div className="text-center mb-12 animate-fade-in">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
             The <span className="gradient-text">DONNA-to-DONNA Network</span>
           </h2>
-          <p className="text-foreground/60 max-w-3xl mx-auto text-lg mb-6">
+          <p className="text-foreground/60 max-w-3xl mx-auto text-lg mb-8">
             DONNA works as a digital employee inside your business. As you grow, DONNAs securely coordinate with other DONNAs across teams, locations, or businesses—reducing manual handoffs and expanding your network.
           </p>
+          
+          {/* Network Visualization */}
+          <div className="mb-12 flex justify-center">
+            <NetworkVisualization size={320} className="max-w-xs md:max-w-sm" />
+          </div>
         </div>
 
         <div
           ref={railRef}
-          className="hRail flex gap-3.5 overflow-x-auto pb-4 -mx-4 px-4"
+          className="hRail flex gap-4 overflow-x-auto pb-4 -mx-4 px-4"
           style={{ scrollSnapType: "x mandatory" }}
         >
           {networkUseCases.map((useCase, index) => (
@@ -63,8 +69,8 @@ export default function SectionNetwork() {
               key={index}
               className="hCard liquid-glass-card p-6 rounded-xl refract-on-hover flex-shrink-0 flex flex-col"
             >
-              <div className="text-4xl mb-3 flex-shrink-0">{useCase.icon}</div>
-              <h4 className="text-lg font-bold mb-2 text-foreground leading-tight flex-shrink-0">{useCase.title}</h4>
+              <div className="text-4xl mb-4 flex-shrink-0">{useCase.icon}</div>
+              <h4 className="text-lg font-bold mb-3 text-foreground leading-tight flex-shrink-0">{useCase.title}</h4>
               <p className="text-xs text-foreground/80 leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-6">{useCase.description}</p>
             </div>
           ))}

@@ -651,6 +651,21 @@
     animation: glowPulse 2s ease-in-out infinite;
   }
 
+  /* Pulse animation for network lines */
+  @keyframes pulse-line {
+    0%,
+    100% {
+      stroke-opacity: 0.4;
+    }
+    50% {
+      stroke-opacity: 0.7;
+    }
+  }
+
+  .animate-pulse-line {
+    animation: pulse-line 3s ease-in-out infinite;
+  }
+
   /* Clear icon effect */
   .clear-icon {
     background: rgba(255, 255, 255, 0.05);
