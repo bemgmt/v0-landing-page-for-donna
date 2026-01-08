@@ -87,11 +87,11 @@ export default function SectionCTA() {
       className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative"
     >
       <div ref={formRef} className="max-w-2xl mx-auto w-full">
-        <div className="liquid-glass-card p-8 rounded-xl text-center">
-          <h2 className="text-3xl font-bold mb-2 gradient-text">
+        <div className="liquid-glass-card p-4 sm:p-6 md:p-8 rounded-xl text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2 gradient-text">
             {formData.type === "waitlist" ? "Join the Waitlist" : "Request a Demo"}
           </h2>
-          <p className="text-foreground/70 mb-6">
+          <p className="text-sm sm:text-base text-foreground/70 mb-4 sm:mb-6">
             {formData.type === "waitlist"
               ? "Be among the first to experience DONNA"
               : "See DONNA in action with a personalized demo"}
@@ -103,9 +103,9 @@ export default function SectionCTA() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
             {/* Waitlist vs Demo toggle */}
-            <div className="flex gap-3 mb-6 justify-center">
+            <div className="flex gap-2 sm:gap-3 mb-4 sm:mb-6 justify-center">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
@@ -130,7 +130,7 @@ export default function SectionCTA() {
               </label>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               <input
                 type="text"
                 name="name"
@@ -138,7 +138,7 @@ export default function SectionCTA() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:border-accent/50 focus:outline-none transition-colors"
+                className="px-3 sm:px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:border-accent/50 focus:outline-none transition-colors text-sm sm:text-base"
               />
               <input
                 type="email"
@@ -147,11 +147,11 @@ export default function SectionCTA() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:border-accent/50 focus:outline-none transition-colors"
+                className="px-3 sm:px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:border-accent/50 focus:outline-none transition-colors text-sm sm:text-base"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               <input
                 type="text"
                 name="company"
@@ -166,7 +166,7 @@ export default function SectionCTA() {
                 value={formData.role}
                 onChange={handleChange}
                 required
-                className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:border-accent/50 focus:outline-none transition-colors [&>option]:bg-background [&>option]:text-foreground"
+                className="px-3 sm:px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:border-accent/50 focus:outline-none transition-colors text-sm sm:text-base [&>option]:bg-background [&>option]:text-foreground"
               >
                 <option value="">Select Your Role</option>
                 <option value="founder">Founder / CEO</option>
@@ -183,13 +183,13 @@ export default function SectionCTA() {
               value={formData.useCase}
               onChange={handleChange}
               rows={3}
-              className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:border-accent/50 focus:outline-none transition-colors resize-none"
+              className="w-full px-3 sm:px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:border-accent/50 focus:outline-none transition-colors resize-none text-sm sm:text-base"
             />
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full px-6 py-3 rounded-lg bg-accent text-background hover:bg-accent/90 disabled:opacity-50 transition-all font-semibold glow-accent hover:shadow-[0_0_30px_rgba(132,204,255,0.5)]"
+              className="w-full px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg bg-accent text-background hover:bg-accent/90 disabled:opacity-50 transition-all font-semibold text-sm sm:text-base glow-accent hover:shadow-[0_0_30px_rgba(132,204,255,0.5)]"
             >
               {isSubmitting ? "Submitting..." : formData.type === "waitlist" ? "Join Waitlist" : "Request Demo"}
             </button>

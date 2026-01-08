@@ -459,12 +459,18 @@
   /* Horizontal swipe rail */
   .hRail {
     display: flex;
-    gap: 14px;
+    gap: 12px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  @media (min-width: 640px) {
+    .hRail {
+      gap: 14px;
+    }
   }
 
   .hRail::-webkit-scrollbar {

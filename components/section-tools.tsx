@@ -146,11 +146,11 @@ export default function SectionTools() {
       className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative"
     >
       <div className="max-w-7xl mx-auto w-full">
-        <div className="text-center mb-12 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+        <div className="text-center mb-8 sm:mb-12 animate-fade-in">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
             <span className="gradient-text">DONNA's Tools</span>
           </h2>
-          <p className="text-foreground/60 max-w-2xl mx-auto mb-8">
+          <p className="text-sm sm:text-base text-foreground/60 max-w-2xl mx-auto mb-6 sm:mb-8 px-2">
             How DONNA handles your business operations differently
           </p>
         </div>
@@ -165,7 +165,7 @@ export default function SectionTools() {
             return (
               <div
                 key={tool.id}
-                className="hCard liquid-glass-card p-6 rounded-xl refract-on-hover flex-shrink-0 flex flex-col group"
+                className="hCard liquid-glass-card p-4 sm:p-6 rounded-xl refract-on-hover flex-shrink-0 flex flex-col group"
               >
                 <div className="mb-4 flex-shrink-0">
                   <div className="mb-4 flex items-center">

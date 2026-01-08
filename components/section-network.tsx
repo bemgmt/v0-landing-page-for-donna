@@ -68,11 +68,11 @@ export default function SectionNetwork() {
       className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative"
     >
       <div className="max-w-7xl mx-auto w-full">
-        <div className="text-center mb-12 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+        <div className="text-center mb-8 sm:mb-12 animate-fade-in">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
             The <span className="gradient-text">DONNA-to-DONNA Network</span>
           </h2>
-          <p className="text-foreground/60 max-w-3xl mx-auto text-lg mb-8">
+          <p className="text-sm sm:text-base md:text-lg text-foreground/60 max-w-3xl mx-auto mb-6 sm:mb-8 px-2">
             DONNA works as a digital employee inside your business. As you grow, DONNAs securely coordinate with other DONNAs across teams, locations, or businesses, reducing manual handoffs and expanding your network.
           </p>
         </div>
@@ -85,7 +85,7 @@ export default function SectionNetwork() {
           {networkUseCases.map((useCase, index) => (
             <div
               key={index}
-              className="hCard liquid-glass-card p-6 rounded-xl refract-on-hover flex-shrink-0 flex flex-col"
+              className="hCard liquid-glass-card p-4 sm:p-6 rounded-xl refract-on-hover flex-shrink-0 flex flex-col"
             >
               <div className="text-4xl mb-4 flex-shrink-0">{useCase.icon}</div>
               <h4 className="text-lg font-bold mb-3 text-foreground leading-tight flex-shrink-0">{useCase.title}</h4>

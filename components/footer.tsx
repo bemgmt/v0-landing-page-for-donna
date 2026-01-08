@@ -7,12 +7,12 @@ export default function Footer() {
 
   return (
     <footer className="snapSection liquid-glass border-t border-white/10 relative z-20 bg-background/95 backdrop-blur-sm min-h-screen flex items-center">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
           {/* SEO/AEO Optimized Content */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground mb-4">About DONNA</h3>
-            <p className="text-sm text-foreground/70 leading-relaxed">
+          <div className="space-y-3 sm:space-y-4">
+            <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">About DONNA</h3>
+            <p className="text-xs sm:text-sm text-foreground/70 leading-relaxed">
               DONNA (Digital Operations Neural Network Assistant) is an advanced AI operations platform 
               that functions as your digital employee layer. Our agentic AI technology enables businesses 
               to automate communication, sales, marketing, and operations workflows 24/7. With multi-modal 
@@ -23,14 +23,14 @@ export default function Footer() {
           </div>
 
           {/* Social Links */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Connect With Us</h3>
-            <div className="flex flex-wrap gap-4">
+          <div className="space-y-3 sm:space-y-4">
+            <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">Connect With Us</h3>
+            <div className="flex flex-wrap gap-2 sm:gap-4">
               <Link
                 href="https://www.linkedin.com/company/donna-ai"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-foreground/70 hover:text-accent transition-colors liquid-glass-clear px-4 py-2 rounded-lg"
+                className="flex items-center gap-2 text-xs sm:text-sm text-foreground/70 hover:text-accent transition-colors liquid-glass-clear px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg"
                 aria-label="LinkedIn"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -42,7 +42,7 @@ export default function Footer() {
                 href="https://www.youtube.com/@donna-ai"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-foreground/70 hover:text-accent transition-colors liquid-glass-clear px-4 py-2 rounded-lg"
+                className="flex items-center gap-2 text-xs sm:text-sm text-foreground/70 hover:text-accent transition-colors liquid-glass-clear px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg"
                 aria-label="YouTube"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -54,7 +54,7 @@ export default function Footer() {
                 href="https://www.tiktok.com/@donna.ai"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-foreground/70 hover:text-accent transition-colors liquid-glass-clear px-4 py-2 rounded-lg"
+                className="flex items-center gap-2 text-xs sm:text-sm text-foreground/70 hover:text-accent transition-colors liquid-glass-clear px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg"
                 aria-label="TikTok"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -66,7 +66,7 @@ export default function Footer() {
                 href="https://x.com/donna_ai"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-foreground/70 hover:text-accent transition-colors liquid-glass-clear px-4 py-2 rounded-lg"
+                className="flex items-center gap-2 text-xs sm:text-sm text-foreground/70 hover:text-accent transition-colors liquid-glass-clear px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg"
                 aria-label="X (Twitter)"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -78,7 +78,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/10 pt-8 text-center">
+        <div className="border-t border-white/10 pt-6 sm:pt-8 text-center">
           <p className="text-xs text-foreground/50">
             © {currentYear} DONNA. All rights reserved.
           </p>

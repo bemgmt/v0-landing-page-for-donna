@@ -56,25 +56,25 @@ export default function SectionVerticals() {
       className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative"
     >
       <div className="max-w-6xl mx-auto w-full">
-        <div className="text-center mb-8 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+        <div className="text-center mb-6 sm:mb-8 animate-fade-in">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
             Built for <span className="gradient-text">Your Industry</span>
           </h2>
-          <p className="text-foreground/60 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-foreground/60 max-w-2xl mx-auto px-2">
             DONNA powers businesses across industries with tailored solutions
           </p>
         </div>
 
         {/* Centered Card Container - Apple "Significant Others" Pattern */}
-        <div className="liquid-glass-card rounded-2xl p-6 md:p-12 max-w-5xl mx-auto">
-          <div className="flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-8">
+        <div className="liquid-glass-card rounded-2xl p-4 sm:p-6 md:p-12 max-w-5xl mx-auto">
+          <div className="flex flex-col md:grid md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
             {/* Left Panel: Selectable List */}
-            <div className="space-y-2 order-2 md:order-1">
+            <div className="space-y-2 sm:space-y-2 order-2 md:order-1">
               {useCases.map((vertical, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedVertical(index)}
-                  className={`w-full text-left p-4 rounded-xl transition-all duration-300 relative ${
+                  className={`w-full text-left p-3 sm:p-4 rounded-xl transition-all duration-300 relative ${
                     index === selectedVertical
                       ? "liquid-glass border-2 border-accent/50 bg-white/15"
                       : "liquid-glass-clear border border-white/10 hover:bg-white/10 animated-edge-button"
