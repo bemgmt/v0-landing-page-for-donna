@@ -273,7 +273,7 @@ export default function IntroOverlay() {
       <button
         id="skipIntro"
         onClick={handleSkip}
-        className="skip absolute top-4 right-4 z-[2] bg-black/40 text-white border border-white/20 px-3 py-2 rounded-full text-sm hover:bg-black/60 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
+        className="skip absolute top-4 right-4 z-[2] bg-black/40 text-white border border-white/20 px-4 py-2.5 rounded-full text-base hover:bg-black/60 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
         aria-label="Skip intro"
       >
         Skip
