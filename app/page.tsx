@@ -68,7 +68,6 @@ export default function Home() {
       <ScrollCue />
       <ScrollbarFade />
       <MinimalHeader />
-      <div className="fixed-background" />
       <main id="main-content" className="snap relative z-10">
         <SectionHero />
         <SectionCapabilities />

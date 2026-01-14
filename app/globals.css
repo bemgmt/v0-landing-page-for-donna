@@ -31,7 +31,7 @@ html {
 
 :root {
   /* Updated design tokens for DONNA futuristic theme */
-  --background: oklch(0.08 0 0); /* Ink background */
+  --background: oklch(0.1 0.1 270); /* Deep indigo background */
   --foreground: oklch(0.96 0 0); /* Warm white */
   --card: oklch(0.12 0 0); /* Slightly lighter ink */
   --card-foreground: oklch(0.96 0 0);
@@ -425,8 +425,8 @@ html {
     }
   }
 
-  /* Fixed background image */
-  .fixed-background {
+  /* Fixed background image - removed since we're using solid color background */
+  /* .fixed-background {
     position: fixed;
     top: 0;
     left: 0;
@@ -439,7 +439,7 @@ html {
     background-attachment: fixed;
     z-index: 0;
     will-change: transform;
-  }
+  } */
 
   /* Parallax effect - content appears to pull up */
   @media (prefers-reduced-motion: no-preference) {
