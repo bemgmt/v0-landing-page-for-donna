@@ -31,7 +31,7 @@ html {
 
 :root {
   /* Updated design tokens for DONNA futuristic theme */
-  --background: oklch(0.1 0.1 270); /* Deep indigo background */
+  --background: oklch(0 0 0); /* Pure black background */
   --foreground: oklch(0.96 0 0); /* Warm white */
   --card: oklch(0.12 0 0); /* Slightly lighter ink */
   --card-foreground: oklch(0.96 0 0);
