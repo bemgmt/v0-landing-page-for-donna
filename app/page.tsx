@@ -8,6 +8,7 @@ import SectionCapabilities from "@/components/section-capabilities"
 import SectionTools from "@/components/section-tools"
 import SectionVerticals from "@/components/section-verticals"
 import SectionNetwork from "@/components/section-network"
+import Pricing from "@/components/pricing"
 import SectionCTA from "@/components/section-cta"
 import Footer from "@/components/footer"
 import Chatbot from "@/components/chatbot"
@@ -74,6 +75,7 @@ export default function Home() {
         <SectionTools />
         <SectionVerticals />
         <SectionNetwork />
+        <Pricing />
         <SectionCTA />
         <Footer />
       </main>
