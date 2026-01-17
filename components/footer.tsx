@@ -27,7 +27,7 @@ export default function Footer() {
             <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">Connect With Us</h3>
             <div className="flex flex-wrap gap-2 sm:gap-4">
               <Link
-                href="https://www.linkedin.com/company/donna-ai"
+                href="https://www.linkedin.com/in/derek-talbird-65293977/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-xs sm:text-sm text-foreground/70 hover:text-accent transition-colors liquid-glass-clear px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg"
@@ -39,7 +39,7 @@ export default function Footer() {
                 <span>LinkedIn</span>
               </Link>
               <Link
-                href="https://www.youtube.com/@donna-ai"
+                href="https://www.youtube.com/@bemdonna"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-xs sm:text-sm text-foreground/70 hover:text-accent transition-colors liquid-glass-clear px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg"
@@ -51,7 +51,7 @@ export default function Footer() {
                 <span>YouTube</span>
               </Link>
               <Link
-                href="https://www.tiktok.com/@donna.ai"
+                href="https://www.tiktok.com/@donnaai_?lang=en"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-xs sm:text-sm text-foreground/70 hover:text-accent transition-colors liquid-glass-clear px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg"
@@ -63,7 +63,7 @@ export default function Footer() {
                 <span>TikTok</span>
               </Link>
               <Link
-                href="https://x.com/donna_ai"
+                href="https://x.com/donnaai_"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-xs sm:text-sm text-foreground/70 hover:text-accent transition-colors liquid-glass-clear px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg"
@@ -73,6 +73,18 @@ export default function Footer() {
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                 </svg>
                 <span>X</span>
+              </Link>
+              <Link
+                href="https://www.facebook.com/profile.php?id=61586503540067"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-xs sm:text-sm text-foreground/70 hover:text-accent transition-colors liquid-glass-clear px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg"
+                aria-label="Facebook"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24h11.495v-9.294H9.691V11.01h3.13V8.309c0-3.1 1.894-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.31h3.587l-.467 3.696h-3.12V24h6.116C23.403 24 24 23.403 24 22.674V1.326C24 .597 23.403 0 22.675 0z"/>
+                </svg>
+                <span>Facebook</span>
               </Link>
             </div>
           </div>
