@@ -89,11 +89,11 @@ export default function SectionCTA() {
       <div ref={formRef} className="max-w-2xl mx-auto w-full">
         <div className="liquid-glass-card p-4 sm:p-6 md:p-8 rounded-xl text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-2 gradient-text">
-            {formData.type === "waitlist" ? "Join the Waitlist" : "Request a Demo"}
+            {formData.type === "waitlist" ? "Apply to the Beta Program" : "Request a Demo"}
           </h2>
           <p className="text-sm sm:text-base text-foreground/70 mb-4 sm:mb-6">
             {formData.type === "waitlist"
-              ? "Be among the first to experience DONNA"
+              ? "Limited access for serious operators. Apply to be considered."
               : "See DONNA in action with a personalized demo"}
           </p>
 
@@ -115,7 +115,7 @@ export default function SectionCTA() {
                   onChange={handleChange}
                   className="w-4 h-4"
                 />
-                <span>Join Waitlist</span>
+                <span>Beta Application</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -191,7 +191,7 @@ export default function SectionCTA() {
               disabled={isSubmitting}
               className="w-full px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg bg-accent text-background hover:bg-accent/90 disabled:opacity-50 transition-all font-semibold text-sm sm:text-base glow-accent hover:shadow-[0_0_30px_rgba(132,204,255,0.5)]"
             >
-              {isSubmitting ? "Submitting..." : formData.type === "waitlist" ? "Join Waitlist" : "Request Demo"}
+              {isSubmitting ? "Submitting..." : formData.type === "waitlist" ? "Apply to the Beta Program" : "Request Demo"}
             </button>
           </form>
         </div>

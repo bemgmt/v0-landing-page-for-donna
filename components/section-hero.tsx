@@ -29,14 +29,14 @@ export default function SectionHero() {
           <span className="gradient-text">One AI. Every Industry.</span>
         </h1>
         <p className="text-base sm:text-lg md:text-xl text-foreground/80 mb-6 sm:mb-8 max-w-2xl mx-auto animate-slide-up px-2">
-          Your digital employee layer that works across every business function
+          Operational intelligence that runs your everyday tasks across every business function
         </p>
         <button
           onClick={handleCTAClick}
           className="px-6 py-3 sm:px-8 sm:py-4 rounded-lg animated-edge-button text-foreground hover:bg-white/20 transition-all duration-300 font-semibold text-base sm:text-lg refract-on-hover animate-slide-up relative z-10"
           style={{ animationDelay: "200ms" }}
         >
-          <span className="relative z-10">Join the Waitlist</span>
+          <span className="relative z-10">Apply to the Beta Program</span>
         </button>
       </div>
     </section>

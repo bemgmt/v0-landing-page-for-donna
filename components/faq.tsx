@@ -8,62 +8,27 @@ const faqs = [
   {
     question: "What is DONNA?",
     answer:
-      "DONNA (Digital Operations Neural Network Assistant) is an agentic, multi-modal AI operations platform that functions as a digital employee layer. Unlike chatbots or CRMs, DONNA controls tools, coordinates workflows, and connects with other DONNAs across networks to handle communication, sales, marketing, and operations 24/7.",
+      "DONNA (Digital Operations Neural Network Assistant) is an AI platform that acts as a smart operations manager within your business. It integrates with your tools to handle routine work across departments, not just conversations.",
   },
   {
-    question: "What is the DONNA-to-DONNA Network?",
+    question: "How is DONNA different from a chatbot or VA?",
     answer:
-      "The DONNA-to-DONNA Network is a secure, permissioned AI-to-AI communication layer that allows DONNAs to discover one another, exchange structured requests, share outcomes, and coordinate actions across organizations. This enables B2B automation, cross-promotion, vendor coordination, and more—all without manual handoffs.",
+      "Chatbots answer questions. DONNA executes workflows. You give it objectives and permissions, and it completes tasks across your systems, with human oversight and approval controls.",
   },
   {
-    question: "How does DONNA control tools vs. just suggesting actions?",
+    question: "Do I need technical expertise to use DONNA?",
     answer:
-      "DONNA has system authority to control your tools directly. It can send emails, create documents, launch campaigns, generate invoices, trigger workflows, and execute tasks autonomously. It's not just recommending what you should do. You maintain oversight and can review, approve, or override any action.",
+      "No. DONNA is designed for non-technical teams. We handle setup and integrations, and you interact with DONNA in plain language or via a dashboard.",
   },
   {
-    question: "What makes DONNA 'agentic'?",
+    question: "Is my data safe with DONNA?",
     answer:
-      "DONNA is agentic because it reasons, plans, executes, and reflects on outcomes independently. It's not scripted. It thinks through problems, creates plans, takes action, and learns from results. This allows DONNA to handle complex, multi-step tasks and adapt to new situations without retraining.",
+      "Yes. DONNA uses enterprise-grade security and access controls. Data stays in your environment and is encrypted, with configurable permissions and audit logs.",
   },
   {
-    question: "Can DONNA work across multiple departments?",
+    question: "What does the beta cost, and what happens after?",
     answer:
-      "Yes! DONNA is role-fluid, meaning it can dynamically shift between roles, sales, marketing, operations, secretary, without retraining. You can deploy multiple DONNAs for different departments, or one DONNA that handles multiple functions. DONNAs can also coordinate with each other across departments.",
-  },
-  {
-    question: "How does DONNA ensure safety and prevent abuse?",
-    answer:
-      "DONNA includes built-in governance and safety features: rate limiting, abuse detection, language moderation, and automatic escalation to human admins. All actions are logged and auditable. You can set approval gates for sensitive operations, and DONNA always knows when to hand off to humans.",
-  },
-  {
-    question: "How long does setup take?",
-    answer:
-      "Setup typically takes 15-30 minutes. We guide you through connecting your phone, email, calendar, and CRM. Most customers are live within an hour.",
-  },
-  {
-    question: "Can DONNA handle multiple languages?",
-    answer:
-      "Yes! DONNA supports 25+ languages and can seamlessly switch between them during conversations. Perfect for diverse customer bases.",
-  },
-  {
-    question: "What happens to my data?",
-    answer:
-      "Your data is encrypted and stored securely. We never train our models on customer data. You maintain complete ownership and control.",
-  },
-  {
-    question: "Can I customize DONNA for my business?",
-    answer:
-      "Absolutely. You can train DONNA on your business documents, pricing, policies, and procedures. It learns your business context and gets smarter with every interaction.",
-  },
-  {
-    question: "What integrations are available?",
-    answer:
-      "We support 600+ integrations including Salesforce, HubSpot, Google Workspace, Microsoft 365, QuickBooks, Slack, Zapier, and more. Custom integrations available too.",
-  },
-  {
-    question: "Do you offer customer support?",
-    answer:
-      "Yes, all customers get email support. Pro and Enterprise plans include phone and video support with dedicated success managers.",
+      "The beta is paid and limited. Beta partners receive Pro-level access for one year at the Starter plan price, with the option to continue on standard Pro or Enterprise plans afterward.",
   },
 ]
 

@@ -14,7 +14,7 @@ export function softwareApplicationSchema({
     applicationCategory: 'BusinessApplication',
     offers: {
       '@type': 'Offer',
-      price: '0',
+      price: 'Varies',
       priceCurrency: 'USD',
     },
     featureList: features,
