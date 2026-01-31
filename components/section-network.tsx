@@ -1,60 +1,12 @@
 "use client"
 
-import React, { useEffect, useRef } from "react"
+import { useEffect } from "react"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
-import ScrollDots from "@/components/scroll-dots"
-
-const networkUseCases = [
-  {
-    title: "Business-to-Business Automation",
-    description: (
-      <>
-        Schedule meetings, confirm contracts, and share status
-        <br />
-        updates between companies without manual emails or phone calls.
-      </>
-    ),
-    icon: "🤝",
-  },
-  {
-    title: "Marketing & Growth Coordination",
-    description: (
-      <>
-        Cross-promote campaigns, verify referrals, and hand off leads
-        <br />
-        between partner businesses automatically.
-      </>
-    ),
-    icon: "📈",
-  },
-  {
-    title: "Operations & Vendor Management",
-    description: (
-      <>
-        Coordinate supply chain updates, vendor communications, and compliance
-        <br />
-        confirmations across your network.
-      </>
-    ),
-    icon: "⚙️",
-  },
-  {
-    title: "Manufacturing & Logistics",
-    description: (
-      <>
-        Coordinate production schedules, shipping updates, and inventory
-        <br />
-        management between manufacturers, suppliers, and distributors.
-      </>
-    ),
-    icon: "🏭",
-  },
-]
+import NetworkVisualization from "@/components/network-visualization"
 
 export default function SectionNetwork() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
-  const railRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (inView) {
@@ -63,40 +15,31 @@ export default function SectionNetwork() {
   }, [inView])
 
   return (
-    <section
-      ref={ref}
-      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative"
-    >
-      <div className="max-w-7xl mx-auto w-full">
-        <div className="text-center mb-8 sm:mb-12 animate-fade-in">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
-            The <span className="gradient-text">DONNA-to-DONNA Network</span>
-          </h2>
-          <p className="text-sm sm:text-base md:text-lg text-foreground/60 max-w-3xl mx-auto mb-6 sm:mb-8 px-2">
-            DONNA works as a digital employee inside your business. As you grow, DONNAs securely coordinate with other DONNAs across teams, locations, or businesses, reducing manual handoffs and expanding your network.
+    <section ref={ref} className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+        <div className="order-2 lg:order-1 flex items-center justify-center">
+          <div className="w-full max-w-md">
+            <NetworkVisualization />
+          </div>
+        </div>
+        <div className="order-1 lg:order-2 space-y-5">
+          <p className="text-xs sm:text-sm uppercase tracking-[0.3em] text-foreground/60">
+            Network intelligence
           </p>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold">
+            Your business doesn’t operate alone.
+          </h2>
+          <p className="text-base sm:text-lg text-foreground/75 leading-relaxed">
+            Through the DONNA-to-DONNA Network, businesses benefit from shared operational
+            intelligence — without sharing private data.
+          </p>
+          <div className="space-y-1 text-base sm:text-lg text-foreground/80">
+            <p>Patterns improve.</p>
+            <p>Decisions get smarter.</p>
+            <p>Outcomes compound.</p>
+          </div>
+          <p className="text-base sm:text-lg text-foreground/70">Same system. Different industries.</p>
         </div>
-
-        <div
-          ref={railRef}
-          className="hRail flex gap-4 overflow-x-auto pb-4 -mx-4 px-4"
-          style={{ scrollSnapType: "x mandatory" }}
-        >
-          {networkUseCases.map((useCase, index) => (
-            <div
-              key={index}
-              className="hCard liquid-glass-card p-4 sm:p-6 rounded-xl refract-on-hover flex-shrink-0 flex flex-col"
-            >
-              <div className="text-4xl mb-4 flex-shrink-0">{useCase.icon}</div>
-              <h4 className="text-lg font-bold mb-3 text-foreground leading-tight flex-shrink-0">{useCase.title}</h4>
-              <p className="text-xs text-foreground/80 leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-6">
-                {useCase.description}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <ScrollDots containerRef={railRef} itemCount={networkUseCases.length} />
       </div>
     </section>
   )

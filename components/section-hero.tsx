@@ -19,25 +19,61 @@ export default function SectionHero() {
     form?.scrollIntoView({ behavior: "smooth" })
   }
 
+  const handleScrollToNext = () => {
+    const nextSection = document.getElementById("what-donna-is")
+    nextSection?.scrollIntoView({ behavior: "smooth" })
+  }
+
   return (
     <section
       ref={ref}
-      className="snapSection h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+      className="relative min-h-[100svh] flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
-      <div className="max-w-4xl mx-auto text-center relative z-10 pt-16 sm:pt-20">
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 animate-fade-in">
-          <span className="gradient-text">One AI. Every Industry.</span>
-        </h1>
-        <p className="text-base sm:text-lg md:text-xl text-foreground/80 mb-6 sm:mb-8 max-w-2xl mx-auto animate-slide-up px-2">
-          Operational intelligence that runs your everyday tasks across every business function
-        </p>
-        <button
-          onClick={handleCTAClick}
-          className="px-6 py-3 sm:px-8 sm:py-4 rounded-lg animated-edge-button text-foreground hover:bg-white/20 transition-all duration-300 font-semibold text-base sm:text-lg refract-on-hover animate-slide-up relative z-10"
-          style={{ animationDelay: "200ms" }}
+      <div className="absolute inset-0">
+        <video
+          className="h-full w-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster="/intro/donna_intro_poster.jpg"
         >
-          <span className="relative z-10">Apply to the Beta Program</span>
-        </button>
+          <source src="/intro/donna_intro_720p.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/65 to-black/80" />
+        <div className="absolute inset-0 shadow-[inset_0_0_120px_rgba(0,0,0,0.8)]" />
+      </div>
+
+      <div className="max-w-3xl mx-auto text-center relative z-10 pt-20 pb-12">
+        <p className="text-xs sm:text-sm tracking-[0.3em] text-foreground/60 uppercase mb-4">
+          Operational intelligence
+        </p>
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-semibold mb-5 animate-fade-in">
+          One AI. Every Industry.
+        </h1>
+        <p className="text-base sm:text-lg md:text-xl text-foreground/80 mb-5 max-w-2xl mx-auto animate-slide-up px-2">
+          Operational intelligence built to run a business — not talk about it.
+        </p>
+        <p className="text-xs sm:text-sm text-foreground/60 max-w-2xl mx-auto mb-8 px-2">
+          Designed to coordinate communication, decisions, and execution across how work actually happens.
+        </p>
+        <div className="flex flex-col items-center gap-4">
+          <button
+            onClick={handleCTAClick}
+            className="px-7 py-3 rounded-full animated-edge-button text-foreground hover:bg-white/20 transition-all duration-300 font-semibold text-base sm:text-lg refract-on-hover animate-slide-up relative z-10"
+            style={{ animationDelay: "200ms" }}
+          >
+            <span className="relative z-10">Request Access</span>
+          </button>
+          <button
+            type="button"
+            onClick={handleScrollToNext}
+            className="text-xs sm:text-sm uppercase tracking-[0.35em] text-foreground/60 hover:text-foreground transition-colors"
+          >
+            Scroll to understand
+          </button>
+        </div>
       </div>
     </section>
   )

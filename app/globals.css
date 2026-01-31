@@ -504,10 +504,10 @@ html {
   }
 
   main.snap {
-    height: 100vh;
+    min-height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
-    scroll-snap-type: y mandatory;
+    scroll-snap-type: none;
     scroll-behavior: smooth;
     position: relative;
     z-index: 1;
@@ -578,6 +578,44 @@ html {
     -webkit-line-clamp: 6;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  .usecase-rail {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-left: 16px;
+    scrollbar-width: none;
+  }
+
+  .usecase-rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .usecase-card {
+    min-width: 100%;
+    scroll-snap-align: start;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 24px;
+    backdrop-filter: blur(14px);
+  }
+
+  @media (min-width: 640px) {
+    .usecase-card {
+      min-width: 70vw;
+      padding: 28px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .usecase-card {
+      min-width: 32vw;
+      padding: 32px;
+    }
   }
 
   /* Morphing animations for liquid glass */
