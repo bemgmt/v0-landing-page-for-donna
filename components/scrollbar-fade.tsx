@@ -4,18 +4,14 @@ import { useEffect } from "react"
 
 export default function ScrollbarFade() {
   useEffect(() => {
-    const main = document.querySelector("main.snap")
-    if (!main) return
-
     const handleScroll = () => {
-      // Get the first section (What DONNA Does - SectionCapabilities)
-      const firstSection = document.querySelector("section#capabilities")
-      
+      // Get the first section (What DONNA Is)
+      const firstSection = document.querySelector("section#what-donna-is")
       if (!firstSection) return
 
-      const scrollY = (main as HTMLElement).scrollTop
-      const scrollHeight = (main as HTMLElement).scrollHeight
-      const clientHeight = (main as HTMLElement).clientHeight
+      const scrollY = window.scrollY
+      const scrollHeight = document.documentElement.scrollHeight
+      const clientHeight = window.innerHeight
       const heroHeight = window.innerHeight
 
       // Fade scrollbar when we've scrolled past 80% of hero section
@@ -29,11 +25,11 @@ export default function ScrollbarFade() {
       }
     }
 
-    main.addEventListener("scroll", handleScroll, { passive: true })
-    handleScroll() // Initial check
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    handleScroll()
 
     return () => {
-      main.removeEventListener("scroll", handleScroll)
+      window.removeEventListener("scroll", handleScroll)
     }
   }, [])
 

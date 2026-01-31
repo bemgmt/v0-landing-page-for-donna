@@ -483,7 +483,7 @@ html {
 
   /* Vertical scroll snap container */
   html {
-    overflow: hidden;
+    overflow-x: hidden;
     height: 100%;
     width: 100%;
     /* Ensure isolation from parent styles */
@@ -491,7 +491,7 @@ html {
   }
 
   body {
-    overflow: hidden;
+    overflow-x: hidden;
     height: 100%;
     width: 100%;
     margin: 0;
@@ -504,11 +504,6 @@ html {
   }
 
   main.snap {
-    min-height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scroll-snap-type: none;
-    scroll-behavior: smooth;
     position: relative;
     z-index: 1;
   }
