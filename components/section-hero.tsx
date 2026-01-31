@@ -46,6 +46,7 @@ export default function SectionHero() {
       </div>
 
       <div className="max-w-3xl mx-auto text-center relative z-10 pt-20 pb-12">
+        <div className="absolute inset-x-0 -top-8 mx-auto h-64 w-64 sm:h-80 sm:w-80 rounded-full bg-accent/20 blur-[120px] opacity-80 -z-10 pointer-events-none" />
         <p className="text-xs sm:text-sm tracking-[0.3em] text-foreground/60 uppercase mb-4">
           Operational intelligence
         </p>

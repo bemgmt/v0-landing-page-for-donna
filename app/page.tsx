@@ -3,6 +3,7 @@ import IntroOverlay from "@/components/intro-overlay"
 import ScrollCue from "@/components/scroll-cue"
 import ScrollbarFade from "@/components/scrollbar-fade"
 import MinimalHeader from "@/components/minimal-header"
+import BackgroundAnimation from "@/components/background-animation"
 import SectionHero from "@/components/section-hero"
 import SectionCapabilities from "@/components/section-capabilities"
 import SectionVerticals from "@/components/section-verticals"
@@ -55,6 +56,7 @@ export default function Home() {
       <ScrollCue />
       <ScrollbarFade />
       <MinimalHeader />
+      <BackgroundAnimation />
       <main id="main-content" className="snap relative z-10">
         <SectionHero />
         <SectionCapabilities />
