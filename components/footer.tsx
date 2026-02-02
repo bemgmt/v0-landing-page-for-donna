@@ -10,6 +10,9 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto flex flex-col items-center gap-4 text-center">
         <p className="text-sm uppercase tracking-[0.3em] text-foreground/60">One AI. Every Industry.</p>
         <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-foreground/60">
+          <Link href="/return-policy" className="hover:text-foreground transition-colors">
+            Return Policy
+          </Link>
           <Link href="/privacy" className="hover:text-foreground transition-colors">
             Privacy
           </Link>
