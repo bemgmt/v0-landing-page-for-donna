@@ -25,33 +25,25 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-*,
-*::before,
-*::after {
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
 :root {
   /* Updated design tokens for DONNA futuristic theme */
-  --background: oklch(0 0 0);
-  /* Pure black background */
-  --foreground: oklch(0.96 0 0);
-  /* Warm white */
-  --card: oklch(0.12 0 0);
-  /* Slightly lighter ink */
+  --background: oklch(0 0 0); /* Pure black background */
+  --foreground: oklch(0.96 0 0); /* Warm white */
+  --card: oklch(0.12 0 0); /* Slightly lighter ink */
   --card-foreground: oklch(0.96 0 0);
   --popover: oklch(0.12 0 0);
   --popover-foreground: oklch(0.96 0 0);
-  --primary: oklch(0.65 0.23 308);
-  /* Violet */
+  --primary: oklch(0.65 0.23 308); /* Violet */
   --primary-foreground: oklch(0.08 0 0);
-  --secondary: oklch(0.95 0.1 276);
-  /* Mint */
+  --secondary: oklch(0.95 0.1 276); /* Mint */
   --secondary-foreground: oklch(0.08 0 0);
   --muted: oklch(0.25 0 0);
   --muted-foreground: oklch(0.65 0 0);
-  --accent: oklch(0.85 0.18 225);
-  /* Electric cyan */
+  --accent: oklch(0.85 0.18 225); /* Electric cyan */
   --accent-foreground: oklch(0.08 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
@@ -151,7 +143,6 @@ html {
 }
 
 @layer base {
-
   /* CSS Isolation - Prevent parent domain styles from affecting the page */
   html {
     box-sizing: border-box;
@@ -165,7 +156,7 @@ html {
     line-height: 1.5;
     color: inherit;
   }
-
+  
   html *,
   html *::before,
   html *::after {
@@ -175,7 +166,7 @@ html {
   * {
     @apply border-border outline-ring/50;
   }
-
+  
   body {
     @apply bg-background text-foreground;
     margin: 0;
@@ -214,7 +205,7 @@ html {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow:
+    box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
@@ -223,7 +214,7 @@ html {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(30px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow:
+    box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.08),
       inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
@@ -232,7 +223,7 @@ html {
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(16px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow:
+    box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.15),
       inset 0 1px 0 rgba(255, 255, 255, 0.2),
       0 0 0 1px rgba(255, 255, 255, 0.05) inset;
@@ -248,10 +239,12 @@ html {
     inset: 0;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.3) 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        rgba(255, 255, 255, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.3) 100%
+    );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -261,7 +254,7 @@ html {
   /* Enhanced glass card with liquid glass */
   .glass-card {
     @apply bg-white/10 backdrop-blur-xl border border-white/20;
-    box-shadow:
+    box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
@@ -269,7 +262,7 @@ html {
   .glass-card:hover {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.3);
-    box-shadow:
+    box-shadow: 
       0 12px 40px rgba(0, 0, 0, 0.15),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
     transform: translateY(-2px);
@@ -334,11 +327,11 @@ html {
   }
 
   .glow-accent {
-    @apply shadow-[0_0_20px_rgba(132, 204, 255, 0.3)];
+    @apply shadow-[0_0_20px_rgba(132,204,255,0.3)];
   }
 
   .glow-primary {
-    @apply shadow-[0_0_20px_rgba(122, 92, 255, 0.2)];
+    @apply shadow-[0_0_20px_rgba(122,92,255,0.2)];
   }
 
   .animate-fade-in {
@@ -362,7 +355,6 @@ html {
     opacity: var(--layer-opacity, 0.35);
     transform: translate(var(--offset-x, 0px), var(--offset-y, 0px));
     transform-origin: center;
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
   }
 
   .stacked-layer.is-spotlight {
@@ -490,34 +482,29 @@ html {
     from {
       transform: translate(var(--offset-x, 0px), var(--offset-y, 0px));
     }
-
     to {
       transform: translate(0px, 0px);
     }
   }
 
   @keyframes spotlight-breathe {
-
     0%,
     100% {
-      opacity: 0.45;
+      opacity: 0.55;
     }
-
     50% {
-      opacity: 0.6;
+      opacity: 0.8;
     }
   }
 
   @keyframes ring-pulse {
     0% {
-      opacity: 0.25;
+      opacity: 0.35;
       transform: scale(0.2);
     }
-
     80% {
-      opacity: 0.08;
+      opacity: 0.12;
     }
-
     100% {
       opacity: 0;
       transform: scale(2.4);
@@ -528,7 +515,6 @@ html {
     from {
       transform: scaleY(0);
     }
-
     to {
       transform: scaleY(1);
     }
@@ -539,11 +525,9 @@ html {
       transform: translateX(-120%);
       opacity: 0;
     }
-
     20% {
       opacity: 1;
     }
-
     100% {
       transform: translateX(120%);
       opacity: 0;
@@ -554,7 +538,6 @@ html {
     from {
       opacity: 0;
     }
-
     to {
       opacity: 1;
     }
@@ -565,7 +548,6 @@ html {
       opacity: 0;
       transform: translateY(20px);
     }
-
     to {
       opacity: 1;
       transform: translateY(0);
@@ -573,12 +555,10 @@ html {
   }
 
   @keyframes float {
-
     0%,
     100% {
       transform: translateY(0px);
     }
-
     50% {
       transform: translateY(-10px);
     }
@@ -586,13 +566,11 @@ html {
 
   /* Add pulse glow animation for hero image */
   @keyframes pulseGlow {
-
     0%,
     100% {
       box-shadow: 0 0 20px rgba(132, 204, 255, 0.3), 0 0 40px rgba(122, 92, 255, 0.1);
       opacity: 1;
     }
-
     50% {
       box-shadow: 0 0 30px rgba(132, 204, 255, 0.5), 0 0 60px rgba(122, 92, 255, 0.2);
       opacity: 0.95;
@@ -681,13 +659,11 @@ html {
   }
 
   @keyframes pulseCue {
-
     0%,
     100% {
       transform: translateY(0);
       opacity: 0.55;
     }
-
     50% {
       transform: translateY(-3px);
       opacity: 1;
@@ -802,10 +778,8 @@ html {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    /* Firefox */
-    -ms-overflow-style: none;
-    /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
   }
 
   @media (min-width: 640px) {
@@ -815,20 +789,16 @@ html {
   }
 
   .hRail::-webkit-scrollbar {
-    display: none;
-    /* Chrome, Safari, Opera */
+    display: none; /* Chrome, Safari, Opera */
   }
 
   .hCard {
-    min-width: 67vw;
-    /* Show 1.5 cards on mobile */
+    min-width: 67vw; /* Show 1.5 cards on mobile */
     scroll-snap-align: start;
     border-radius: 20px;
     height: auto;
-    min-height: 250px;
-    /* Reduced height */
-    max-height: 250px;
-    /* Constrain height */
+    min-height: 250px; /* Reduced height */
+    max-height: 250px; /* Constrain height */
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -836,12 +806,9 @@ html {
 
   @media (min-width: 900px) {
     .hCard {
-      min-width: calc((100vw - 2rem) / 3 - 10px);
-      /* Show 3 cards on desktop (accounting for padding and gap) */
-      min-height: 300px;
-      /* Reduced height on desktop */
-      max-height: 300px;
-      /* Constrain height */
+      min-width: calc((100vw - 2rem) / 3 - 10px); /* Show 3 cards on desktop (accounting for padding and gap) */
+      min-height: 300px; /* Reduced height on desktop */
+      max-height: 300px; /* Constrain height */
     }
   }
 
@@ -893,13 +860,10 @@ html {
 
   /* Morphing animations for liquid glass */
   @keyframes morphGlass {
-
-    0%,
-    100% {
+    0%, 100% {
       border-radius: 20px;
       backdrop-filter: blur(24px) saturate(180%);
     }
-
     50% {
       border-radius: 24px;
       backdrop-filter: blur(28px) saturate(200%);
@@ -917,7 +881,7 @@ html {
 
   .refract-on-hover:hover {
     backdrop-filter: blur(30px) saturate(200%);
-    box-shadow:
+    box-shadow: 
       0 12px 48px rgba(0, 0, 0, 0.15),
       inset 0 2px 0 rgba(255, 255, 255, 0.3),
       0 0 40px rgba(132, 204, 255, 0.1);
@@ -956,7 +920,6 @@ html {
   }
 
   @media (max-width: 768px) {
-
     .stacked-layers.is-visible .stacked-layer,
     .stacked-layers.is-visible .stacked-layer.is-spotlight,
     .signal-pulses.is-visible .signal-ring,
@@ -986,7 +949,6 @@ html {
       opacity: 0;
       transform: translateY(10px);
     }
-
     to {
       opacity: 1;
       transform: translateY(0);
@@ -1002,7 +964,7 @@ html {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow:
+    box-shadow: 
       0 4px 16px rgba(0, 0, 0, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1011,7 +973,7 @@ html {
   .liquid-glass-button:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.3);
-    box-shadow:
+    box-shadow: 
       0 8px 24px rgba(0, 0, 0, 0.15),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
     transform: translateY(-2px);
@@ -1032,13 +994,13 @@ html {
     inset: 0;
     border-radius: inherit;
     padding: 2px;
-    background: linear-gradient(45deg,
-        oklch(0.85 0.18 225),
-        /* accent cyan */
-        oklch(0.65 0.23 308),
-        /* primary violet */
-        oklch(0.85 0.18 225),
-        oklch(0.65 0.23 308));
+    background: linear-gradient(
+      45deg,
+      oklch(0.85 0.18 225), /* accent cyan */
+      oklch(0.65 0.23 308), /* primary violet */
+      oklch(0.85 0.18 225),
+      oklch(0.65 0.23 308)
+    );
     background-size: 300% 300%;
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
@@ -1057,11 +1019,9 @@ html {
     0% {
       background-position: 0% 50%;
     }
-
     50% {
       background-position: 100% 50%;
     }
-
     100% {
       background-position: 0% 50%;
     }
@@ -1069,12 +1029,9 @@ html {
 
   /* Glow animation for chatbot thinking indicator */
   @keyframes glowPulse {
-
-    0%,
-    100% {
+    0%, 100% {
       box-shadow: 0 0 10px rgba(132, 204, 255, 0.3);
     }
-
     50% {
       box-shadow: 0 0 20px rgba(132, 204, 255, 0.6), 0 0 30px rgba(122, 92, 255, 0.4);
     }
@@ -1084,11 +1041,9 @@ html {
     0% {
       transform: translate3d(0, 0, 0) scale(1);
     }
-
     50% {
       transform: translate3d(2%, -1.5%, 0) scale(1.03);
     }
-
     100% {
       transform: translate3d(0, 0, 0) scale(1);
     }
@@ -1100,12 +1055,10 @@ html {
 
   /* Pulse animation for network lines */
   @keyframes pulse-line {
-
     0%,
     100% {
       stroke-opacity: 0.4;
     }
-
     50% {
       stroke-opacity: 0.7;
     }
@@ -1117,13 +1070,10 @@ html {
 
   /* Chatbot attention-grabbing animations */
   @keyframes chatbot-pulse {
-
-    0%,
-    100% {
+    0%, 100% {
       transform: scale(1);
       box-shadow: 0 0 0 0 rgba(132, 204, 255, 0.7);
     }
-
     50% {
       transform: scale(1.05);
       box-shadow: 0 0 0 10px rgba(132, 204, 255, 0);
@@ -1139,11 +1089,9 @@ html {
       opacity: 0;
       transform: translateY(-10px);
     }
-
     50% {
       transform: translateY(5px);
     }
-
     100% {
       opacity: 1;
       transform: translateY(0);
@@ -1169,7 +1117,6 @@ html {
 
   /* Responsive adjustments for liquid glass */
   @media (max-width: 768px) {
-
     .liquid-glass,
     .liquid-glass-card,
     .liquid-glass-clear {
@@ -1179,7 +1126,6 @@ html {
 
   /* Fallback for browsers without backdrop-filter support */
   @supports not (backdrop-filter: blur(20px)) {
-
     .liquid-glass,
     .liquid-glass-card,
     .liquid-glass-clear {
