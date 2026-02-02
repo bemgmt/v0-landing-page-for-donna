@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import IntroOverlay from "@/components/intro-overlay"
 import ScrollCue from "@/components/scroll-cue"
 import ScrollbarFade from "@/components/scrollbar-fade"
 import MinimalHeader from "@/components/minimal-header"
@@ -52,11 +51,11 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
       />
-      <IntroOverlay />
       <ScrollCue />
       <ScrollbarFade />
       <MinimalHeader />
       <BackgroundAnimation />
+      <div className="ambient-layer" aria-hidden="true" />
       <main id="main-content" className="snap relative z-10">
         <SectionHero />
         <SectionCapabilities />
