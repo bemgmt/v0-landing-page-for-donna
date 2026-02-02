@@ -58,9 +58,10 @@ export async function POST(request: NextRequest) {
       // Don't return error here - sometimes verification fails but sending works
     }
 
+    const notificationRecipient = process.env.CONTACT_EMAIL || "derek@bem.studio"
     const mailOptions = {
       from: process.env.SMTP_USER,
-      to: process.env.SMTP_USER,
+      to: notificationRecipient,
       subject: `DONNA ${type === "waitlist" ? "Waitlist Signup" : "Demo Request"} - ${name}`,
       html: `
         <h2>New ${type === "waitlist" ? "Waitlist Signup" : "Demo Request"}</h2>
@@ -74,7 +75,7 @@ export async function POST(request: NextRequest) {
       `,
     }
 
-    console.log("Sending notification email to:", process.env.SMTP_USER)
+    console.log("Sending notification email to:", notificationRecipient)
     try {
       await transporter.sendMail(mailOptions)
       console.log("Notification email sent successfully")

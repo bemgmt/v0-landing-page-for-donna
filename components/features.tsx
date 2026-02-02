@@ -17,7 +17,7 @@ const coreCapabilities: FeatureCard[] = [
     title: "Agentic, Not Scripted",
     subtitle: "AI that reasons, plans, and executes",
     description:
-      "DONNA thinks and acts independently. It reasons through problems, creates plans, executes tasks, and learns from outcomes—not just following scripts.",
+      "DONNA thinks and acts independently. It reasons through problems, creates plans, executes tasks, and learns from outcomes, not just following scripts.",
   },
   {
     id: "human-loop",
@@ -25,7 +25,7 @@ const coreCapabilities: FeatureCard[] = [
     title: "Human-in-the-Loop by Design",
     subtitle: "Automation that knows when to escalate",
     description:
-      "DONNA handles routine tasks automatically but always knows when to hand off to humans. Review, approve, or step in with one click—you stay in control.",
+      "DONNA handles routine tasks automatically but always knows when to hand off to humans. Review, approve, or step in with one click, you stay in control.",
   },
   {
     id: "role-fluid",
@@ -33,7 +33,7 @@ const coreCapabilities: FeatureCard[] = [
     title: "Role-Fluid AI Floater",
     subtitle: "One AI, multiple roles",
     description:
-      "DONNA dynamically shifts between roles—sales, marketing, operations, secretary—without retraining. One digital employee that adapts to your needs.",
+      "DONNA dynamically shifts between roles, sales, marketing, operations, secretary, without retraining. One digital employee that adapts to your needs.",
   },
   {
     id: "tool-native",
@@ -41,7 +41,7 @@ const coreCapabilities: FeatureCard[] = [
     title: "Tool-Native Control",
     subtitle: "Controls tools, not just suggests",
     description:
-      "DONNA doesn't just recommend actions—it controls your tools. Sends emails, creates documents, launches campaigns, and triggers workflows directly.",
+      "DONNA doesn't just recommend actions, it controls your tools. Sends emails, creates documents, launches campaigns, and triggers workflows directly.",
   },
   {
     id: "network-aware",
@@ -57,7 +57,7 @@ const coreCapabilities: FeatureCard[] = [
     title: "Multi-Modal Communication",
     subtitle: "Voice, email, SMS, chat, and more",
     description:
-      "Seamless communication across all channels. Real-time voice with transcription, intelligent email handling, SMS, web chat, and live dashboards—all in one system.",
+      "Seamless communication across all channels. Real-time voice with transcription, intelligent email handling, SMS, web chat, and live dashboards, all in one system.",
   },
 ]
 
@@ -84,7 +84,7 @@ const functionalDomains: FeatureCard[] = [
     title: "Marketing & Growth Operations",
     subtitle: "Campaigns, content, and SEO",
     description:
-      "AI-generated campaigns, landing pages, and copy. A/B testing, keyword generation, local SEO, funnel tracking, and conversion attribution—all automated.",
+      "AI-generated campaigns, landing pages, and copy. A/B testing, keyword generation, local SEO, funnel tracking, and conversion attribution, all automated.",
   },
   {
     id: "automation",

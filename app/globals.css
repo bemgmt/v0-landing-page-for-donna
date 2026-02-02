@@ -269,6 +269,63 @@ html {
     transition: all 0.3s ease;
   }
 
+  .ambient-layer {
+    position: fixed;
+    inset: -10%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.7;
+    background:
+      radial-gradient(45% 45% at 20% 20%, rgba(122, 92, 255, 0.18), transparent 60%),
+      radial-gradient(40% 40% at 80% 10%, rgba(132, 204, 255, 0.16), transparent 55%),
+      radial-gradient(50% 50% at 70% 80%, rgba(122, 92, 255, 0.12), transparent 60%);
+    animation: ambientDrift 18s ease-in-out infinite;
+  }
+
+  .ambient-layer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='160' height='160' viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    opacity: 0.5;
+    mix-blend-mode: soft-light;
+  }
+
+  .wow-glow {
+    position: relative;
+  }
+
+  .wow-glow::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(132, 204, 255, 0.18), transparent 60%);
+    filter: blur(12px);
+    opacity: 0.7;
+    z-index: -1;
+  }
+
+  .wow-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .wow-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0));
+    opacity: 0.4;
+    pointer-events: none;
+    transform: translateY(0);
+    transition: opacity 0.6s ease;
+  }
+
+  .wow-card:hover::before {
+    opacity: 0.8;
+  }
+
   .glow-accent {
     @apply shadow-[0_0_20px_rgba(132,204,255,0.3)];
   }
@@ -287,6 +344,194 @@ html {
 
   .animate-float {
     animation: float 3s ease-in-out infinite;
+  }
+
+  .stacked-layers {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .stacked-layer {
+    opacity: var(--layer-opacity, 0.35);
+    transform: translate(var(--offset-x, 0px), var(--offset-y, 0px));
+    transform-origin: center;
+  }
+
+  .stacked-layer.is-spotlight {
+    opacity: 0.55;
+  }
+
+  .stacked-layers.is-visible .stacked-layer {
+    animation: layer-settle 0.4s ease-out forwards;
+  }
+
+  .stacked-layers.is-visible .stacked-layer.is-spotlight {
+    animation: layer-settle 0.4s ease-out forwards, spotlight-breathe 9s ease-in-out 0.4s infinite;
+  }
+
+  .signal-pulses {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .signal-ring {
+    opacity: 0;
+    transform: scale(0.15);
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+
+  .signal-ring.is-dashed {
+    stroke-dasharray: 6 10;
+  }
+
+  .signal-pulses.is-visible .signal-ring {
+    animation: ring-pulse var(--ring-duration, 8s) ease-out infinite;
+    animation-delay: var(--ring-delay, 0s);
+  }
+
+  .pricing-chart {
+    margin-top: 24px;
+  }
+
+  .pricing-chart-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+    align-items: end;
+  }
+
+  .pricing-chart-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .pricing-chart-value {
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .pricing-chart-rail {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .pricing-chart-bar {
+    width: 100%;
+    height: var(--bar-height, 40%);
+  }
+
+  .pricing-chart-fill {
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pricing-chart-fill.is-highlight {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(132, 204, 255, 0.35);
+    box-shadow: 0 0 24px rgba(132, 204, 255, 0.2);
+  }
+
+  .pricing-chart.is-visible .pricing-chart-fill {
+    animation: bar-rise 1s ease-out forwards;
+    animation-delay: var(--bar-delay, 0s);
+  }
+
+  .pricing-chart-sweep {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+
+  .pricing-chart.is-visible .pricing-chart-fill.is-highlight .pricing-chart-sweep {
+    animation: highlight-sweep 1.1s ease-out 1 forwards;
+    animation-delay: calc(1.05s + var(--bar-delay, 0s));
+  }
+
+  .pricing-chart-label {
+    text-align: center;
+  }
+
+  .pricing-chart-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .pricing-chart-note {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  @keyframes layer-settle {
+    from {
+      transform: translate(var(--offset-x, 0px), var(--offset-y, 0px));
+    }
+    to {
+      transform: translate(0px, 0px);
+    }
+  }
+
+  @keyframes spotlight-breathe {
+    0%,
+    100% {
+      opacity: 0.55;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  @keyframes ring-pulse {
+    0% {
+      opacity: 0.35;
+      transform: scale(0.2);
+    }
+    80% {
+      opacity: 0.12;
+    }
+    100% {
+      opacity: 0;
+      transform: scale(2.4);
+    }
+  }
+
+  @keyframes bar-rise {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+
+  @keyframes highlight-sweep {
+    0% {
+      transform: translateX(-120%);
+      opacity: 0;
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(120%);
+      opacity: 0;
+    }
   }
 
   @keyframes fadeIn {
@@ -658,6 +903,37 @@ html {
     .scrollArrows {
       animation: none;
     }
+
+    .ambient-layer {
+      animation: none;
+    }
+
+    .stacked-layers.is-visible .stacked-layer,
+    .stacked-layers.is-visible .stacked-layer.is-spotlight,
+    .signal-pulses.is-visible .signal-ring,
+    .pricing-chart.is-visible .pricing-chart-fill,
+    .pricing-chart.is-visible .pricing-chart-fill.is-highlight .pricing-chart-sweep {
+      animation: none;
+      transform: none;
+      opacity: 0.7;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .stacked-layers.is-visible .stacked-layer,
+    .stacked-layers.is-visible .stacked-layer.is-spotlight,
+    .signal-pulses.is-visible .signal-ring,
+    .pricing-chart.is-visible .pricing-chart-fill,
+    .pricing-chart.is-visible .pricing-chart-fill.is-highlight .pricing-chart-sweep {
+      animation: none;
+      transform: none;
+      opacity: 0.7;
+    }
+
+    .pricing-chart-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
   }
 
   /* Desktop: softer snap or allow free scroll */
@@ -758,6 +1034,18 @@ html {
     }
     50% {
       box-shadow: 0 0 20px rgba(132, 204, 255, 0.6), 0 0 30px rgba(122, 92, 255, 0.4);
+    }
+  }
+
+  @keyframes ambientDrift {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(2%, -1.5%, 0) scale(1.03);
+    }
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
     }
   }
 

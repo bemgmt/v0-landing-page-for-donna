@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
-import NetworkVisualization from "@/components/network-visualization"
+import StackedLayersVisualization from "@/components/stacked-layers-visualization"
 
 export default function SectionCapabilities() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
@@ -25,7 +25,7 @@ export default function SectionCapabilities() {
           <p className="text-xs sm:text-sm uppercase tracking-[0.3em] text-foreground/60">
             What DONNA is
           </p>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight wow-glow">
             DONNA is not software you use.
           </h2>
           <p className="text-base sm:text-lg text-foreground/80 leading-relaxed">
@@ -33,7 +33,7 @@ export default function SectionCapabilities() {
           </p>
           <p className="text-base sm:text-lg text-foreground/70 leading-relaxed">
             It coordinates communication, workflows, and decisions across tools, teams, and
-            channels — without forcing you to change how you work.
+            channels without forcing you to change how you work.
           </p>
           <p className="text-base sm:text-lg text-foreground/85 leading-relaxed">
             This is not automation. This is how modern businesses run.
@@ -41,7 +41,7 @@ export default function SectionCapabilities() {
         </div>
         <div className="flex items-center justify-center">
           <div className="w-full max-w-md">
-            <NetworkVisualization />
+            <StackedLayersVisualization />
           </div>
         </div>
       </div>

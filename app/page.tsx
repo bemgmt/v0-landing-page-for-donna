@@ -10,6 +10,7 @@ import SectionNetwork from "@/components/section-network"
 import Security from "@/components/security"
 import Pricing from "@/components/pricing"
 import SectionCTA from "@/components/section-cta"
+import DemoForm from "@/components/demo-form"
 import Footer from "@/components/footer"
 import Chatbot from "@/components/chatbot"
 import { generatePageMetadata } from '@/lib/metadata'
@@ -64,6 +65,7 @@ export default function Home() {
         <Security />
         <Pricing />
         <SectionCTA />
+        <DemoForm />
         <Footer />
       </main>
       <Chatbot />

@@ -104,7 +104,7 @@ Edit `components/chatbot.tsx` to change:
 ### Modify AI Behavior
 
 Edit the system prompt in `app/api/chatbot/route.ts` to:
-- Change Donna's personality
+- Change DONNA's personality
 - Add specific instructions
 - Emphasize certain topics
 - Adjust response length

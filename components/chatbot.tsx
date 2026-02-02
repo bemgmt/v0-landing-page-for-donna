@@ -18,7 +18,7 @@ export default function Chatbot() {
     {
       id: "welcome",
       role: "assistant",
-      content: "Hi! I'm Donna, your AI Operations Assistant. How can I help you today?",
+      content: "Hi! I'm DONNA, your AI Operations Assistant. How can I help you today?",
       timestamp: new Date(),
     },
   ])

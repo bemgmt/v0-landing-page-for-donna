@@ -7,19 +7,19 @@ import { track } from "@vercel/analytics"
 const useCaseCards = [
   {
     category: "Customer Communication",
-    headline: "When customers reach out — DONNA handles it.",
+    headline: "When customers reach out, DONNA handles it.",
     description:
       "Messages, emails, website chats, and calls are handled with shared context and consistent tone. Nothing gets missed.",
   },
   {
     category: "Operations Coordination",
-    headline: "When work needs to move — DONNA coordinates it.",
+    headline: "When work needs to move, DONNA coordinates it.",
     description:
-      "Scheduling, follow-ups, task handoffs, and internal updates happen automatically — without rigid workflows.",
+      "Scheduling, follow-ups, task handoffs, and internal updates happen automatically without rigid workflows.",
   },
   {
     category: "Growth & Intent",
-    headline: "When growth matters — DONNA focuses on intent.",
+    headline: "When growth matters, DONNA focuses on intent.",
     description:
       "Instead of wasting money on broad advertising, DONNA identifies real interest and prepares outreach aligned with how buyers actually behave.",
   },
@@ -94,7 +94,7 @@ export default function SectionVerticals() {
           className="usecase-rail -mx-4 px-4 pb-6 mt-6"
         >
           {useCaseCards.map((card, index) => (
-            <article key={card.category} className="usecase-card">
+            <article key={card.category} className="usecase-card wow-card">
               <p className="text-xs sm:text-sm uppercase tracking-[0.2em] text-foreground/50 mb-3">
                 {card.category}
               </p>

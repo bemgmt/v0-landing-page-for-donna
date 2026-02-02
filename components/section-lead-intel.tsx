@@ -14,7 +14,7 @@ export default function SectionLeadIntel() {
           </h2>
           <p className="text-base md:text-lg text-foreground/70">
             DONNA includes an ethical data intelligence system that helps identify
-            potential customers in your industry—without buying lists or scraping
+            potential customers in your industry without buying lists or scraping
             personal data.
           </p>
         </div>

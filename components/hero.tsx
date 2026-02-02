@@ -113,7 +113,7 @@ export default function Hero() {
             </p>
 
             <p className="text-lg md:text-xl text-foreground/90 mb-8 leading-relaxed">
-              An agentic, multi-modal AI operations platform that functions as your digital employee layer. DONNA controls tools, coordinates workflows, and connects with other DONNAs across your network—handling calls, emails, scheduling, sales, marketing, and operations 24/7.
+              An agentic, multi-modal AI operations platform that functions as your digital employee layer. DONNA controls tools, coordinates workflows, and connects with other DONNAs across your network, handling calls, emails, scheduling, sales, marketing, and operations 24/7.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-8">

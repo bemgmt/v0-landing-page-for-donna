@@ -32,7 +32,7 @@ const networkFeatures = [
   },
   {
     title: "Scoped Permissions",
-    description: "Set specific permissions for each connection. No raw data sharing—only structured requests and outcomes.",
+    description: "Set specific permissions for each connection. No raw data sharing, only structured requests and outcomes.",
   },
   {
     title: "Fully Auditable",

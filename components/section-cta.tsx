@@ -13,19 +13,25 @@ export default function SectionCTA() {
     }
   }, [inView])
 
+  const handleScrollToForm = () => {
+    const form = document.getElementById("demo-form")
+    form?.scrollIntoView({ behavior: "smooth" })
+  }
+
   return (
     <section id="section-cta" ref={ref} className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto text-center space-y-6">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold">Join the paid beta.</h2>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold wow-glow">Join the private deployment.</h2>
         <p className="text-base sm:text-lg text-foreground/70">
           Help shape the operational layer your business will run on.
         </p>
-        <a
-          href="mailto:info@bemdonna.com?subject=Request%20Access%20to%20DONNA"
+        <button
+          type="button"
+          onClick={handleScrollToForm}
           className="inline-flex items-center justify-center px-7 py-3 rounded-full bg-accent text-background font-semibold hover:bg-accent/90 transition-all"
         >
           Request Access
-        </a>
+        </button>
       </div>
     </section>
   )

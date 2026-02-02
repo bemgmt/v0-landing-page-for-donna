@@ -26,9 +26,9 @@ const faqs = [
       "Yes. DONNA uses enterprise-grade security and access controls. Data stays in your environment and is encrypted, with configurable permissions and audit logs.",
   },
   {
-    question: "What does the beta cost, and what happens after?",
+    question: "What does private deployment access cost, and what happens after?",
     answer:
-      "The beta is paid and limited. Beta partners receive Pro-level access for one year at the Starter plan price, with the option to continue on standard Pro or Enterprise plans afterward.",
+      "Private deployment access is paid and limited. Private deployment partners receive Pro-level access for one year at the Starter plan price, with the option to continue on standard Pro or Enterprise plans afterward.",
   },
 ]
 

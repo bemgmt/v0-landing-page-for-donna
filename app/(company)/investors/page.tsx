@@ -20,7 +20,7 @@ import {
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'Investor Relations - DONNA',
-  description: 'Investment opportunity in DONNA - The Digital Office Neural Network Assistant. High-margin, scalable AI workforce assistant with AWS foundation.',
+  description: 'Investment opportunity in DONNA - The Digital Operations Neural Network Assistant. High-margin, scalable AI workforce assistant with AWS foundation.',
   path: '/investors',
 })
 
@@ -36,7 +36,7 @@ export default function InvestorsPage() {
             <span className="gradient-text">DONNA</span> Investment Opportunity
           </h1>
           <p className="text-xl text-foreground/70 max-w-4xl mx-auto leading-relaxed">
-            Donna is the Digital Office Neural Network Assistant — the AI employee that works everywhere. 
+            DONNA is the Digital Operations Neural Network Assistant, the AI employee that works everywhere. 
             Built for small and mid-sized businesses, powered by AWS native infrastructure, with voice, email, 
             SMS, and knowledge-driven automation in one system.
           </p>
@@ -52,7 +52,7 @@ export default function InvestorsPage() {
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <p className="text-foreground/80 mb-4">
                 Businesses are overwhelmed by routine admin. Workers spend an average of <strong>3.6 hours a day on email alone</strong>. 
-                Response times are slow, causing lost revenue. Tools are fragmented — CRM, email, phone, SMS, and chat all operate 
+                Response times are slow, causing lost revenue. Tools are fragmented. CRM, email, phone, SMS, and chat all operate 
                 in separate silos. Admin labor costs continue rising.
               </p>
               <p className="text-foreground/80">
@@ -75,24 +75,24 @@ export default function InvestorsPage() {
                 to powerful AI that is affordable and easy to deploy.
               </p>
               <p className="text-foreground/80">
-                Donna fills the market gap as a hybrid horizontal + vertical AI employee designed to serve real estate, 
+                DONNA fills the market gap as a hybrid horizontal + vertical AI employee designed to serve real estate, 
                 hospitality, health & beauty, contractors, and associations.
               </p>
             </div>
           </div>
         </section>
 
-        {/* What is Donna Section */}
+        {/* What is DONNA Section */}
         <section className="py-12 max-w-6xl mx-auto">
           <div className="glass-card p-8 rounded-xl">
             <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
               <Zap className="h-8 w-8 text-accent" />
-              What is Donna?
+              What is DONNA?
             </h2>
             <p className="text-lg text-foreground/80 mb-6">
-              Donna is an AI employee that handles communications, customer service, scheduling, lead qualification, 
-              data lookup, task execution, and in-meeting presence. Unlike chatbots, Donna actively works across all 
-              channels simultaneously — email, phone, SMS, voice, chat, and internal operations.
+              DONNA is an AI employee that handles communications, customer service, scheduling, lead qualification, 
+              data lookup, task execution, and in-meeting presence. Unlike chatbots, DONNA actively works across all 
+              channels simultaneously, email, phone, SMS, voice, chat, and internal operations.
             </p>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
@@ -141,7 +141,7 @@ export default function InvestorsPage() {
             </h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <p className="text-foreground/80 mb-4">
-                Donna is being built <strong>AWS Native</strong>, leveraging AWS Connect, Bedrock, QuickSuite, and Semantics. 
+                DONNA is being built <strong>AWS Native</strong>, leveraging AWS Connect, Bedrock, QuickSuite, and Semantics. 
                 Verizon VOIP pathways provide telecom-grade reliability.
               </p>
               <p className="text-foreground/80">
@@ -196,8 +196,8 @@ export default function InvestorsPage() {
             </h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <p className="text-foreground/80 mb-4">
-                Running Donna for <strong>100,000 users on AWS costs under $20k per month</strong>. With a target ARPU of 
-                roughly $5,000/mo at scale, Donna maintains an <strong className="text-accent">87% profit margin</strong> — 
+                Running DONNA for <strong>100,000 users on AWS costs under $20k per month</strong>. With a target ARPU of 
+                roughly $5,000/mo at scale, DONNA maintains an <strong className="text-accent">87% profit margin</strong>. 
                 exceptionally high for SaaS.
               </p>
             </div>
@@ -213,7 +213,7 @@ export default function InvestorsPage() {
             </h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <p className="text-foreground/80 mb-4">
-                Donna's <strong>150,000-user goal by December 2026</strong> is supported through:
+                DONNA's <strong>150,000-user goal by December 2026</strong> is supported through:
               </p>
               <ul className="list-disc list-inside space-y-2 text-foreground/80">
                 <li>Retail SaaS subscriptions</li>
@@ -234,7 +234,7 @@ export default function InvestorsPage() {
             </h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <p className="text-foreground/80 mb-4">
-                The marketing plan leverages Derek's roles in WSGVR and the Monterey Park Chamber. Donna will appear in:
+                The marketing plan leverages Derek's roles in WSGVR and the Monterey Park Chamber. DONNA will appear in:
               </p>
               <ul className="list-disc list-inside space-y-2 text-foreground/80 mb-4">
                 <li>4 Small Business Expos</li>
@@ -242,7 +242,7 @@ export default function InvestorsPage() {
                 <li>2 major installations (CAR/NAR)</li>
               </ul>
               <p className="text-foreground/80">
-                Ace PR drives national awareness. Two signature events hosted directly by Derek introduce Donna to 
+                Ace PR drives national awareness. Two signature events hosted directly by Derek introduce DONNA to 
                 hundreds of businesses.
               </p>
             </div>
@@ -259,12 +259,12 @@ export default function InvestorsPage() {
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <p className="text-foreground/80 mb-4">
                 Kore.AI, Cognigy, Gong, and Drift dominate the enterprise segment but are <strong>too expensive and complex 
-                for SMBs</strong>. They lack Donna's multi-channel integration, in-meeting participation, or white-label 
+                for SMBs</strong>. They lack DONNA's multi-channel integration, in-meeting participation, or white-label 
                 vertical approach.
               </p>
               <p className="text-foreground/80">
                 Smaller AI competitors offer limited features without voice, email integration, or workflow execution. 
-                <strong> Donna provides more tools at a fraction of the cost.</strong>
+                <strong> DONNA provides more tools at a fraction of the cost.</strong>
               </p>
             </div>
           </div>
@@ -276,7 +276,7 @@ export default function InvestorsPage() {
             <h2 className="text-3xl font-bold mb-6">Business Model</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <p className="text-foreground/80 mb-4">
-                Donna monetizes through:
+                DONNA monetizes through:
               </p>
               <ul className="list-disc list-inside space-y-2 text-foreground/80">
                 <li>Monthly SaaS subscriptions</li>
@@ -385,8 +385,8 @@ export default function InvestorsPage() {
           <div className="glass-card p-8 rounded-xl text-center">
             <h2 className="text-3xl font-bold mb-6">Join Us</h2>
             <p className="text-lg text-foreground/80 mb-8 max-w-3xl mx-auto">
-              Donna is a high-margin, scalable AI workforce assistant with a powerful AWS foundation and telecom infrastructure. 
-              With strong demand already building, Donna is positioned to become the AI employee for millions of businesses.
+              DONNA is a high-margin, scalable AI workforce assistant with a powerful AWS foundation and telecom infrastructure. 
+              With strong demand already building, DONNA is positioned to become the AI employee for millions of businesses.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a

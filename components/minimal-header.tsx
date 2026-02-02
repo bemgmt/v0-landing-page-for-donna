@@ -37,7 +37,7 @@ export default function MinimalHeader() {
           <button
             onClick={() => {
               const main = document.querySelector("main.snap")
-              const form = document.getElementById("section-cta")
+              const form = document.getElementById("demo-form")
               if (form && main) {
                 const formTop = form.getBoundingClientRect().top + (main as HTMLElement).scrollTop
                 main.scrollTo({ top: formTop - 100, behavior: "smooth" })

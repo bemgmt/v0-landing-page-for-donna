@@ -36,11 +36,11 @@ export async function POST(request: NextRequest) {
 
 async function generateAIResponse(message: string, history: Message[]): Promise<string> {
   // Prepare the system prompt with knowledge base
-  const systemPrompt = `You are Donna, an AI Office Assistant built by Bird's Eye Management Services. You help organizations automate communications, workflows, and lead management.
+  const systemPrompt = `You are DONNA, an AI Office Assistant built by Bird's Eye Management Services. You help organizations automate communications, workflows, and lead management.
 
 Key Information:
 - Company: Bird's Eye Management Services, CEO: Derek Talbird, Based in California
-- Tagline: "Your Digital Office Neural Network Assistant"
+- Tagline: "Your Digital Operations Neural Network Assistant"
 - Built on AWS with Verizon partnership for enterprise reliability
 - Supports 25+ languages including English, Spanish, and Mandarin
 
@@ -50,15 +50,15 @@ Pricing:
 - Custom: Enterprise solutions and partnerships
 
 Core Modules:
-1. Donna Email - Inbox analysis and lead classification
-2. Donna Chat - Website chatbot with human routing
-3. Donna Voice - AI receptionist with real-time transcription
-4. Donna CRM - Lead tracking and analytics
-5. Donna Books - QuickBooks integration
-6. Donna Lead Generation - Hybrid AI + human lead conversion
-7. Donna Secretary - Real-time scheduling and assistance
-8. Donna Landing Page Generator - Automated page creation
-9. Donna Photobooth - Event-based photo/video capture
+1. DONNA Email - Inbox analysis and lead classification
+2. DONNA Chat - Website chatbot with human routing
+3. DONNA Voice - AI receptionist with real-time transcription
+4. DONNA CRM - Lead tracking and analytics
+5. DONNA Books - QuickBooks integration
+6. DONNA Lead Generation - Hybrid AI + human lead conversion
+7. DONNA Secretary - Real-time scheduling and assistance
+8. DONNA Landing Page Generator - Automated page creation
+9. DONNA Photobooth - Event-based photo/video capture
 
 Industries: Real Estate, Hospitality, Professional Services, Health & Beauty, Construction/ADU, Nonprofits
 
@@ -139,7 +139,7 @@ Be professional, friendly, and helpful. Keep responses concise but informative. 
 function generateResponse(message: string, history: Message[]): string {
   // Greeting responses
   if (message.match(/\b(hi|hello|hey|greetings)\b/)) {
-    return "Hello! I'm Donna, your AI Office Assistant built by Bird's Eye Management Services. I can help you learn about our features, pricing, integrations, and more. What would you like to know?"
+    return "Hello! I'm DONNA, your AI Office Assistant built by Bird's Eye Management Services. I can help you learn about our features, pricing, integrations, and more. What would you like to know?"
   }
 
   // Pricing questions
@@ -164,7 +164,7 @@ function generateResponse(message: string, history: Message[]): string {
 
   // Security questions
   if (message.match(/\b(secure|security|safe|privacy|data|encryption|gdpr|soc)\b/)) {
-    return `Security is our top priority:\n\n• **AWS Infrastructure** - Built on enterprise-grade AWS services\n• **SOC 2 Type II Certified** - Independently audited\n• **GDPR Compliant** - Full data protection compliance\n• **Bank-Level Encryption** - All data encrypted at rest and in transit\n• **Verizon Partnership** - Enterprise network reliability\n• **Data Isolation** - Each client runs in a secure, isolated environment\n\nYour data is yours—we never train our models on customer data.`
+    return `Security is our top priority:\n\n• **AWS Infrastructure** - Built on enterprise-grade AWS services\n• **SOC 2 Type II Certified** - Independently audited\n• **GDPR Compliant** - Full data protection compliance\n• **Bank-Level Encryption** - All data encrypted at rest and in transit\n• **Verizon Partnership** - Enterprise network reliability\n• **Data Isolation** - Each client runs in a secure, isolated environment\n\nYour data is yours. We never train our models on customer data.`
   }
 
   // Integration questions

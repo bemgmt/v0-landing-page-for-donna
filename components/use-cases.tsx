@@ -6,7 +6,7 @@ const useCases = [
   {
     title: "Real Estate",
     icon: "◎",
-    description: "Transform your real estate operations with your digital employee that handles property inquiries, schedules showings, qualifies leads, and follows up automatically. DONNA answers questions about listings, sends emails, creates documents, and syncs with your CRM—all autonomously.",
+    description: "Transform your real estate operations with your digital employee that handles property inquiries, schedules showings, qualifies leads, and follows up automatically. DONNA answers questions about listings, sends emails, creates documents, and syncs with your CRM, all autonomously.",
     outcomes: ["50% faster lead response", "Schedule 3x more showings", "40% higher conversion", "Instant property information"],
   },
   {
@@ -24,7 +24,7 @@ const useCases = [
   {
     title: "Health & Beauty",
     icon: "⟳",
-    description: "Manage your salon, spa, or wellness center with your digital employee handling appointment booking, service inquiries, and client communication. DONNA controls your scheduling system, sends confirmations, processes cancellations, and creates marketing campaigns—all without manual intervention.",
+    description: "Manage your salon, spa, or wellness center with your digital employee handling appointment booking, service inquiries, and client communication. DONNA controls your scheduling system, sends confirmations, processes cancellations, and creates marketing campaigns, all without manual intervention.",
     outcomes: ["Automated appointment booking", "Reduced no-shows", "24/7 client support", "Service upselling"],
   },
 ]

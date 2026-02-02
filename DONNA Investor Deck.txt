@@ -1,45 +1,45 @@
-﻿Slide 1 — Title
-Donna is the Digital Office Neural Network Assistant — the AI employee that works everywhere. Built for small and mid-sized businesses, powered by AWS native infrastructure, with voice, email, SMS, and knowledge-driven automation in one system.
+Slide 1 — Title
+DONNA is the Digital Operations Neural Network Assistant. The AI employee that works everywhere. Built for small and mid-sized businesses, powered by AWS native infrastructure, with voice, email, SMS, and knowledge-driven automation in one system.
 ________________
 
 
 Slide 2 — Problem
-Businesses are overwhelmed by routine admin. Workers spend an average of 3.6 hours a day on email alone. Response times are slow, causing lost revenue. Tools are fragmented — CRM, email, phone, SMS, and chat all operate in separate silos. Admin labor costs continue rising. No existing AI solution combines voice, email, SMS, meeting participation, and task execution in one affordable system.
+Businesses are overwhelmed by routine admin. Workers spend an average of 3.6 hours a day on email alone. Response times are slow, causing lost revenue. Tools are fragmented. CRM, email, phone, SMS, and chat all operate in separate silos. Admin labor costs continue rising. No existing AI solution combines voice, email, SMS, meeting participation, and task execution in one affordable system.
 ________________
 
 
 Slide 3 — Opportunity
-AI assistants are the fastest-growing sector in SaaS. Small and mid-sized businesses lack access to powerful AI that is affordable and easy to deploy. Donna fills the market gap as a hybrid horizontal + vertical AI employee designed to serve real estate, hospitality, health & beauty, contractors, and associations.
+AI assistants are the fastest-growing sector in SaaS. Small and mid-sized businesses lack access to powerful AI that is affordable and easy to deploy. DONNA fills the market gap as a hybrid horizontal + vertical AI employee designed to serve real estate, hospitality, health & beauty, contractors, and associations.
 ________________
 
 
-Slide 4 — What is Donna?
-Donna is an AI employee that handles communications, customer service, scheduling, lead qualification, data lookup, task execution, and in-meeting presence. Unlike chatbots, Donna actively works across all channels simultaneously — email, phone, SMS, voice, chat, and internal operations.
+Slide 4 — What is DONNA?
+DONNA is an AI employee that handles communications, customer service, scheduling, lead qualification, data lookup, task execution, and in-meeting presence. Unlike chatbots, DONNA actively works across all channels simultaneously, email, phone, SMS, voice, chat, and internal operations.
 ________________
 
 
 Slide 5 — Secretary Bot
-Donna attends meetings, transcribes, summarizes, and executes tasks. She provides follow-up emails, schedules appointments, and retrieves needed information from your entire knowledge base and AWS services.
+DONNA attends meetings, transcribes, summarizes, and executes tasks. She provides follow-up emails, schedules appointments, and retrieves needed information from your entire knowledge base and AWS services.
 ________________
 
 
 Slide 6 — Email Bot
-Donna reads full email threads, understands context, writes intelligent replies, and maintains long-running conversations. She can operate in draft mode for review or fully autonomous for sales follow-up and support.
+DONNA reads full email threads, understands context, writes intelligent replies, and maintains long-running conversations. She can operate in draft mode for review or fully autonomous for sales follow-up and support.
 ________________
 
 
 Slide 7 — Voice Agent
-Donna answers inbound calls, books appointments, collects information, and handles customer support. Built with ElevenLabs voice, Whisper real-time transcription, Twilio media streams, and Verizon VOIP infrastructure.
+DONNA answers inbound calls, books appointments, collects information, and handles customer support. Built with ElevenLabs voice, Whisper real-time transcription, Twilio media streams, and Verizon VOIP infrastructure.
 ________________
 
 
 Slide 8 — Chatbot
-Donna integrates into any website. She is white-labeled, reads policies, SOPs, and FAQs, and converts traffic into leads. She offers intelligent reasoning far beyond basic chatbots.
+DONNA integrates into any website. She is white-labeled, reads policies, SOPs, and FAQs, and converts traffic into leads. She offers intelligent reasoning far beyond basic chatbots.
 ________________
 
 
 Slide 9 — Market Validation
-Donna is being built AWS Native, leveraging AWS Connect, Bedrock, QuickSuite, and Semantics. Verizon VOIP pathways provide telecom-grade reliability. Early demand is strong across chambers, associations, and small business networks. Waitlist numbers continue growing with high demo conversion rates.
+DONNA is being built AWS Native, leveraging AWS Connect, Bedrock, QuickSuite, and Semantics. Verizon VOIP pathways provide telecom-grade reliability. Early demand is strong across chambers, associations, and small business networks. Waitlist numbers continue growing with high demo conversion rates.
 ________________
 
 
@@ -52,27 +52,27 @@ ________________
 
 
 Slide 11 — Profit Margin
-Running Donna for 100,000 users on AWS costs under $20k per month. With a target ARPU of roughly $5,000/mo at scale, Donna maintains an 87% profit margin — exceptionally high for SaaS.
+Running DONNA for 100,000 users on AWS costs under $20k per month. With a target ARPU of roughly $5,000/mo at scale, DONNA maintains an 87% profit margin. Exceptionally high for SaaS.
 ________________
 
 
 Slide 12 — Revenue & User Projections
-Donna’s 150,000-user goal by December 2026 is supported through retail SaaS subscriptions, white-label licensing, powerhouse vertical partnerships, and strategic expo keynotes.
+DONNA’s 150,000-user goal by December 2026 is supported through retail SaaS subscriptions, white-label licensing, powerhouse vertical partnerships, and strategic expo keynotes.
 ________________
 
 
 Slide 13 — Marketing Strategy
-The marketing plan leverages Derek’s roles in WSGVR and the Monterey Park Chamber. Donna will appear in 4 Small Business Expos, 4 major AI events, and 2 major installations (CAR/NAR). Ace PR drives national awareness. Two signature events hosted directly by Derek introduce Donna to hundreds of businesses.
+The marketing plan leverages Derek’s roles in WSGVR and the Monterey Park Chamber. DONNA will appear in 4 Small Business Expos, 4 major AI events, and 2 major installations (CAR/NAR). Ace PR drives national awareness. Two signature events hosted directly by Derek introduce DONNA to hundreds of businesses.
 ________________
 
 
 Slide 14 — Competitive Landscape
-Kore.AI, Cognigy, Gong, and Drift dominate the enterprise segment but are too expensive and complex for SMBs. They lack Donna’s multi-channel integration, in-meeting participation, or white-label vertical approach. Smaller AI competitors offer limited features without voice, email integration, or workflow execution. Donna provides more tools at a fraction of the cost.
+Kore.AI, Cognigy, Gong, and Drift dominate the enterprise segment but are too expensive and complex for SMBs. They lack DONNA’s multi-channel integration, in-meeting participation, or white-label vertical approach. Smaller AI competitors offer limited features without voice, email integration, or workflow execution. DONNA provides more tools at a fraction of the cost.
 ________________
 
 
 Slide 15 — Business Model
-Donna monetizes through monthly SaaS, white-label licensing, wholesale distribution, enterprise customization, and add-on functionality. Scalability is built into the model.
+DONNA monetizes through monthly SaaS, white-label licensing, wholesale distribution, enterprise customization, and add-on functionality. Scalability is built into the model.
 ________________
 
 
@@ -82,7 +82,7 @@ ________________
 
 
 Slide 17 — Payout Scenarios
-Three valuation scenarios demonstrate investor upside: 1) valuation meeting the cap, 2) valuation at $15M, and 3) valuation at $50M+ — each showing meaningful equity returns under the SAFE structure.
+Three valuation scenarios demonstrate investor upside: 1) valuation meeting the cap, 2) valuation at $15M, and 3) valuation at $50M+. Each shows meaningful equity returns under the SAFE structure.
 ________________
 
 
@@ -94,4 +94,4 @@ ________________
 
 
 Slide 19 — Closing
-Donna is a high-margin, scalable AI workforce assistant with a powerful AWS foundation and telecom infrastructure. With strong demand already building, Donna is positioned to become the AI employee for millions of businesses. Join us.
+DONNA is a high-margin, scalable AI workforce assistant with a powerful AWS foundation and telecom infrastructure. With strong demand already building, DONNA is positioned to become the AI employee for millions of businesses. Join us.

@@ -15,7 +15,7 @@ export default function SectionHero() {
 
   const handleCTAClick = () => {
     track("cta_click_primary")
-    const form = document.getElementById("section-cta")
+    const form = document.getElementById("demo-form")
     form?.scrollIntoView({ behavior: "smooth" })
   }
 
@@ -50,11 +50,11 @@ export default function SectionHero() {
         <p className="text-xs sm:text-sm tracking-[0.3em] text-foreground/60 uppercase mb-4">
           Operational intelligence
         </p>
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-semibold mb-5 animate-fade-in">
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-semibold mb-5 animate-fade-in wow-glow">
           One AI. Every Industry.
         </h1>
         <p className="text-base sm:text-lg md:text-xl text-foreground/80 mb-5 max-w-2xl mx-auto animate-slide-up px-2">
-          Operational intelligence built to run a business — not talk about it.
+          Operational intelligence built to run a business, not talk about it.
         </p>
         <p className="text-xs sm:text-sm text-foreground/60 max-w-2xl mx-auto mb-8 px-2">
           Designed to coordinate communication, decisions, and execution across how work actually happens.
