@@ -434,7 +434,7 @@ html {
     display: flex;
     flex-direction: column;
     gap: 0;
-    padding-top: 32px;
+    padding-top: 36px;
   }
 
   .pricing-chart-label {
