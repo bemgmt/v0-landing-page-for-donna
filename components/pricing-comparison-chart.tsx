@@ -36,31 +36,32 @@ const formatCurrency = (value: number) =>
 
 export default function PricingComparisonChart() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
-  const maxValue = Math.max(...chartData.map((item) => item.value)) * 1.08
 
   return (
     <div ref={ref} className={`pricing-chart ${inView ? "is-visible" : ""}`}>
-      <div className="pricing-chart-grid">
+      <div className="pricing-chart-table">
+        <div className="pricing-chart-header">
+          <span>Approach</span>
+          <span>Monthly cost</span>
+        </div>
         {chartData.map((item, index) => {
-          const height = `${(item.value / maxValue) * 100}%`
           const style: CSSProperties = {
-            "--bar-height": height,
-            "--bar-delay": `${index * 0.08}s`,
+            "--row-delay": `${index * 0.08}s`,
           }
 
           return (
-            <div key={item.id} className="pricing-chart-column">
-              <div className="pricing-chart-value">{formatCurrency(item.value)}</div>
-              <div className="pricing-chart-rail">
-                <div className="pricing-chart-bar" style={style}>
-                  <div className={`pricing-chart-fill ${item.highlight ? "is-highlight" : ""}`}>
-                    {item.highlight ? <span className="pricing-chart-sweep" /> : null}
-                  </div>
-                </div>
-              </div>
-              <div className="pricing-chart-label">
+            <div
+              key={item.id}
+              className={`pricing-chart-row ${item.highlight ? "is-highlight" : ""}`}
+              style={style}
+            >
+              <div className="pricing-chart-cell">
                 <div className="pricing-chart-title">{item.label}</div>
                 <div className="pricing-chart-note">{item.note}</div>
+              </div>
+              <div className="pricing-chart-cell pricing-chart-amount">
+                <span className="pricing-chart-value">{formatCurrency(item.value)}</span>
+                {item.highlight ? <span className="pricing-chart-pill">Best value</span> : null}
               </div>
             </div>
           )
