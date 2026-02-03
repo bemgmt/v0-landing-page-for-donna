@@ -50,22 +50,16 @@ export default function Pricing() {
 
         <div className="mt-12">
           <h3 className="text-xl sm:text-2xl font-semibold mb-4 text-center">
-            Why $1,500 / month Is a Strategic Deal
+            DONNA vs Fragmented Tools
           </h3>
           <PricingComparisonChart />
         </div>
 
         <div className="mt-10 text-center">
-          <h4 className="text-xl font-semibold mb-3">What DONNA Replaces</h4>
-          <div className="flex flex-wrap items-center justify-center gap-3 text-sm sm:text-base text-foreground/70">
-            <span>Multiple SaaS tools</span>
-            <span>Lead lists and intent platforms</span>
-            <span>Manual follow-ups and coordination</span>
-            <span>Large portions of admin and ops roles</span>
-            <span>Wasted ad spend chasing low-intent leads</span>
-          </div>
           <p className="text-base sm:text-lg text-foreground/80 mt-6">
-            At $1,500, this replaces far more than it costs.
+            A single fragmented tool such as ZoomInfo can be $1,500 / month, and a tool stack
+            like GHL + email workflows adds more cost while still delivering only a portion of
+            what DONNA offers.
           </p>
         </div>
       </div>

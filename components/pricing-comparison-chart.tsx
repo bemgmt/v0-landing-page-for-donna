@@ -95,7 +95,6 @@ export default function PricingComparisonChart() {
       <div className="pricing-chart-table">
         <div className="pricing-chart-labels" aria-hidden="true">
           <div className="pricing-chart-label pricing-chart-label--spacer" />
-          <div className="pricing-chart-label">Monthly cost</div>
           {featureRows.map((feature) => (
             <div key={feature.id} className="pricing-chart-label">
               {feature.label}
@@ -118,10 +117,10 @@ export default function PricingComparisonChart() {
               <div className="pricing-chart-plan-header">
                 <div className="pricing-chart-plan-name">{plan.label}</div>
                 <div className="pricing-chart-plan-note">{plan.note}</div>
-              </div>
-              <div className="pricing-chart-plan-row pricing-chart-plan-row--price" data-label="Monthly cost">
-                <div className="pricing-chart-price">{formatCurrency(plan.value)}</div>
-                <div className="pricing-chart-price-unit">/month</div>
+                <div className="pricing-chart-plan-price">
+                  <span className="pricing-chart-price">{formatCurrency(plan.value)}</span>
+                  <span className="pricing-chart-price-unit">/month</span>
+                </div>
               </div>
               {featureRows.map((feature) => {
                 const isIncluded = feature.values[plan.id as keyof typeof feature.values]

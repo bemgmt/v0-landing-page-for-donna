@@ -454,7 +454,7 @@ html {
   }
 
   .pricing-chart-labels > .pricing-chart-label--spacer:first-child {
-    min-height: 70px;
+    min-height: 96px;
   }
 
   .pricing-chart-labels > .pricing-chart-label--spacer:last-child {
@@ -504,6 +504,14 @@ html {
     color: rgba(255, 255, 255, 0.6);
   }
 
+  .pricing-chart-plan-price {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+  }
+
   .pricing-chart-plan-row {
     padding: 14px 18px;
     min-height: 44px;
@@ -511,11 +519,6 @@ html {
     align-items: center;
     justify-content: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .pricing-chart-plan-row--price {
-    flex-direction: column;
-    gap: 4px;
   }
 
   .pricing-chart-price {
@@ -1065,18 +1068,9 @@ html {
       flex: 1;
     }
 
-    .pricing-chart-plan-row--price {
-      flex-direction: column;
+    .pricing-chart-plan-price {
       align-items: flex-start;
-    }
-
-    .pricing-chart-plan-row--price::before {
-      margin-bottom: 6px;
-    }
-
-    .pricing-chart-price,
-    .pricing-chart-price-unit {
-      align-self: flex-start;
+      text-align: left;
     }
   }
 
