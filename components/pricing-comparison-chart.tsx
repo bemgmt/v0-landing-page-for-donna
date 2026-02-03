@@ -3,7 +3,7 @@
 import type { CSSProperties } from "react"
 import { useInView } from "react-intersection-observer"
 
-const chartData = [
+const plans = [
   {
     id: "single-tool",
     label: "Single tool",
@@ -31,6 +31,59 @@ const chartData = [
   },
 ]
 
+const featureRows = [
+  {
+    id: "lead-capture",
+    label: "Lead capture",
+    values: {
+      "single-tool": true,
+      "tool-stack": true,
+      "part-time": true,
+      donna: true,
+    },
+  },
+  {
+    id: "crm-workflows",
+    label: "CRM + email workflows",
+    values: {
+      "single-tool": false,
+      "tool-stack": true,
+      "part-time": true,
+      donna: true,
+    },
+  },
+  {
+    id: "ops-coverage",
+    label: "Ops coverage",
+    values: {
+      "single-tool": false,
+      "tool-stack": false,
+      "part-time": true,
+      donna: true,
+    },
+  },
+  {
+    id: "ai-automation",
+    label: "AI automation",
+    values: {
+      "single-tool": false,
+      "tool-stack": false,
+      "part-time": false,
+      donna: true,
+    },
+  },
+  {
+    id: "unified-pipeline",
+    label: "Unified pipeline",
+    values: {
+      "single-tool": false,
+      "tool-stack": false,
+      "part-time": false,
+      donna: true,
+    },
+  },
+]
+
 const formatCurrency = (value: number) =>
   `$${value.toLocaleString("en-US", { maximumFractionDigits: 0 })}`
 
@@ -40,28 +93,58 @@ export default function PricingComparisonChart() {
   return (
     <div ref={ref} className={`pricing-chart ${inView ? "is-visible" : ""}`}>
       <div className="pricing-chart-table">
-        <div className="pricing-chart-header">
-          <span>Approach</span>
-          <span>Monthly cost</span>
+        <div className="pricing-chart-labels" aria-hidden="true">
+          <div className="pricing-chart-label pricing-chart-label--spacer" />
+          <div className="pricing-chart-label">Monthly cost</div>
+          {featureRows.map((feature) => (
+            <div key={feature.id} className="pricing-chart-label">
+              {feature.label}
+            </div>
+          ))}
+          <div className="pricing-chart-label pricing-chart-label--spacer" />
         </div>
-        {chartData.map((item, index) => {
+
+        {plans.map((plan, index) => {
           const style: CSSProperties = {
-            "--row-delay": `${index * 0.08}s`,
+            "--row-delay": `${index * 0.1}s`,
           }
 
           return (
             <div
-              key={item.id}
-              className={`pricing-chart-row ${item.highlight ? "is-highlight" : ""}`}
+              key={plan.id}
+              className={`pricing-chart-plan ${plan.highlight ? "is-highlight" : ""}`}
               style={style}
             >
-              <div className="pricing-chart-cell">
-                <div className="pricing-chart-title">{item.label}</div>
-                <div className="pricing-chart-note">{item.note}</div>
+              <div className="pricing-chart-plan-header">
+                <div className="pricing-chart-plan-name">{plan.label}</div>
+                <div className="pricing-chart-plan-note">{plan.note}</div>
               </div>
-              <div className="pricing-chart-cell pricing-chart-amount">
-                <span className="pricing-chart-value">{formatCurrency(item.value)}</span>
-                {item.highlight ? <span className="pricing-chart-pill">Best value</span> : null}
+              <div className="pricing-chart-plan-row pricing-chart-plan-row--price" data-label="Monthly cost">
+                <div className="pricing-chart-price">{formatCurrency(plan.value)}</div>
+                <div className="pricing-chart-price-unit">/month</div>
+              </div>
+              {featureRows.map((feature) => {
+                const isIncluded = feature.values[plan.id as keyof typeof feature.values]
+                return (
+                  <div
+                    key={feature.id}
+                    className="pricing-chart-plan-row"
+                    data-label={feature.label}
+                  >
+                    <span
+                      className={`pricing-chart-marker ${isIncluded ? "is-on" : "is-off"}`}
+                      role="img"
+                      aria-label={isIncluded ? "Included" : "Not included"}
+                    />
+                  </div>
+                )
+              })}
+              <div className="pricing-chart-plan-footer">
+                {plan.highlight ? (
+                  <span className="pricing-chart-pill">Best value</span>
+                ) : (
+                  <span className="pricing-chart-footer-spacer" />
+                )}
               </div>
             </div>
           )

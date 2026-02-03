@@ -396,63 +396,153 @@ html {
 
   .pricing-chart-table {
     display: grid;
-    gap: 14px;
+    grid-template-columns: minmax(160px, 1fr) repeat(4, minmax(150px, 1fr));
+    gap: 16px;
+    align-items: start;
   }
 
-  .pricing-chart-header {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 16px;
-    padding: 0 18px;
-    font-size: 0.65rem;
+  .pricing-chart-labels {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-top: 10px;
+  }
+
+  .pricing-chart-label {
+    padding: 14px 10px;
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.3em;
+    letter-spacing: 0.22em;
     color: rgba(255, 255, 255, 0.45);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
   }
 
-  .pricing-chart-row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 16px;
-    align-items: center;
-    padding: 16px 18px;
-    border-radius: 18px;
+  .pricing-chart-label--spacer {
+    border-bottom: none;
+  }
+
+  .pricing-chart-labels > .pricing-chart-label--spacer:first-child {
+    min-height: 70px;
+  }
+
+  .pricing-chart-labels > .pricing-chart-label--spacer:last-child {
+    min-height: 52px;
+  }
+
+  .pricing-chart-plan {
+    position: relative;
+    display: flex;
+    flex-direction: column;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 22px;
+    overflow: hidden;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
     opacity: 0;
     transform: translateY(12px);
   }
 
-  .pricing-chart-row.is-highlight {
+  .pricing-chart-plan.is-highlight {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(132, 204, 255, 0.35);
     box-shadow: 0 0 24px rgba(132, 204, 255, 0.18);
   }
 
-  .pricing-chart.is-visible .pricing-chart-row {
+  .pricing-chart.is-visible .pricing-chart-plan {
     animation: comparison-rise 0.6s ease-out forwards;
     animation-delay: var(--row-delay, 0s);
   }
 
-  .pricing-chart-cell {
+  .pricing-chart-plan-header {
+    padding: 18px 18px 14px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .pricing-chart-plan-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .pricing-chart-plan-note {
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .pricing-chart-plan-row {
+    padding: 14px 18px;
+    min-height: 44px;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .pricing-chart-plan-row--price {
     flex-direction: column;
     gap: 4px;
   }
 
-  .pricing-chart-amount {
-    text-align: right;
-    align-items: flex-end;
-    gap: 6px;
-  }
-
-  .pricing-chart-value {
-    font-size: 1.05rem;
+  .pricing-chart-price {
+    font-size: 1.15rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.85);
+  }
+
+  .pricing-chart-price-unit {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .pricing-chart-marker {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .pricing-chart-marker.is-on {
+    background: rgba(132, 204, 255, 0.2);
+    border-color: rgba(132, 204, 255, 0.6);
+  }
+
+  .pricing-chart-marker.is-on::after {
+    content: "";
+    width: 8px;
+    height: 4px;
+    border-left: 2px solid rgba(214, 238, 255, 0.95);
+    border-bottom: 2px solid rgba(214, 238, 255, 0.95);
+    transform: rotate(-45deg);
+    margin-top: -1px;
+  }
+
+  .pricing-chart-marker.is-off {
+    opacity: 0.45;
+  }
+
+  .pricing-chart-plan-footer {
+    padding: 12px 18px 16px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .pricing-chart-footer-spacer {
+    display: inline-block;
+    height: 24px;
   }
 
   .pricing-chart-pill {
@@ -464,17 +554,6 @@ html {
     color: rgba(214, 238, 255, 0.95);
     background: rgba(132, 204, 255, 0.18);
     border: 1px solid rgba(132, 204, 255, 0.35);
-  }
-
-  .pricing-chart-title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  .pricing-chart-note {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.55);
   }
 
   @keyframes layer-settle {
@@ -912,7 +991,7 @@ html {
     .stacked-layers.is-visible .stacked-layer,
     .stacked-layers.is-visible .stacked-layer.is-spotlight,
     .signal-pulses.is-visible .signal-ring,
-    .pricing-chart.is-visible .pricing-chart-row {
+    .pricing-chart.is-visible .pricing-chart-plan {
       animation: none;
       transform: none;
       opacity: 0.7;
@@ -923,24 +1002,47 @@ html {
     .stacked-layers.is-visible .stacked-layer,
     .stacked-layers.is-visible .stacked-layer.is-spotlight,
     .signal-pulses.is-visible .signal-ring,
-    .pricing-chart.is-visible .pricing-chart-row {
+    .pricing-chart.is-visible .pricing-chart-plan {
       animation: none;
       transform: none;
       opacity: 0.7;
     }
 
-    .pricing-chart-header {
+    .pricing-chart-table {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .pricing-chart-labels {
       display: none;
     }
 
-    .pricing-chart-row {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 10px;
+    .pricing-chart-plan-row {
+      justify-content: space-between;
+      gap: 12px;
     }
 
-    .pricing-chart-amount {
+    .pricing-chart-plan-row::before {
+      content: attr(data-label);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: rgba(255, 255, 255, 0.45);
+      flex: 1;
+    }
+
+    .pricing-chart-plan-row--price {
+      flex-direction: column;
       align-items: flex-start;
-      text-align: left;
+    }
+
+    .pricing-chart-plan-row--price::before {
+      margin-bottom: 6px;
+    }
+
+    .pricing-chart-price,
+    .pricing-chart-price-unit {
+      align-self: flex-start;
     }
   }
 
