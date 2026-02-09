@@ -1,153 +1,39 @@
 "use client"
 
-import type { CSSProperties } from "react"
 import { useInView } from "react-intersection-observer"
 
-const plans = [
-  {
-    id: "single-tool",
-    label: "Single tool",
-    note: "Lead gen software",
-    value: 1500,
-  },
-  {
-    id: "tool-stack",
-    label: "Tool stack",
-    note: "CRM + email + chat",
-    value: 1400,
-  },
-  {
-    id: "part-time",
-    label: "Part-time ops",
-    note: "Monthly equivalent",
-    value: 3750,
-  },
-  {
-    id: "donna",
-    label: "DONNA Beta",
-    note: "$1,500 / mo",
-    value: 1500,
-    highlight: true,
-  },
+const comparisonRows = [
+  { capability: "Lead capture & qualification", donna: "✓ Built-in", stack: "ZoomInfo — $1,500/mo" },
+  { capability: "CRM + email workflows", donna: "✓ Built-in", stack: "GHL + tools — $500/mo" },
+  { capability: "Live chat + messaging", donna: "✓ Built-in", stack: "Intercom — $400/mo" },
+  { capability: "Operations coordination", donna: "✓ Built-in", stack: "Part-time ops — $3,750/mo" },
+  { capability: "AI-powered automation", donna: "✓ Built-in", stack: "Zapier + bots — $350/mo" },
+  { capability: "Unified pipeline & intelligence", donna: "✓ Built-in", stack: "Not available" },
 ]
-
-const featureRows = [
-  {
-    id: "lead-capture",
-    label: "Lead capture",
-    values: {
-      "single-tool": true,
-      "tool-stack": true,
-      "part-time": true,
-      donna: true,
-    },
-  },
-  {
-    id: "crm-workflows",
-    label: "CRM + email workflows",
-    values: {
-      "single-tool": false,
-      "tool-stack": true,
-      "part-time": true,
-      donna: true,
-    },
-  },
-  {
-    id: "ops-coverage",
-    label: "Ops coverage",
-    values: {
-      "single-tool": false,
-      "tool-stack": false,
-      "part-time": true,
-      donna: true,
-    },
-  },
-  {
-    id: "ai-automation",
-    label: "AI automation",
-    values: {
-      "single-tool": false,
-      "tool-stack": false,
-      "part-time": false,
-      donna: true,
-    },
-  },
-  {
-    id: "unified-pipeline",
-    label: "Unified pipeline",
-    values: {
-      "single-tool": false,
-      "tool-stack": false,
-      "part-time": false,
-      donna: true,
-    },
-  },
-]
-
-const formatCurrency = (value: number) =>
-  `$${value.toLocaleString("en-US", { maximumFractionDigits: 0 })}`
 
 export default function PricingComparisonChart() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
 
   return (
-    <div ref={ref} className={`pricing-chart ${inView ? "is-visible" : ""}`}>
-      <div className="pricing-chart-table">
-        <div className="pricing-chart-labels" aria-hidden="true">
-          <div className="pricing-chart-label pricing-chart-label--spacer" />
-          {featureRows.map((feature) => (
-            <div key={feature.id} className="pricing-chart-label">
-              {feature.label}
-            </div>
-          ))}
-          <div className="pricing-chart-label pricing-chart-label--spacer" />
+    <div ref={ref} className={`comparison-table-wrapper ${inView ? "is-visible" : ""}`}>
+      <div className="comparison-table" role="table" aria-label="DONNA vs. fragmented tool stack">
+        <div className="comparison-table-header" role="row">
+          <div role="columnheader">Capability</div>
+          <div role="columnheader">DONNA</div>
+          <div role="columnheader">Tool Stack</div>
         </div>
-
-        {plans.map((plan, index) => {
-          const style: CSSProperties = {
-            "--row-delay": `${index * 0.1}s`,
-          }
-
-          return (
-            <div
-              key={plan.id}
-              className={`pricing-chart-plan ${plan.highlight ? "is-highlight" : ""}`}
-              style={style}
-            >
-              <div className="pricing-chart-plan-header">
-                <div className="pricing-chart-plan-name">{plan.label}</div>
-                <div className="pricing-chart-plan-note">{plan.note}</div>
-                <div className="pricing-chart-plan-price">
-                  <span className="pricing-chart-price">{formatCurrency(plan.value)}</span>
-                  <span className="pricing-chart-price-unit">/month</span>
-                </div>
-              </div>
-              {featureRows.map((feature) => {
-                const isIncluded = feature.values[plan.id as keyof typeof feature.values]
-                return (
-                  <div
-                    key={feature.id}
-                    className="pricing-chart-plan-row"
-                    data-label={feature.label}
-                  >
-                    <span
-                      className={`pricing-chart-marker ${isIncluded ? "is-on" : "is-off"}`}
-                      role="img"
-                      aria-label={isIncluded ? "Included" : "Not included"}
-                    />
-                  </div>
-                )
-              })}
-              <div className="pricing-chart-plan-footer">
-                {plan.highlight ? (
-                  <span className="pricing-chart-pill">Best value</span>
-                ) : (
-                  <span className="pricing-chart-footer-spacer" />
-                )}
-              </div>
-            </div>
-          )
-        })}
+        {comparisonRows.map((row, index) => (
+          <div key={index} className="comparison-table-row" role="row">
+            <div className="comparison-table-feature" role="cell">{row.capability}</div>
+            <div className="comparison-table-donna" role="cell">{row.donna}</div>
+            <div className="comparison-table-stack" role="cell">{row.stack}</div>
+          </div>
+        ))}
+        <div className="comparison-table-total" role="row">
+          <div role="cell">Total Monthly Cost</div>
+          <div className="comparison-table-donna" role="cell">$1,500/mo</div>
+          <div className="comparison-table-stack-highlight" role="cell">$6,500+/mo</div>
+        </div>
       </div>
     </div>
   )

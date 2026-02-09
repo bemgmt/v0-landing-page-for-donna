@@ -588,6 +588,113 @@ html {
     border: 1px solid rgba(132, 204, 255, 0.35);
   }
 
+  /* DONNA vs Tool Stack comparison table (from SEO-optimized example) */
+  .comparison-table-wrapper {
+    margin-top: 40px;
+  }
+
+  .comparison-table-wrapper .comparison-table {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+
+  .comparison-table-wrapper.is-visible .comparison-table {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .comparison-table {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+  }
+
+  .comparison-table-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .comparison-table-header div {
+    padding: 16px 24px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .comparison-table-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .comparison-table-row:last-of-type {
+    border-bottom: none;
+  }
+
+  .comparison-table-row:hover {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .comparison-table-row div,
+  .comparison-table-total div {
+    padding: 16px 24px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+  }
+
+  .comparison-table-feature {
+    font-weight: 500;
+    color: var(--foreground);
+  }
+
+  .comparison-table-donna {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .comparison-table-stack {
+    color: var(--muted-foreground);
+  }
+
+  .comparison-table-total {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    border-top: 2px solid var(--accent);
+    background: rgba(132, 204, 255, 0.06);
+  }
+
+  .comparison-table-total div {
+    padding: 18px 24px;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .comparison-table-stack-highlight {
+    color: var(--destructive) !important;
+  }
+
+  @media (max-width: 768px) {
+    .comparison-table-header,
+    .comparison-table-row,
+    .comparison-table-total {
+      grid-template-columns: 1.5fr 1fr 1fr;
+    }
+
+    .comparison-table-header div,
+    .comparison-table-row div,
+    .comparison-table-total div {
+      padding: 12px 14px;
+      font-size: 12px;
+    }
+  }
+
   @keyframes layer-settle {
     from {
       transform: translate(var(--offset-x, 0px), var(--offset-y, 0px));
