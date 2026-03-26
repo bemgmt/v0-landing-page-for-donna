@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import Image from "next/image"
 import { useState, useEffect } from "react"
@@ -25,7 +25,7 @@ export default function MinimalHeader() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
             <Image
-              src="/DONNA-logo.png"
+              src="/brand/full/donna-logo-512.png"
               alt="DONNA Logo"
               width={32}
               height={32}
@@ -52,4 +52,5 @@ export default function MinimalHeader() {
     </header>
   )
 }
+
 

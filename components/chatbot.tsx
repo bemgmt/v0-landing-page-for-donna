@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState, useRef, useEffect } from "react"
 import { Send, X, MessageCircle } from "lucide-react"
@@ -176,7 +176,7 @@ export default function Chatbot() {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full liquid-glass-clear flex items-center justify-center border border-white/20 overflow-hidden">
                 <Image
-                  src="/DONNA-logo.png"
+                  src="/brand/full/donna-logo-512.png"
                   alt="DONNA Logo"
                   width={32}
                   height={32}
@@ -258,4 +258,5 @@ export default function Chatbot() {
     </>
   )
 }
+
 

@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState } from "react"
 import Link from "next/link"
@@ -23,7 +23,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="#" className="flex items-center gap-2 group">
             <Image
-              src="/DONNA-logo.png"
+              src="/brand/full/donna-logo-512.png"
               alt="DONNA Logo"
               width={32}
               height={32}
@@ -95,3 +95,4 @@ export default function Header() {
     </header>
   )
 }
+
