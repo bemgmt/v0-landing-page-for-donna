@@ -1,8 +1,17 @@
-﻿"use client"
+"use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { Send, X, MessageCircle } from "lucide-react"
 import Image from "next/image"
+
+const API_BASE = process.env.NEXT_PUBLIC_DONNA_API_BASE || "https://app.bemdonna.com"
+const WIDGET_TOKEN = process.env.NEXT_PUBLIC_DONNA_WIDGET_TOKEN
+const USER_PROFILE = process.env.NEXT_PUBLIC_DONNA_USER_PROFILE || "general"
+const GREETING =
+  process.env.NEXT_PUBLIC_DONNA_GREETING ||
+  "Hi! I'm DONNA, your AI Operations Assistant. How can I help you today?"
+
+const STORAGE_KEY = "donna_embed_chat_id"
 
 interface Message {
   id: string
@@ -11,14 +20,20 @@ interface Message {
   timestamp: Date
 }
 
+function logicUrl() {
+  const base = API_BASE.replace(/\/$/, "")
+  return `${base}/api/v1/donna/logic`
+}
+
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false)
   const [showPrompt, setShowPrompt] = useState(false)
+  const [chatId, setChatId] = useState<string | null>(null)
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
       role: "assistant",
-      content: "Hi! I'm DONNA, your AI Operations Assistant. How can I help you today?",
+      content: GREETING,
       timestamp: new Date(),
     },
   ])
@@ -27,44 +42,46 @@ export default function Chatbot() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [pageReadyTime, setPageReadyTime] = useState<number | null>(null)
 
-  // Track when page is ready (after intro completes or immediately if no intro)
   useEffect(() => {
-    // Check if intro was already skipped/not shown
+    let id = localStorage.getItem(STORAGE_KEY)
+    if (!id) {
+      id = `embed-${Math.random().toString(36).slice(2)}`
+      localStorage.setItem(STORAGE_KEY, id)
+    }
+    setChatId(id)
+  }, [])
+
+  useEffect(() => {
     const checkIntroStatus = () => {
       const introOverlay = document.getElementById("introOverlay")
       if (!introOverlay || introOverlay.classList.contains("fadeOut")) {
-        // Intro already done or not showing
         setPageReadyTime(Date.now())
       }
     }
-    
-    // Check immediately
+
     checkIntroStatus()
-    
-    // Listen for intro completion
+
     const handleIntroComplete = () => {
       setPageReadyTime(Date.now())
     }
-    
+
     window.addEventListener("introComplete", handleIntroComplete)
-    
-    // Also check after a short delay in case intro completes quickly
+
     const checkTimer = setTimeout(() => {
       checkIntroStatus()
     }, 1000)
-    
+
     return () => {
       window.removeEventListener("introComplete", handleIntroComplete)
       clearTimeout(checkTimer)
     }
   }, [])
 
-  // Show prompt after 30 seconds of being on the page (after intro completes)
   useEffect(() => {
     if (!isOpen && pageReadyTime !== null) {
       const timeSinceReady = Date.now() - pageReadyTime
       const remainingTime = Math.max(0, 30000 - timeSinceReady)
-      
+
       const timer = setTimeout(() => {
         setShowPrompt(true)
       }, remainingTime)
@@ -83,13 +100,14 @@ export default function Chatbot() {
     scrollToBottom()
   }, [messages])
 
-  const handleSend = async () => {
+  const handleSend = useCallback(async () => {
     if (!input.trim() || isLoading) return
 
+    const text = input.trim()
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
-      content: input.trim(),
+      content: text,
       timestamp: new Date(),
     }
 
@@ -97,53 +115,87 @@ export default function Chatbot() {
     setInput("")
     setIsLoading(true)
 
+    if (!WIDGET_TOKEN || WIDGET_TOKEN === "YOUR_WIDGET_TOKEN") {
+      const err: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content:
+          "Missing widget token. Create one in Chatbot Control → API tokens.",
+        timestamp: new Date(),
+      }
+      setMessages((prev) => [...prev, err])
+      setIsLoading(false)
+      return
+    }
+
+    const id = chatId ?? localStorage.getItem(STORAGE_KEY)
+    if (!id) {
+      setIsLoading(false)
+      return
+    }
+
     try {
-      // Call the chatbot API
-      const response = await fetch("/api/chatbot", {
+      const response = await fetch(logicUrl(), {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input.trim(), history: messages }),
+        headers: {
+          "Content-Type": "application/json",
+          "X-Widget-Token": WIDGET_TOKEN,
+        },
+        body: JSON.stringify({
+          message: text,
+          user_profile: USER_PROFILE,
+          chat_id: id,
+        }),
       })
 
-      if (!response.ok) throw new Error("Failed to get response")
+      const data = (await response.json().catch(() => ({}))) as {
+        reply?: string
+        error?: string | { message?: string }
+      }
 
-      const data = await response.json()
+      let assistantText: string
+      if (!response.ok) {
+        const err = data?.error
+        assistantText =
+          (typeof err === "object" && err?.message) ||
+          (typeof err === "string" ? err : null) ||
+          `Error ${response.status}`
+      } else {
+        assistantText = data.reply ?? ""
+      }
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: data.message,
+        content: assistantText,
         timestamp: new Date(),
       }
 
       setMessages((prev) => [...prev, assistantMessage])
-    } catch (error) {
-      console.error("Chatbot error:", error)
+    } catch {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: "I apologize, but I'm having trouble responding right now. Please try again or contact us at info@bemdonna.com.",
+        content: "Error contacting DONNA.",
         timestamp: new Date(),
       }
       setMessages((prev) => [...prev, errorMessage])
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [input, isLoading, chatId])
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
-      handleSend()
+      void handleSend()
     }
   }
 
   return (
     <>
-      {/* Floating Chat Button */}
       {!isOpen && (
-        <div className="fixed bottom-6 right-6 z-[9999]" style={{ position: 'fixed' }}>
-          {/* Attention-grabbing notification */}
+        <div className="fixed bottom-6 right-6 z-[99999]" style={{ position: "fixed" }}>
           {showPrompt && (
             <div className="absolute bottom-full right-0 mb-3 animate-slide-down-bounce">
               <div className="bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm font-semibold shadow-lg whitespace-nowrap relative">
@@ -152,7 +204,7 @@ export default function Chatbot() {
               </div>
             </div>
           )}
-          
+
           <button
             onClick={() => {
               setIsOpen(true)
@@ -166,12 +218,11 @@ export default function Chatbot() {
         </div>
       )}
 
-      {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-[9999] w-[420px] h-[640px] max-w-[calc(100vw-3rem)] max-h-[calc(100vh-3rem)] flex flex-col liquid-glass-card rounded-2xl shadow-2xl border border-white/20 overflow-hidden animate-slide-up"
-          style={{ zIndex: 9999 }}
+        <div
+          className="fixed bottom-6 right-6 z-[99999] w-[420px] h-[640px] max-w-[calc(100vw-3rem)] max-h-[calc(100vh-3rem)] flex flex-col liquid-glass-card rounded-2xl shadow-2xl border border-white/20 overflow-hidden animate-slide-up"
+          style={{ zIndex: 99999 }}
         >
-          {/* Header */}
           <div className="liquid-glass border-b border-white/10 p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full liquid-glass-clear flex items-center justify-center border border-white/20 overflow-hidden">
@@ -197,7 +248,6 @@ export default function Chatbot() {
             </button>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((message) => (
               <div
@@ -213,7 +263,10 @@ export default function Chatbot() {
                 >
                   <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
                   <p className="text-xs opacity-50 mt-1.5">
-                    {message.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                    {message.timestamp.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </p>
                 </div>
               </div>
@@ -228,20 +281,19 @@ export default function Chatbot() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
           <div className="p-4 border-t border-white/10 liquid-glass">
             <div className="flex gap-2">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyPress={handleKeyPress}
+                onKeyDown={handleKeyDown}
                 placeholder="Ask me anything..."
                 disabled={isLoading}
                 className="flex-1 px-4 py-2.5 rounded-lg liquid-glass-clear border border-white/10 focus:border-accent/50 focus:outline-none transition-colors text-foreground placeholder:text-foreground/40 disabled:opacity-50"
               />
               <button
-                onClick={handleSend}
+                onClick={() => void handleSend()}
                 disabled={!input.trim() || isLoading}
                 className="px-4 py-2.5 rounded-lg liquid-glass text-foreground hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center border border-white/20"
                 aria-label="Send message"
@@ -250,7 +302,7 @@ export default function Chatbot() {
               </button>
             </div>
             <p className="text-xs text-foreground/40 mt-2 text-center">
-              Powered by Bird's Eye Management Services
+              Powered by Bird&apos;s Eye Management Services
             </p>
           </div>
         </div>
@@ -258,5 +310,3 @@ export default function Chatbot() {
     </>
   )
 }
-
-
