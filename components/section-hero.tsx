@@ -1,11 +1,13 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
+import { startStripeCheckout } from "@/lib/start-checkout"
 
 export default function SectionHero() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
 
   useEffect(() => {
     if (inView) {
@@ -13,14 +15,18 @@ export default function SectionHero() {
     }
   }, [inView])
 
-  const handleCTAClick = () => {
-    track("cta_click_primary")
-    const form = document.getElementById("demo-form")
-    form?.scrollIntoView({ behavior: "smooth" })
+  const handleCTAClick = async () => {
+    track("checkout_click", { placement: "hero_primary" })
+    setCheckoutLoading(true)
+    const result = await startStripeCheckout()
+    setCheckoutLoading(false)
+    if (!result.ok) {
+      window.alert(result.error)
+    }
   }
 
   const handleScrollToNext = () => {
-    const nextSection = document.getElementById("what-donna-is")
+    const nextSection = document.getElementById("follow-through-problem")
     nextSection?.scrollIntoView({ behavior: "smooth" })
   }
 
@@ -48,25 +54,36 @@ export default function SectionHero() {
       <div className="max-w-3xl mx-auto text-center relative z-10 pt-20 pb-12">
         <div className="absolute inset-x-0 -top-8 mx-auto h-64 w-64 sm:h-80 sm:w-80 rounded-full bg-accent/20 blur-[120px] opacity-80 -z-10 pointer-events-none" />
         <p className="text-xs sm:text-sm tracking-[0.3em] text-foreground/60 uppercase mb-4">
-          Operational intelligence
+          Real estate operations
         </p>
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-semibold mb-5 animate-fade-in wow-glow">
-          One AI. Every Industry.
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-semibold mb-5 animate-fade-in wow-glow leading-tight">
+          Your business doesn&apos;t need more tools.
+          <br />
+          <span className="text-foreground/95">It needs a system that actually runs.</span>
         </h1>
-        <p className="text-base sm:text-lg md:text-xl text-foreground/80 mb-5 max-w-2xl mx-auto animate-slide-up px-2">
-          Operational intelligence built to run a business, not talk about it.
+        <p className="text-base sm:text-lg md:text-xl text-foreground/80 mb-4 max-w-2xl mx-auto animate-slide-up px-2 leading-relaxed">
+          DONNA is the AI operational infrastructure for the real estate industry. It maximizes the value
+          of your agents, staff, and software by unifying communication, coordination, and execution in
+          one system.
         </p>
-        <p className="text-xs sm:text-sm text-foreground/60 max-w-2xl mx-auto mb-8 px-2">
-          Designed to coordinate communication, decisions, and execution across how work actually happens.
+        <p className="text-lg sm:text-xl md:text-2xl font-medium text-foreground mb-8 px-2 animate-slide-up">
+          Nothing gets missed. Everything moves.
         </p>
         <div className="flex flex-col items-center gap-4">
           <button
+            type="button"
             onClick={handleCTAClick}
-            className="px-7 py-3 rounded-full animated-edge-button text-foreground hover:bg-white/20 transition-all duration-300 font-semibold text-base sm:text-lg refract-on-hover animate-slide-up relative z-10"
+            disabled={checkoutLoading}
+            className="px-7 py-3 rounded-full animated-edge-button text-foreground hover:bg-white/20 transition-all duration-300 font-semibold text-base sm:text-lg refract-on-hover animate-slide-up relative z-10 disabled:opacity-60"
             style={{ animationDelay: "200ms" }}
           >
-            <span className="relative z-10">Request Access</span>
+            <span className="relative z-10">
+              {checkoutLoading ? "Redirecting…" : "Get Early Access — $500/month"}
+            </span>
           </button>
+          <p className="text-xs sm:text-sm text-foreground/65 max-w-md px-2">
+            No contracts. Early adopters lock in long-term advantages.
+          </p>
           <button
             type="button"
             onClick={handleScrollToNext}
@@ -79,4 +96,3 @@ export default function SectionHero() {
     </section>
   )
 }
-

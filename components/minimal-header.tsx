@@ -2,9 +2,12 @@
 
 import Image from "next/image"
 import { useState, useEffect } from "react"
+import { track } from "@vercel/analytics"
+import { startStripeCheckout } from "@/lib/start-checkout"
 
 export default function MinimalHeader() {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,6 +17,16 @@ export default function MinimalHeader() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  const handleEarlyAccess = async () => {
+    track("checkout_click", { placement: "header" })
+    setCheckoutLoading(true)
+    const result = await startStripeCheckout()
+    setCheckoutLoading(false)
+    if (!result.ok) {
+      window.alert(result.error)
+    }
+  }
 
   return (
     <header
@@ -35,22 +48,17 @@ export default function MinimalHeader() {
             <span className="text-lg font-bold gradient-text">DONNA</span>
           </div>
           <button
-            onClick={() => {
-              const main = document.querySelector("main.snap")
-              const form = document.getElementById("demo-form")
-              if (form && main) {
-                const formTop = form.getBoundingClientRect().top + (main as HTMLElement).scrollTop
-                main.scrollTo({ top: formTop - 100, behavior: "smooth" })
-              }
-            }}
-            className="px-4 py-2 rounded-lg animated-edge-button text-sm font-medium hover:bg-white/20 transition-all relative"
+            type="button"
+            onClick={handleEarlyAccess}
+            disabled={checkoutLoading}
+            className="px-4 py-2 rounded-lg animated-edge-button text-sm font-medium hover:bg-white/20 transition-all relative disabled:opacity-60"
           >
-            <span className="relative z-10">Join Waitlist</span>
+            <span className="relative z-10">
+              {checkoutLoading ? "Redirecting…" : "Get Early Access"}
+            </span>
           </button>
         </div>
       </div>
     </header>
   )
 }
-
-

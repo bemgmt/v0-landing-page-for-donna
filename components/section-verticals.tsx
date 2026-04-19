@@ -4,28 +4,30 @@ import { useEffect, useRef, useState } from "react"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
 
-const useCaseCards = [
+const ecosystemCards = [
   {
-    category: "Customer Communication",
-    headline: "When customers reach out, DONNA handles it.",
-    description:
-      "Messages, emails, website chats, and calls are handled with shared context and consistent tone. Nothing gets missed.",
+    category: "Brokerages",
+    headline: "Front-line deals and client relationships.",
+    description: "DONNA keeps deal communication and next steps aligned across your team.",
   },
   {
-    category: "Operations Coordination",
-    headline: "When work needs to move, DONNA coordinates it.",
-    description:
-      "Scheduling, follow-ups, task handoffs, and internal updates happen automatically without rigid workflows.",
+    category: "Mortgage & lending",
+    headline: "Timing that used to live in email threads.",
+    description: "Loan milestones and handoffs stay visible so financing doesn’t stall the file.",
   },
   {
-    category: "Growth & Intent",
-    headline: "When growth matters, DONNA focuses on intent.",
-    description:
-      "Instead of wasting money on broad advertising, DONNA identifies real interest and prepares outreach aligned with how buyers actually behave.",
+    category: "Title & closing",
+    headline: "The finish line where details matter most.",
+    description: "Closing tasks and dependencies stay coordinated through the last signature.",
+  },
+  {
+    category: "Inspectors & insurance",
+    headline: "Vendors in the flow, not outside it.",
+    description: "Inspections, repairs, and coverage steps connect to the same deal timeline.",
   },
 ]
 
-const categories = ["Customer Communication", "Operations Coordination", "Growth & Intent"]
+const categories = ecosystemCards.map((c) => c.category)
 
 export default function SectionVerticals() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
@@ -34,7 +36,7 @@ export default function SectionVerticals() {
 
   useEffect(() => {
     if (inView) {
-      track("section_view", { section: 3 })
+      track("section_view", { section: 5 })
     }
   }, [inView])
 
@@ -46,7 +48,7 @@ export default function SectionVerticals() {
       const width = rail.clientWidth
       if (!width) return
       const nextIndex = Math.round(rail.scrollLeft / width)
-      setActiveIndex(Math.min(Math.max(nextIndex, 0), useCaseCards.length - 1))
+      setActiveIndex(Math.min(Math.max(nextIndex, 0), ecosystemCards.length - 1))
     }
 
     handleScroll()
@@ -60,17 +62,18 @@ export default function SectionVerticals() {
   }, [])
 
   return (
-    <section id="use-cases" ref={ref} className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 relative">
+    <section id="ecosystem" ref={ref} className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 relative">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-10">
           <p className="text-xs sm:text-sm uppercase tracking-[0.3em] text-foreground/60 mb-3">
-            How SMBs use DONNA
+            Real estate ecosystem
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4">
-            Real use cases. Real operations.
+            Built for how real estate actually works
           </h2>
           <p className="text-base sm:text-lg text-foreground/70 max-w-2xl mx-auto">
-            I can picture this running my day-to-day without hiring more people.
+            Real estate isn&apos;t one business. It&apos;s a network — brokerages, mortgage, title,
+            inspectors, insurance. DONNA connects the flow between them.
           </p>
         </div>
 
@@ -89,24 +92,23 @@ export default function SectionVerticals() {
           </div>
         </div>
 
-        <div
-          ref={railRef}
-          className="usecase-rail -mx-4 px-4 pb-6 mt-6"
-        >
-          {useCaseCards.map((card, index) => (
+        <div ref={railRef} className="usecase-rail -mx-4 px-4 pb-6 mt-6">
+          {ecosystemCards.map((card, index) => (
             <article key={card.category} className="usecase-card wow-card">
               <p className="text-xs sm:text-sm uppercase tracking-[0.2em] text-foreground/50 mb-3">
                 {card.category}
               </p>
               <h3 className="text-xl sm:text-2xl font-semibold mb-3">{card.headline}</h3>
               <p className="text-sm sm:text-base text-foreground/70 leading-relaxed">{card.description}</p>
-              <div className="mt-6 text-xs text-foreground/50">Use case {index + 1} of {useCaseCards.length}</div>
+              <div className="mt-6 text-xs text-foreground/50">
+                Segment {index + 1} of {ecosystemCards.length}
+              </div>
             </article>
           ))}
         </div>
 
         <div className="flex items-center justify-center gap-2">
-          {useCaseCards.map((_, index) => (
+          {ecosystemCards.map((_, index) => (
             <span
               key={index}
               className={`h-1.5 rounded-full transition-all ${
@@ -115,6 +117,10 @@ export default function SectionVerticals() {
             />
           ))}
         </div>
+
+        <p className="text-center text-lg sm:text-xl font-medium text-foreground/90 mt-12">
+          Less chasing. More closing.
+        </p>
       </div>
     </section>
   )

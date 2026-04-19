@@ -10,12 +10,12 @@ export default function SectionNetwork() {
 
   useEffect(() => {
     if (inView) {
-      track("section_view", { section: 4 })
+      track("section_view", { section: 6 })
     }
   }, [inView])
 
   return (
-    <section ref={ref} className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
+    <section id="intelligence-network" ref={ref} className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div className="order-2 lg:order-1 flex items-center justify-center">
           <div className="w-full max-w-md wow-card">
@@ -24,24 +24,27 @@ export default function SectionNetwork() {
         </div>
         <div className="order-1 lg:order-2 space-y-5">
           <p className="text-xs sm:text-sm uppercase tracking-[0.3em] text-foreground/60">
-            Network intelligence
+            DONNA Intelligence Network
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold wow-glow">
-            Your business doesn’t operate alone.
+            The more DONNAs, the more powerful it gets
           </h2>
           <p className="text-base sm:text-lg text-foreground/75 leading-relaxed">
-            Through the DONNA-to-DONNA Network, businesses benefit from shared operational
-            intelligence without sharing private data.
+            As each DONNA learns, that intelligence compounds across the network. As more connecting
+            companies run DONNA, they can expedite co-working projects and even refer leads to each
+            other.
           </p>
-          <div className="space-y-1 text-base sm:text-lg text-foreground/80">
-            <p>Patterns improve.</p>
-            <p>Decisions get smarter.</p>
-            <p>Outcomes compound.</p>
-          </div>
-          <p className="text-base sm:text-lg text-foreground/70">Same system. Different industries.</p>
+          <p className="text-base sm:text-lg text-foreground/80 leading-relaxed">
+            DONNA never shares your data — just{" "}
+            <strong className="text-foreground font-semibold">
+              the patterns that make deals move faster.
+            </strong>
+          </p>
+          <p className="text-base sm:text-lg font-medium text-foreground pt-2">
+            Every new business makes every other business better.
+          </p>
         </div>
       </div>
     </section>
   )
 }
-

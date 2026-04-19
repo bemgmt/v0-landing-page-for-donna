@@ -4,43 +4,43 @@ import ScrollbarFade from "@/components/scrollbar-fade"
 import MinimalHeader from "@/components/minimal-header"
 import BackgroundAnimation from "@/components/background-animation"
 import SectionHero from "@/components/section-hero"
+import SectionRealEstatePain from "@/components/section-real-estate-pain"
+import SectionReframe from "@/components/section-reframe"
 import SectionCapabilities from "@/components/section-capabilities"
 import SectionVerticals from "@/components/section-verticals"
 import SectionNetwork from "@/components/section-network"
-import Security from "@/components/security"
+import SectionAIHarness from "@/components/section-ai-harness"
 import Pricing from "@/components/pricing"
+import SectionEarlyAdopter from "@/components/section-early-adopter"
 import SectionCTA from "@/components/section-cta"
 import DemoForm from "@/components/demo-form"
 import Footer from "@/components/footer"
 import Chatbot from "@/components/chatbot"
+import CheckoutStatusBanner from "@/components/checkout-status-banner"
 import { generatePageMetadata } from '@/lib/metadata'
 import { softwareApplicationSchema } from '@/lib/schema-markup'
 
 export const metadata: Metadata = generatePageMetadata({
-  title: 'DONNA - Digital Operations Neural Network Assistant',
-  description: 'DONNA is an AI operations platform that runs everyday business tasks across departments. It controls tools, coordinates workflows, and supports communications, sales, marketing, and operations 24/7.',
+  title: 'DONNA — AI Operational Infrastructure for Real Estate',
+  description:
+    'DONNA unifies communication, coordination, and execution for brokerages and real estate operators. Early access $500/month. Nothing gets missed. Everything moves.',
   path: '/',
 })
 
 export default function Home() {
-  // Schema markup for the home page
   const schemaMarkup = {
     '@context': 'https://schema.org',
     '@graph': [
       softwareApplicationSchema({
         name: 'DONNA',
-        description: 'Digital Operations Neural Network Assistant - Agentic AI operations platform',
+        description:
+          'AI operational infrastructure for real estate — coordinates agents, staff, vendors, and systems so deals move faster.',
         features: [
-          'Agentic AI Operations',
-          'Multi-Modal Communication',
-          'Tool Control & Automation',
-          'DONNA-to-DONNA Network',
-          'Sales & Lead Management',
-          'Marketing Operations',
-          'Secretary & Office Operations',
-          'Workflow Automation',
-          'Knowledge Base & Memory',
-          'Enterprise Integrations',
+          'Deal communication and follow-through',
+          'Cross-party coordination (agents, lenders, title, vendors)',
+          'Tasks, reminders, and execution across the deal timeline',
+          'DONNA Intelligence Network (privacy-preserving patterns)',
+          'Early access subscription for brokerages and operators',
         ],
       }),
     ],
@@ -52,6 +52,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
       />
+      <CheckoutStatusBanner />
       <ScrollCue />
       <ScrollbarFade />
       <MinimalHeader />
@@ -59,11 +60,14 @@ export default function Home() {
       <div className="ambient-layer" aria-hidden="true" />
       <main id="main-content" className="snap relative z-10">
         <SectionHero />
+        <SectionRealEstatePain />
+        <SectionReframe />
         <SectionCapabilities />
         <SectionVerticals />
         <SectionNetwork />
-        <Security />
+        <SectionAIHarness />
         <Pricing />
+        <SectionEarlyAdopter />
         <SectionCTA />
         <DemoForm />
         <Footer />

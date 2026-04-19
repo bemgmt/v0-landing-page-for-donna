@@ -5,8 +5,7 @@ import { useEffect } from "react"
 export default function ScrollbarFade() {
   useEffect(() => {
     const handleScroll = () => {
-      // Get the first section (What DONNA Is)
-      const firstSection = document.querySelector("section#what-donna-is")
+      const firstSection = document.querySelector("section#follow-through-problem")
       if (!firstSection) return
 
       const scrollY = window.scrollY

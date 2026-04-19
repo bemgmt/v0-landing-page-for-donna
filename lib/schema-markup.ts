@@ -14,8 +14,14 @@ export function softwareApplicationSchema({
     applicationCategory: 'BusinessApplication',
     offers: {
       '@type': 'Offer',
-      price: 'Varies',
+      price: '500',
       priceCurrency: 'USD',
+      priceSpecification: {
+        '@type': 'UnitPriceSpecification',
+        price: '500',
+        priceCurrency: 'USD',
+        billingDuration: 'P1M',
+      },
     },
     featureList: features,
   }

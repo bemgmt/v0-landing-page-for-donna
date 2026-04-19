@@ -8,7 +8,9 @@ export default function Footer() {
   return (
     <footer className="border-t border-white/10 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto flex flex-col items-center gap-4 text-center">
-        <p className="text-sm uppercase tracking-[0.3em] text-foreground/60">One AI. Every Industry.</p>
+        <p className="text-sm uppercase tracking-[0.3em] text-foreground/60">
+          AI operational infrastructure for real estate
+        </p>
         <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-foreground/60">
           <Link href="/return-policy" className="hover:text-foreground transition-colors">
             Return Policy
