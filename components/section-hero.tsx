@@ -55,7 +55,7 @@ export default function SectionHero() {
         <p className="text-xs sm:text-sm tracking-[0.3em] text-foreground/60 uppercase mb-4">
           Real estate operations
         </p>
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-semibold mb-5 animate-fade-in wow-glow leading-tight">
+        <h1 className="text-lg sm:text-xl md:text-2xl font-semibold mb-5 animate-fade-in wow-glow leading-snug max-w-2xl mx-auto px-2">
           Your business doesn&apos;t need more tools.
         </h1>
         <p className="text-base sm:text-lg md:text-xl text-foreground/80 mb-4 max-w-2xl mx-auto animate-slide-up px-2 leading-relaxed">
