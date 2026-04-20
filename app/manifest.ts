@@ -40,5 +40,21 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: "maskable",
       },
     ],
-  }
+    shortcuts: [
+      {
+        name: "Member Portal",
+        short_name: "Portal",
+        description: "Sign in and open your DONNA member workspace.",
+        url: "/portal",
+        icons: [{ src: "/brand/icon/donna-icon-192.png", sizes: "192x192", type: "image/png" }],
+      },
+      {
+        name: "Home",
+        short_name: "Home",
+        description: "DONNA marketing site and product overview.",
+        url: "/",
+        icons: [{ src: "/brand/icon/donna-icon-192.png", sizes: "192x192", type: "image/png" }],
+      },
+    ],
+  } as MetadataRoute.Manifest
 }

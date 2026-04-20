@@ -17,6 +17,7 @@ import DemoForm from "@/components/demo-form"
 import Footer from "@/components/footer"
 import Chatbot from "@/components/chatbot"
 import CheckoutStatusBanner from "@/components/checkout-status-banner"
+import StandaloneHomePortalCta from "@/components/standalone-home-portal-cta"
 import { generatePageMetadata } from '@/lib/metadata'
 import { softwareApplicationSchema } from '@/lib/schema-markup'
 
@@ -56,6 +57,7 @@ export default function Home() {
       <ScrollCue />
       <ScrollbarFade />
       <MinimalHeader />
+      <StandaloneHomePortalCta />
       <BackgroundAnimation />
       <div className="ambient-layer" aria-hidden="true" />
       <main id="main-content" className="snap relative z-10">

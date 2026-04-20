@@ -50,9 +50,10 @@ export default function MinimalHeader() {
           <div className="flex items-center gap-3">
             <Link
               href="/portal"
-              className="text-sm text-muted-foreground hover:text-cyan-300 transition-colors hidden sm:inline"
+              className="text-xs sm:text-sm text-muted-foreground hover:text-cyan-300 transition-colors shrink-0"
             >
-              Member Portal
+              <span className="sm:hidden">Portal</span>
+              <span className="hidden sm:inline">Member Portal</span>
             </Link>
             <button
               type="button"

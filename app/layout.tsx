@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Sora } from "next/font/google"
 import RegisterServiceWorker from "@/components/register-service-worker"
+import PwaInstallPrompt from "@/components/pwa-install-prompt"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -80,6 +81,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {/* End Google Tag Manager (noscript) */}
         {children}
         <RegisterServiceWorker />
+        <PwaInstallPrompt />
         <Analytics />
       </body>
     </html>
