@@ -25,6 +25,31 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- -----------------------------------------------------------------------------
+-- Profiles & billing
+-- -----------------------------------------------------------------------------
+CREATE TABLE public.member_profiles (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
+  role text NOT NULL DEFAULT 'free_member' CHECK (role IN ('free_member','partner','staff','admin')),
+  display_name text,
+  email text,
+  avatar_url text,
+  company_name text,
+  bio text,
+  phone text,
+  website_url text,
+  partner_via_stripe boolean NOT NULL DEFAULT false,
+  is_active boolean NOT NULL DEFAULT true,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TRIGGER member_profiles_updated_at
+  BEFORE UPDATE ON public.member_profiles
+  FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+-- RLS helpers referencing member_profiles (must run AFTER member_profiles exists)
 CREATE OR REPLACE FUNCTION public.auth_profile_id()
 RETURNS uuid
 LANGUAGE sql
@@ -62,30 +87,6 @@ AS $$
       AND public.role_rank(mp.role) >= public.role_rank(min_role)
   );
 $$;
-
--- -----------------------------------------------------------------------------
--- Profiles & billing
--- -----------------------------------------------------------------------------
-CREATE TABLE public.member_profiles (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
-  role text NOT NULL DEFAULT 'free_member' CHECK (role IN ('free_member','partner','staff','admin')),
-  display_name text,
-  email text,
-  avatar_url text,
-  company_name text,
-  bio text,
-  phone text,
-  website_url text,
-  partner_via_stripe boolean NOT NULL DEFAULT false,
-  is_active boolean NOT NULL DEFAULT true,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now()
-);
-
-CREATE TRIGGER member_profiles_updated_at
-  BEFORE UPDATE ON public.member_profiles
-  FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
 CREATE TABLE public.billing_subscriptions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),

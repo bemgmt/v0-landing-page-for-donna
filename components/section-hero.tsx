@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
-import { startStripeCheckout } from "@/lib/start-checkout"
+import { checkoutErrorMessage, startStripeCheckout } from "@/lib/start-checkout"
 
 export default function SectionHero() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
@@ -20,9 +20,8 @@ export default function SectionHero() {
     setCheckoutLoading(true)
     const result = await startStripeCheckout()
     setCheckoutLoading(false)
-    if (!result.ok) {
-      window.alert(result.error)
-    }
+    const msg = checkoutErrorMessage(result)
+    if (msg) window.alert(msg)
   }
 
   const handleScrollToNext = () => {

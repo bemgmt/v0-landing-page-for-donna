@@ -8,7 +8,12 @@ export default async function PortalDashboardPage() {
   const session = await getPortalSession()
   if (!session) return null
 
-  const copy = await fetchPortalCopy()
+  let copy: Awaited<ReturnType<typeof fetchPortalCopy>> = null
+  try {
+    copy = await fetchPortalCopy()
+  } catch (e) {
+    console.error("[portal] fetchPortalCopy failed", e)
+  }
   const { supabase, profile, subscriptionActive } = session
 
   const [{ count: salesCount }, { count: leadsOpen }, { count: forumPosts }] = await Promise.all([

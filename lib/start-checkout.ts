@@ -2,17 +2,13 @@
  * Creates a Stripe Checkout session and redirects the browser to hosted checkout.
  * Call from client components only.
  */
-export async function startStripeCheckout(): Promise<{ ok: true } | { ok: false; error: string }> {
+export async function startStripeCheckout(): Promise<{ ok: true } | { ok: false; error?: string }> {
   try {
     const res = await fetch("/api/checkout", { method: "POST", credentials: "same-origin" })
     const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string }
     if (res.status === 401) {
-      return {
-        ok: false,
-        error:
-          data.error ??
-          "Sign in to the member portal first (Portal link in the header), then try checkout again.",
-      }
+      window.location.assign(`/login?next=${encodeURIComponent("/portal")}`)
+      return { ok: false }
     }
     if (!res.ok) {
       return { ok: false, error: data.error ?? "Checkout could not be started." }
@@ -25,4 +21,10 @@ export async function startStripeCheckout(): Promise<{ ok: true } | { ok: false;
   } catch {
     return { ok: false, error: "Network error. Please try again." }
   }
+}
+
+/** Use after `startStripeCheckout` when surfacing errors to the user (skip silent failures like 401 redirect). */
+export function checkoutErrorMessage(result: { ok: true } | { ok: false; error?: string }): string | null {
+  if (result.ok) return null
+  return result.error ?? null
 }

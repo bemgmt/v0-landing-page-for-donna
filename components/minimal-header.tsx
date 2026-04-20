@@ -4,7 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { track } from "@vercel/analytics"
-import { startStripeCheckout } from "@/lib/start-checkout"
+import { checkoutErrorMessage, startStripeCheckout } from "@/lib/start-checkout"
 
 export default function MinimalHeader() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -24,9 +24,8 @@ export default function MinimalHeader() {
     setCheckoutLoading(true)
     const result = await startStripeCheckout()
     setCheckoutLoading(false)
-    if (!result.ok) {
-      window.alert(result.error)
-    }
+    const msg = checkoutErrorMessage(result)
+    if (msg) window.alert(msg)
   }
 
   return (

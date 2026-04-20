@@ -8,10 +8,14 @@ export async function GET(request: Request) {
   if (!next.startsWith("/")) next = "/portal"
 
   if (code) {
-    const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) {
-      return NextResponse.redirect(new URL(next, url.origin))
+    try {
+      const supabase = await createClient()
+      const { error } = await supabase.auth.exchangeCodeForSession(code)
+      if (!error) {
+        return NextResponse.redirect(new URL(next, url.origin))
+      }
+    } catch (e) {
+      console.error("[auth/callback]", e)
     }
   }
 

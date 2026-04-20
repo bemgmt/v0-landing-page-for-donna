@@ -40,12 +40,31 @@ export type PortalSession = {
   subscriptionActive: boolean
 }
 
-export async function getPortalSession(): Promise<PortalSession | null> {
-  const supabase = await createClient()
+/** Resolved for layouts: avoids redirect loops when the user is signed in but `member_profiles` is missing. */
+export type PortalLayoutState =
+  | { kind: "missing_supabase_env" }
+  | { kind: "unauthenticated" }
+  | { kind: "no_member_profile"; user: { id: string; email: string | null | undefined } }
+  | { kind: "ready"; session: PortalSession }
+
+export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!url?.trim() || !anon?.trim()) {
+    return { kind: "missing_supabase_env" }
+  }
+
+  let supabase: Awaited<ReturnType<typeof createClient>>
+  try {
+    supabase = await createClient()
+  } catch {
+    return { kind: "missing_supabase_env" }
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) return null
+  if (!user) return { kind: "unauthenticated" }
 
   const { data: rawProfile, error } = await supabase
     .from("member_profiles")
@@ -53,7 +72,14 @@ export async function getPortalSession(): Promise<PortalSession | null> {
     .eq("user_id", user.id)
     .maybeSingle()
 
-  if (error || !rawProfile) return null
+  if (error) {
+    console.error("[portal] member_profiles lookup failed", error)
+    return { kind: "no_member_profile", user: { id: user.id, email: user.email } }
+  }
+
+  if (!rawProfile) {
+    return { kind: "no_member_profile", user: { id: user.id, email: user.email } }
+  }
 
   const roleRaw = rawProfile.role
   const role = isRole(roleRaw) ? roleRaw : "free_member"
@@ -72,11 +98,19 @@ export async function getPortalSession(): Promise<PortalSession | null> {
   const subscriptionActive =
     billing?.status === "active" || billing?.status === "trialing"
 
-  return {
+  const session: PortalSession = {
     supabase,
     user: { id: user.id, email: user.email },
     profile,
     billing: billing as BillingRow | null,
     subscriptionActive,
   }
+
+  return { kind: "ready", session }
+}
+
+export async function getPortalSession(): Promise<PortalSession | null> {
+  const state = await resolvePortalLayoutState()
+  if (state.kind !== "ready") return null
+  return state.session
 }
