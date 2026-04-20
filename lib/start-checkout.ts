@@ -4,8 +4,16 @@
  */
 export async function startStripeCheckout(): Promise<{ ok: true } | { ok: false; error: string }> {
   try {
-    const res = await fetch("/api/checkout", { method: "POST" })
+    const res = await fetch("/api/checkout", { method: "POST", credentials: "same-origin" })
     const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string }
+    if (res.status === 401) {
+      return {
+        ok: false,
+        error:
+          data.error ??
+          "Sign in to the member portal first (Portal link in the header), then try checkout again.",
+      }
+    }
     if (!res.ok) {
       return { ok: false, error: data.error ?? "Checkout could not be started." }
     }

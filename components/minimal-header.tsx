@@ -1,6 +1,7 @@
 ﻿"use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { useState, useEffect } from "react"
 import { track } from "@vercel/analytics"
 import { startStripeCheckout } from "@/lib/start-checkout"
@@ -47,16 +48,24 @@ export default function MinimalHeader() {
             />
             <span className="text-lg font-bold gradient-text">DONNA</span>
           </div>
-          <button
-            type="button"
-            onClick={handleEarlyAccess}
-            disabled={checkoutLoading}
-            className="px-4 py-2 rounded-lg animated-edge-button text-sm font-medium hover:bg-white/20 transition-all relative disabled:opacity-60"
-          >
-            <span className="relative z-10">
-              {checkoutLoading ? "Redirecting…" : "Get Early Access"}
-            </span>
-          </button>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/portal"
+              className="text-sm text-muted-foreground hover:text-cyan-300 transition-colors hidden sm:inline"
+            >
+              Portal
+            </Link>
+            <button
+              type="button"
+              onClick={handleEarlyAccess}
+              disabled={checkoutLoading}
+              className="px-4 py-2 rounded-lg animated-edge-button text-sm font-medium hover:bg-white/20 transition-all relative disabled:opacity-60"
+            >
+              <span className="relative z-10">
+                {checkoutLoading ? "Redirecting…" : "Get Early Access"}
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </header>
