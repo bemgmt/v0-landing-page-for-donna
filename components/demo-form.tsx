@@ -11,7 +11,6 @@ interface FormData {
   company: string
   role: string
   useCase: string
-  type: "waitlist" | "demo"
 }
 
 export default function DemoForm() {
@@ -21,7 +20,6 @@ export default function DemoForm() {
     company: "",
     role: "",
     useCase: "",
-    type: "waitlist",
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -38,7 +36,6 @@ export default function DemoForm() {
     setIsSubmitting(true)
 
     try {
-      // Submit to SMTP API route
       const response = await fetch("/api/send-email", {
         method: "POST",
         headers: {
@@ -50,7 +47,7 @@ export default function DemoForm() {
           company: formData.company,
           role: formData.role,
           useCase: formData.useCase,
-          type: formData.type,
+          type: "discovery",
         }),
       })
 
@@ -58,7 +55,7 @@ export default function DemoForm() {
 
       if (response.ok) {
         setSubmitSuccess(true)
-        setFormData({ name: "", email: "", company: "", role: "", useCase: "", type: "waitlist" })
+        setFormData({ name: "", email: "", company: "", role: "", useCase: "" })
         setTimeout(() => setSubmitSuccess(false), 5000)
       } else {
         console.error("Form submission error:", data)
@@ -76,48 +73,19 @@ export default function DemoForm() {
     <div id="demo-form" ref={formRef} className="py-20 px-4 sm:px-6 lg:px-8 bg-primary/5">
       <div className="max-w-2xl mx-auto">
         <div className="glass-card p-8 rounded-xl glow-accent text-center">
-          <h2 className="text-3xl font-bold mb-2 gradient-text">
-            {formData.type === "waitlist" ? "Join the Waitlist" : "Request a Demo"}
-          </h2>
+          <h2 className="text-3xl font-bold mb-2 gradient-text">Early adopter interest</h2>
           <p className="text-foreground/70 mb-6">
-            {formData.type === "waitlist"
-              ? "Be among the first to experience DONNA"
-              : "See DONNA in action with a personalized demo"}
+            On the fence? Tell us a bit about your operation — we&apos;ll reach out to schedule a short discovery call
+            with a DONNA rep (no pressure).
           </p>
 
           {submitSuccess && (
             <div className="mb-4 p-4 rounded-lg bg-secondary/20 border border-secondary/50 text-secondary">
-              <p className="font-semibold">Success! We'll be in touch soon.</p>
+              <p className="font-semibold">Thanks! We&apos;ll be in touch to find a time that works.</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Waitlist vs Demo toggle */}
-            <div className="flex gap-3 mb-6 justify-center">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="type"
-                  value="waitlist"
-                  checked={formData.type === "waitlist"}
-                  onChange={handleChange}
-                  className="w-4 h-4"
-                />
-                <span>Join Waitlist</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="type"
-                  value="demo"
-                  checked={formData.type === "demo"}
-                  onChange={handleChange}
-                  className="w-4 h-4"
-                />
-                <span>Request Demo</span>
-              </label>
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 type="text"
@@ -167,7 +135,7 @@ export default function DemoForm() {
 
             <textarea
               name="useCase"
-              placeholder="Tell us about your use case (optional)"
+              placeholder="What would you like to explore on the call? (optional)"
               value={formData.useCase}
               onChange={handleChange}
               rows={3}
@@ -179,7 +147,7 @@ export default function DemoForm() {
               disabled={isSubmitting}
               className="w-full px-6 py-3 rounded-lg bg-accent text-background hover:bg-accent/90 disabled:opacity-50 transition-all font-semibold glow-accent hover:shadow-[0_0_30px_rgba(132,204,255,0.5)]"
             >
-              {isSubmitting ? "Submitting..." : formData.type === "waitlist" ? "Join Waitlist" : "Request Demo"}
+              {isSubmitting ? "Submitting..." : "Request a discovery call"}
             </button>
           </form>
         </div>

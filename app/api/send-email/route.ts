@@ -59,12 +59,20 @@ export async function POST(request: NextRequest) {
     }
 
     const notificationRecipient = process.env.CONTACT_EMAIL || "derek@bem.studio"
+    const isEarlyAdopterDiscovery = type === "discovery" || type === "waitlist"
+    const leadLabel =
+      type === "discovery" || type === "waitlist"
+        ? "Early adopter interest — discovery call"
+        : type === "demo"
+          ? "Demo request"
+          : "Lead"
+
     const mailOptions = {
       from: process.env.SMTP_USER,
       to: notificationRecipient,
-      subject: `DONNA ${type === "waitlist" ? "Waitlist Signup" : "Demo Request"} - ${name}`,
+      subject: `DONNA ${leadLabel} — ${name}`,
       html: `
-        <h2>New ${type === "waitlist" ? "Waitlist Signup" : "Demo Request"}</h2>
+        <h2>New ${leadLabel}</h2>
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Company:</strong> ${company}</p>
@@ -105,7 +113,13 @@ export async function POST(request: NextRequest) {
       subject: "DONNA - We Received Your Request",
       html: `
         <h2>Thank you, ${name}!</h2>
-        <p>We've received your ${type === "waitlist" ? "waitlist signup" : "demo request"}. Our team will be in touch within 24 hours.</p>
+        <p>${
+          isEarlyAdopterDiscovery
+            ? "We've received your interest and will reach out to schedule a short discovery call with a DONNA rep. Our team will be in touch within 24 hours."
+            : type === "demo"
+              ? "We've received your demo request. Our team will be in touch within 24 hours."
+              : "We've received your request. Our team will be in touch within 24 hours."
+        }</p>
         <p>Best regards,<br>The DONNA Team</p>
       `,
     }

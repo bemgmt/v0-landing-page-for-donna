@@ -7,19 +7,9 @@ export async function POST() {
   const priceId = process.env.STRIPE_PRICE_ID
   const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://bemdonna.com").replace(/\/$/, "")
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!supabaseUrl?.trim() || !supabaseAnon?.trim()) {
-    console.error("[checkout] Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY")
-    return NextResponse.json(
-      {
-        error:
-          "Sign-in is not configured on this deployment. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.",
-        code: "SUPABASE_ENV",
-      },
-      { status: 503 },
-    )
-  }
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
+  const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
+  const supabaseConfigured = Boolean(supabaseUrl && supabaseAnon)
 
   if (!secretKey?.trim() || !priceId?.trim()) {
     console.error("[checkout] Missing STRIPE_SECRET_KEY or STRIPE_PRICE_ID")
@@ -33,36 +23,39 @@ export async function POST() {
   }
 
   try {
-    const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-      return NextResponse.json(
-        { error: "Sign in required. Use Portal in the header, then try checkout again.", code: "AUTH" },
-        { status: 401 },
-      )
+    let user: { id: string } | null = null
+    if (supabaseConfigured) {
+      const supabase = await createClient()
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser()
+      if (authUser) user = { id: authUser.id }
     }
 
     const stripe = new Stripe(secretKey)
 
-    const session = await stripe.checkout.sessions.create({
+    const successUrl = user
+      ? `${baseUrl}/portal?checkout=success`
+      : `${baseUrl}/?checkout=success`
+    const cancelUrl = user ? `${baseUrl}/portal?checkout=canceled` : `${baseUrl}/?checkout=canceled`
+
+    const sessionParams: Stripe.Checkout.SessionCreateParams = {
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${baseUrl}/portal?checkout=success`,
-      cancel_url: `${baseUrl}/portal?checkout=canceled`,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       allow_promotion_codes: true,
-      client_reference_id: user.id,
-      metadata: {
-        supabase_user_id: user.id,
-      },
-      subscription_data: {
-        metadata: {
-          supabase_user_id: user.id,
-        },
-      },
-    })
+    }
+
+    if (user) {
+      sessionParams.client_reference_id = user.id
+      sessionParams.metadata = { supabase_user_id: user.id }
+      sessionParams.subscription_data = {
+        metadata: { supabase_user_id: user.id },
+      }
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionParams)
 
     if (!session.url) {
       return NextResponse.json({ error: "Checkout session missing URL.", code: "STRIPE_NO_URL" }, { status: 500 })

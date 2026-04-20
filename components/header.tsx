@@ -55,7 +55,7 @@ export default function Header() {
               }}
               className="px-4 py-2 rounded-lg bg-accent text-background hover:bg-accent/90 transition-colors text-sm font-medium"
             >
-              Join the Waitlist
+              Book a discovery call
             </button>
           </div>
 
@@ -86,7 +86,7 @@ export default function Header() {
                 }}
                 className="flex-1 px-3 py-2 rounded-lg bg-accent text-background text-sm font-medium"
               >
-                Join the Waitlist
+                Book a discovery call
               </button>
             </div>
           </nav>

@@ -57,8 +57,6 @@ export default function SectionHero() {
         </p>
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-semibold mb-5 animate-fade-in wow-glow leading-tight">
           Your business doesn&apos;t need more tools.
-          <br />
-          <span className="text-foreground/95">It needs a system that actually runs.</span>
         </h1>
         <p className="text-base sm:text-lg md:text-xl text-foreground/80 mb-4 max-w-2xl mx-auto animate-slide-up px-2 leading-relaxed">
           DONNA is the AI operational infrastructure for the real estate industry. It maximizes the value
@@ -77,7 +75,7 @@ export default function SectionHero() {
             style={{ animationDelay: "200ms" }}
           >
             <span className="relative z-10">
-              {checkoutLoading ? "Redirecting…" : "Get Early Access — $500/month"}
+              {checkoutLoading ? "Redirecting…" : "Get DONNA — $500/month"}
             </span>
           </button>
           <p className="text-xs sm:text-sm text-foreground/65 max-w-md px-2">

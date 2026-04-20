@@ -6,10 +6,6 @@ export async function startStripeCheckout(): Promise<{ ok: true } | { ok: false;
   try {
     const res = await fetch("/api/checkout", { method: "POST", credentials: "same-origin" })
     const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string }
-    if (res.status === 401) {
-      window.location.assign(`/login?next=${encodeURIComponent("/portal")}`)
-      return { ok: false }
-    }
     if (!res.ok) {
       return { ok: false, error: data.error ?? "Checkout could not be started." }
     }
@@ -23,7 +19,7 @@ export async function startStripeCheckout(): Promise<{ ok: true } | { ok: false;
   }
 }
 
-/** Use after `startStripeCheckout` when surfacing errors to the user (skip silent failures like 401 redirect). */
+/** Use after `startStripeCheckout` when surfacing errors to the user. */
 export function checkoutErrorMessage(result: { ok: true } | { ok: false; error?: string }): string | null {
   if (result.ok) return null
   return result.error ?? null

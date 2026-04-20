@@ -124,7 +124,7 @@ export default function Hero() {
                 }}
                 className="px-8 py-3 rounded-lg bg-accent text-background hover:bg-accent/90 transition-all duration-300 font-semibold text-lg glow-accent hover:shadow-[0_0_30px_rgba(132,204,255,0.5)]"
               >
-                Join the Waitlist
+                Book a discovery call
               </button>
             </div>
 

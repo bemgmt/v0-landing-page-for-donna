@@ -79,7 +79,7 @@ export default function Pricing() {
               disabled={checkoutLoading}
               className="w-full sm:w-auto px-6 py-2.5 rounded-full font-semibold transition-all duration-300 bg-accent text-background hover:bg-accent/90 disabled:opacity-60"
             >
-              {checkoutLoading ? "Redirecting…" : "Get Early Access — $500/month"}
+              {checkoutLoading ? "Redirecting…" : "Get DONNA — $500/month"}
             </button>
             <button
               type="button"

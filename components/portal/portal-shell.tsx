@@ -40,7 +40,7 @@ export default function PortalShell({ role, subscriptionActive, displayName, chi
       <aside className="md:w-56 shrink-0 border-b md:border-b-0 md:border-r border-white/10 liquid-glass md:min-h-screen p-4 flex flex-col gap-6">
         <div>
           <Link href="/portal" className="text-lg font-semibold gradient-text">
-            DONNA Portal
+            DONNA Member Portal
           </Link>
           <p className="text-xs text-muted-foreground mt-1 truncate">{displayName ?? "Member"}</p>
           <span className="inline-block mt-2 text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full border border-white/15 text-muted-foreground">

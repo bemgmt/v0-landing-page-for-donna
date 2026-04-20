@@ -3,7 +3,7 @@ import LoginForm from "@/components/auth/login-form"
 
 export const metadata: Metadata = {
   title: "Sign in — DONNA",
-  description: "Member and partner portal sign-in",
+  description: "Member Portal sign-in",
 }
 
 export default async function LoginPage({
@@ -17,7 +17,7 @@ export default async function LoginPage({
   return (
     <main className="min-h-screen bg-black text-foreground flex flex-col items-center justify-center px-4">
       <div className="liquid-glass w-full max-w-lg rounded-2xl border border-white/10 p-8 shadow-xl">
-        <h1 className="text-2xl font-semibold gradient-text mb-2 text-center">DONNA Portal</h1>
+        <h1 className="text-2xl font-semibold gradient-text mb-2 text-center">DONNA Member Portal</h1>
         <p className="text-sm text-muted-foreground text-center mb-8">
           Enter your email to receive a magic link.
         </p>

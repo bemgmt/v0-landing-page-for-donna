@@ -19,7 +19,7 @@ export default function MinimalHeader() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const handleEarlyAccess = async () => {
+  const handleGetDonna = async () => {
     track("checkout_click", { placement: "header" })
     setCheckoutLoading(true)
     const result = await startStripeCheckout()
@@ -52,16 +52,16 @@ export default function MinimalHeader() {
               href="/portal"
               className="text-sm text-muted-foreground hover:text-cyan-300 transition-colors hidden sm:inline"
             >
-              Portal
+              Member Portal
             </Link>
             <button
               type="button"
-              onClick={handleEarlyAccess}
+              onClick={handleGetDonna}
               disabled={checkoutLoading}
               className="px-4 py-2 rounded-lg animated-edge-button text-sm font-medium hover:bg-white/20 transition-all relative disabled:opacity-60"
             >
               <span className="relative z-10">
-                {checkoutLoading ? "Redirecting…" : "Get Early Access"}
+                {checkoutLoading ? "Redirecting…" : "Get DONNA"}
               </span>
             </button>
           </div>

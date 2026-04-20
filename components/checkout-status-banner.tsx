@@ -46,7 +46,7 @@ function CheckoutStatusBannerInner() {
         <div className="flex items-start justify-between gap-3">
           <p>
             Checkout canceled. When you&apos;re ready, you can try{" "}
-            <strong className="font-semibold">Get Early Access</strong> again — no rush.
+            <strong className="font-semibold">Get DONNA</strong> again — no rush.
           </p>
           <button
             type="button"

@@ -42,7 +42,7 @@ export default function SectionCTA() {
           disabled={checkoutLoading}
           className="inline-flex items-center justify-center px-7 py-3 rounded-full bg-accent text-background font-semibold hover:bg-accent/90 transition-all disabled:opacity-60"
         >
-          {checkoutLoading ? "Redirecting…" : "Get Early Access — $500/month"}
+          {checkoutLoading ? "Redirecting…" : "Get DONNA — $500/month"}
         </button>
       </div>
     </section>
