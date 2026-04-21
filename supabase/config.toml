@@ -1,0 +1,5 @@
+# Supabase CLI — merge with `supabase init` output or set `project_id` via `supabase link`.
+# https://supabase.com/docs/guides/functions
+
+[functions.billing-status]
+verify_jwt = false

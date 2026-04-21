@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "start": "next start",
     "test": "vitest run",
+    "test:billing-status": "npx --yes deno@2.1.4 test -A --config=supabase/functions/billing-status/deno.json supabase/functions/billing-status/handler_test.ts",
     "test:watch": "vitest"
   },
   "dependencies": {
