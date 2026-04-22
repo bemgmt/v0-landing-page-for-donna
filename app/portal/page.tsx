@@ -1,6 +1,8 @@
 import Link from "next/link"
 import { format } from "date-fns"
 import CheckoutStatusBanner from "@/components/checkout-status-banner"
+import { planShortLabel } from "@/lib/billing/plan-seats"
+import { resolveActiveSeatInvitePlan, resolveSubscriptionPlan } from "@/lib/billing/resolve-subscription-plan"
 import { getPortalSession } from "@/lib/portal/session"
 import { fetchPortalCopy } from "@/lib/sanity/client"
 
@@ -14,7 +16,20 @@ export default async function PortalDashboardPage() {
   } catch (e) {
     console.error("[portal] fetchPortalCopy failed", e)
   }
-  const { supabase, profile, subscriptionActive } = session
+  const { supabase, profile, subscriptionActive, billing, seatAccess, user } = session
+
+  let subscriptionValue = subscriptionActive ? "Active" : "Not active"
+  if (subscriptionActive) {
+    if (billing && !seatAccess) {
+      const snap = await resolveSubscriptionPlan(supabase, billing)
+      const short = planShortLabel(snap.planKey)
+      subscriptionValue = short ? `Active · ${short}` : "Active"
+    } else if (seatAccess) {
+      const snap = await resolveActiveSeatInvitePlan(user.email ?? profile.email)
+      const short = planShortLabel(snap?.planKey ?? "")
+      subscriptionValue = short ? `Active · ${short} (team)` : "Active (team)"
+    }
+  }
 
   const [{ count: salesCount }, { count: leadsOpen }, { count: forumPosts }] = await Promise.all([
     supabase
@@ -36,8 +51,8 @@ export default async function PortalDashboardPage() {
     { label: "Profile", value: profile.display_name ? "Complete" : "Add your name", href: "/portal/profile" },
     {
       label: "Subscription",
-      value: subscriptionActive ? "Active" : "Not active",
-      href: "/portal/profile",
+      value: subscriptionValue,
+      href: "/portal/billing",
     },
     { label: "Approved / paid sales", value: String(salesCount ?? 0), href: "/portal/sales" },
     { label: "Open leads (pool)", value: String(leadsOpen ?? 0), href: "/portal/leads/round-robin" },

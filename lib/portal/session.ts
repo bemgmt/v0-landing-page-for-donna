@@ -30,6 +30,8 @@ export type BillingRow = {
   status: string
   current_period_end: string | null
   updated_at: string
+  price_lookup_key?: string | null
+  stripe_price_id?: string | null
 }
 
 export type PortalSession = {
@@ -38,6 +40,8 @@ export type PortalSession = {
   profile: MemberProfileRow
   billing: BillingRow | null
   subscriptionActive: boolean
+  /** True when partner access comes from a team seat invite (not the Stripe purchaser). */
+  seatAccess: boolean
 }
 
 /** Resolved for layouts: avoids redirect loops when the user is signed in but `member_profiles` is missing. */
@@ -95,8 +99,16 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
     .eq("user_id", user.id)
     .maybeSingle()
 
-  const subscriptionActive =
-    billing?.status === "active" || billing?.status === "trialing"
+  let subscriptionActive = billing?.status === "active" || billing?.status === "trialing"
+  let seatAccess = false
+
+  if (!subscriptionActive) {
+    const { data: invited, error: seatInviteError } = await supabase.rpc("billing_user_has_active_seat_invite")
+    if (!seatInviteError && invited === true) {
+      subscriptionActive = true
+      seatAccess = true
+    }
+  }
 
   const session: PortalSession = {
     supabase,
@@ -104,6 +116,7 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
     profile,
     billing: billing as BillingRow | null,
     subscriptionActive,
+    seatAccess,
   }
 
   return { kind: "ready", session }

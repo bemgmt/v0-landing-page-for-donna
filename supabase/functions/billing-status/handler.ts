@@ -97,14 +97,21 @@ function isoAddMs(ms: number): string {
 
 export function sandboxResponseForEmail(email: string): Response | null {
   const e = email.trim().toLowerCase()
-  const base = (status: string, plan: string, periodEndIso: string, seats: number) => {
+  const base = (
+    status: string,
+    plan: string,
+    periodEndIso: string,
+    seatsPurchased: number,
+    seatsAllowance: number,
+  ) => {
     const body = {
       email: e,
       account_status: status,
       plan,
       current_period_end: periodEndIso,
       cancel_at_period_end: false,
-      seats_purchased: seats,
+      seats_purchased: seatsPurchased,
+      seats_allowance: seatsAllowance,
       stripe_customer_id: `cus_sandbox_${e.replace(/[^a-z0-9]/gi, "_").slice(0, 40)}`,
       notification_emails: [] as string[],
       source_of_truth_at: new Date().toISOString(),
@@ -113,11 +120,11 @@ export function sandboxResponseForEmail(email: string): Response | null {
   }
 
   const d = 86400000
-  if (e === "active@test.com") return base("active", "pro_monthly", isoAddMs(30 * d), 1)
-  if (e === "trial@test.com") return base("trialing", "pro_monthly", isoAddMs(7 * d), 1)
-  if (e === "pastdue@test.com") return base("past_due", "pro_monthly", isoAddMs(-2 * d), 1)
-  if (e === "canceled@test.com") return base("canceled", "pro_monthly", isoAddMs(-60 * d), 1)
-  if (e === "team@test.com") return base("active", "team_annual", isoAddMs(300 * d), 5)
+  if (e === "active@test.com") return base("active", "core_cloud_workspace_500", isoAddMs(30 * d), 1, 2)
+  if (e === "trial@test.com") return base("trialing", "core_cloud_workspace_500", isoAddMs(7 * d), 1, 2)
+  if (e === "pastdue@test.com") return base("past_due", "core_cloud_workspace_500", isoAddMs(-2 * d), 1, 2)
+  if (e === "canceled@test.com") return base("canceled", "core_cloud_workspace_500", isoAddMs(-60 * d), 1, 2)
+  if (e === "team@test.com") return base("active", "full_toolkit_1000", isoAddMs(300 * d), 1, 6)
   if (e === "unknown@test.com") {
     return new Response(JSON.stringify({ email: e, account_status: "none" }), {
       status: 404,
@@ -143,6 +150,7 @@ type BillingViewRow = {
   notification_emails: unknown
   plan: string
   seats_purchased: number
+  seats_allowance: number
   source_of_truth_at: string
 }
 
@@ -160,6 +168,7 @@ export function rowToSuccessResponse(row: BillingViewRow, email: string): Respon
     current_period_end,
     cancel_at_period_end: Boolean(row.cancel_at_period_end),
     seats_purchased: Number(row.seats_purchased) || 1,
+    seats_allowance: Number(row.seats_allowance) || 1,
     stripe_customer_id: row.stripe_customer_id ?? "",
     notification_emails: normalizeNotificationEmails(row.notification_emails),
     source_of_truth_at: new Date(row.source_of_truth_at).toISOString(),
@@ -277,7 +286,7 @@ export async function handleBillingRequest(req: Request, env: BillingEnv): Promi
   const { data, error } = await supabase
     .from("billing_status_view")
     .select(
-      "billing_email,stripe_customer_id,stripe_subscription_id,subscription_status,cancel_at_period_end,current_period_end,notification_emails,plan,seats_purchased,source_of_truth_at",
+      "billing_email,stripe_customer_id,stripe_subscription_id,subscription_status,cancel_at_period_end,current_period_end,notification_emails,plan,seats_purchased,seats_allowance,source_of_truth_at",
     )
     .eq("billing_email", email)
     .order("source_of_truth_at", { ascending: false })

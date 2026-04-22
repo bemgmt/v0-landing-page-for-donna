@@ -1,5 +1,7 @@
 import type { Metadata } from "next"
+import { redirect } from "next/navigation"
 import LoginForm from "@/components/auth/login-form"
+import { createClient } from "@/lib/supabase/server"
 
 export const metadata: Metadata = {
   title: "Sign in — DONNA",
@@ -14,12 +16,28 @@ export default async function LoginPage({
   const params = await searchParams
   const nextPath = typeof params.next === "string" && params.next.startsWith("/") ? params.next : "/portal"
 
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (url?.trim() && anon?.trim()) {
+    try {
+      const supabase = await createClient()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (user) {
+        redirect(nextPath)
+      }
+    } catch {
+      /* missing env or cookie edge cases — show login */
+    }
+  }
+
   return (
     <main className="min-h-screen bg-black text-foreground flex flex-col items-center justify-center px-4">
       <div className="liquid-glass w-full max-w-lg rounded-2xl border border-white/10 p-8 shadow-xl">
         <h1 className="text-2xl font-semibold gradient-text mb-2 text-center">DONNA Member Portal</h1>
         <p className="text-sm text-muted-foreground text-center mb-8">
-          Enter your email to receive a magic link.
+          Sign in with Google or enter your email for a magic link.
         </p>
         {params.error === "auth" ? (
           <p className="text-sm text-red-400 text-center mb-4">Sign-in failed. Try again.</p>

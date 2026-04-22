@@ -10,6 +10,7 @@ function navForRole(role: MemberRole, subscriptionActive: boolean): NavItem[] {
   const base: NavItem[] = [
     { href: "/portal", label: "Dashboard" },
     { href: "/portal/profile", label: "Profile" },
+    { href: "/portal/billing", label: "Billing & seats" },
     { href: "/portal/can-donna", label: "Can DONNA" },
     { href: "/portal/documents", label: "Documents" },
     { href: "/portal/socials", label: "Socials" },
@@ -28,11 +29,12 @@ function navForRole(role: MemberRole, subscriptionActive: boolean): NavItem[] {
 type Props = {
   role: MemberRole
   subscriptionActive: boolean
+  seatAccess: boolean
   displayName: string | null
   children: React.ReactNode
 }
 
-export default function PortalShell({ role, subscriptionActive, displayName, children }: Props) {
+export default function PortalShell({ role, subscriptionActive, seatAccess, displayName, children }: Props) {
   const items = navForRole(role, subscriptionActive)
 
   return (
@@ -43,9 +45,16 @@ export default function PortalShell({ role, subscriptionActive, displayName, chi
             DONNA Member Portal
           </Link>
           <p className="text-xs text-muted-foreground mt-1 truncate">{displayName ?? "Member"}</p>
-          <span className="inline-block mt-2 text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full border border-white/15 text-muted-foreground">
-            {role.replace("_", " ")}
-          </span>
+          <div className="mt-2 flex flex-wrap gap-1">
+            <span className="inline-block text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full border border-white/15 text-muted-foreground">
+              {role.replace("_", " ")}
+            </span>
+            {seatAccess ? (
+              <span className="inline-block text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full border border-cyan-500/30 text-cyan-200/90">
+                Team seat
+              </span>
+            ) : null}
+          </div>
         </div>
         <nav className="flex flex-row md:flex-col flex-wrap gap-2 md:gap-1">
           {items.map((item) => (

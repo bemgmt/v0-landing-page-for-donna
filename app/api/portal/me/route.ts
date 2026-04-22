@@ -11,5 +11,6 @@ export async function GET() {
     profile: session.profile,
     billing: session.billing,
     subscriptionActive: session.subscriptionActive,
+    seatAccess: session.seatAccess,
   })
 }

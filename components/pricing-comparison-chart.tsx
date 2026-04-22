@@ -31,7 +31,7 @@ export default function PricingComparisonChart() {
         ))}
         <div className="comparison-table-total" role="row">
           <div role="cell">Total Monthly Cost</div>
-          <div className="comparison-table-donna" role="cell">$500/mo</div>
+          <div className="comparison-table-donna" role="cell">See pricing above</div>
           <div className="comparison-table-stack-highlight" role="cell">$6,500+/mo</div>
         </div>
       </div>

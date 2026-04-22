@@ -26,6 +26,7 @@ export default async function PortalLayout({ children }: { children: React.React
     <PortalShell
       role={session.profile.role}
       subscriptionActive={session.subscriptionActive}
+      seatAccess={session.seatAccess}
       displayName={session.profile.display_name ?? session.user.email ?? null}
     >
       {children}

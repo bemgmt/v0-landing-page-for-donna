@@ -1,26 +1,38 @@
 import { NextResponse } from "next/server"
 import Stripe from "stripe"
 import { createClient } from "@/lib/supabase/server"
+import { STRIPE_PRICE_LOOKUP_CORE, STRIPE_PRICE_LOOKUP_FULL } from "@/lib/billing/plan-seats"
 
-export async function POST() {
+export async function POST(request: Request) {
   const secretKey = process.env.STRIPE_SECRET_KEY
-  const priceId = process.env.STRIPE_PRICE_ID
   const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://bemdonna.com").replace(/\/$/, "")
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
   const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
   const supabaseConfigured = Boolean(supabaseUrl && supabaseAnon)
 
-  if (!secretKey?.trim() || !priceId?.trim()) {
-    console.error("[checkout] Missing STRIPE_SECRET_KEY or STRIPE_PRICE_ID")
+  if (!secretKey?.trim()) {
+    console.error("[checkout] Missing STRIPE_SECRET_KEY")
     return NextResponse.json(
       {
-        error: "Stripe is not configured. Set STRIPE_SECRET_KEY and STRIPE_PRICE_ID on the server.",
+        error: "Stripe is not configured. Set STRIPE_SECRET_KEY on the server.",
         code: "STRIPE_ENV",
       },
       { status: 503 },
     )
   }
+
+  let tier: "core" | "full" = "core"
+  const contentType = request.headers.get("content-type") ?? ""
+  if (contentType.includes("application/json")) {
+    const raw = (await request.json().catch(() => null)) as { tier?: unknown } | null
+    if (raw && typeof raw === "object" && raw.tier === "full") tier = "full"
+  }
+
+  const lookupKey =
+    tier === "full"
+      ? (process.env.STRIPE_PRICE_LOOKUP_FULL?.trim() || STRIPE_PRICE_LOOKUP_FULL)
+      : (process.env.STRIPE_PRICE_LOOKUP_CORE?.trim() || STRIPE_PRICE_LOOKUP_CORE)
 
   try {
     let user: { id: string } | null = null
@@ -33,6 +45,29 @@ export async function POST() {
     }
 
     const stripe = new Stripe(secretKey)
+
+    const prices = await stripe.prices.list({
+      lookup_keys: [lookupKey],
+      active: true,
+      limit: 1,
+    })
+    let priceId = prices.data[0]?.id ?? null
+
+    if (!priceId && tier === "core") {
+      const legacy = process.env.STRIPE_PRICE_ID?.trim()
+      if (legacy) priceId = legacy
+    }
+
+    if (!priceId) {
+      console.error("[checkout] No Stripe price for lookup_key:", lookupKey)
+      return NextResponse.json(
+        {
+          error: `No active Stripe price found for lookup_key "${lookupKey}". Set lookup_key on the Price in Stripe Dashboard (Products → Price → Lookup key) and/or set STRIPE_PRICE_LOOKUP_CORE / STRIPE_PRICE_LOOKUP_FULL.`,
+          code: "STRIPE_PRICE_LOOKUP",
+        },
+        { status: 503 },
+      )
+    }
 
     const successUrl = user
       ? `${baseUrl}/portal?checkout=success`

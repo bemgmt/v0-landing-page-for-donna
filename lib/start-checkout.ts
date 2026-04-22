@@ -2,9 +2,18 @@
  * Creates a Stripe Checkout session and redirects the browser to hosted checkout.
  * Call from client components only.
  */
-export async function startStripeCheckout(): Promise<{ ok: true } | { ok: false; error?: string }> {
+export type CheckoutTier = "core" | "full"
+
+export async function startStripeCheckout(
+  tier: CheckoutTier = "core",
+): Promise<{ ok: true } | { ok: false; error?: string }> {
   try {
-    const res = await fetch("/api/checkout", { method: "POST", credentials: "same-origin" })
+    const res = await fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tier }),
+      credentials: "same-origin",
+    })
     const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string }
     if (!res.ok) {
       return { ok: false, error: data.error ?? "Checkout could not be started." }

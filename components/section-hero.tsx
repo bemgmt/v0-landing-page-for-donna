@@ -79,7 +79,7 @@ export default function SectionHero() {
             </span>
           </button>
           <p className="text-xs sm:text-sm text-foreground/65 max-w-md px-2">
-            No contracts. Early adopters lock in long-term advantages.
+            No contracts. 30-day money-back guarantee. Early adopters lock in long-term advantages.
           </p>
           <button
             type="button"

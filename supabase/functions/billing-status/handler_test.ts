@@ -130,14 +130,20 @@ Deno.test("sandbox: active trial pastdue canceled team and unknown", async () =>
     assertEquals(j.account_status, acct)
     if (status === 200) {
       assertEquals(typeof j.plan, "string")
+      assertEquals(typeof j.seats_allowance, "number")
       assertEquals(j.cancel_at_period_end, false)
       assertEquals(Array.isArray(j.notification_emails), true)
       assertEquals(typeof j.current_period_end, "string")
       assertEquals(typeof j.source_of_truth_at, "string")
       assertEquals(typeof j.stripe_customer_id, "string")
       if (em === "team@test.com") {
-        assertEquals(j.plan, "team_annual")
-        assertEquals(j.seats_purchased, 5)
+        assertEquals(j.plan, "full_toolkit_1000")
+        assertEquals(j.seats_purchased, 1)
+        assertEquals(j.seats_allowance, 6)
+      }
+      if (em === "active@test.com") {
+        assertEquals(j.plan, "core_cloud_workspace_500")
+        assertEquals(j.seats_allowance, 2)
       }
     } else {
       assertEquals(Object.keys(j).sort().join(","), "account_status,email")
@@ -200,6 +206,7 @@ Deno.test("handleBillingRequest 200 real lookup shape", async () => {
     notification_emails: ["ops@example.com"],
     plan: "pro_monthly",
     seats_purchased: 3,
+    seats_allowance: 3,
     source_of_truth_at: "2030-01-01T00:00:00.000Z",
   }
   const mock = mockClient({ viewRow })
@@ -218,6 +225,7 @@ Deno.test("handleBillingRequest 200 real lookup shape", async () => {
   assertEquals(j.plan, "pro_monthly")
   assertEquals(j.cancel_at_period_end, false)
   assertEquals(j.seats_purchased, 3)
+  assertEquals(j.seats_allowance, 3)
   assertEquals(j.stripe_customer_id, "cus_123")
   assertEquals(j.notification_emails, ["ops@example.com"])
   assertEquals(typeof j.current_period_end, "string")
