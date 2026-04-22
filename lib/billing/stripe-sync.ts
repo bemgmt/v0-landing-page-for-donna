@@ -124,6 +124,46 @@ export async function syncBillingFromSubscription(
   await syncSubscriptionItems(admin, subscription)
 }
 
+export type MemberEmailLookupResult =
+  | { kind: "found"; userId: string }
+  | { kind: "none" }
+  | { kind: "ambiguous"; count: number }
+  | { kind: "db_error"; message: string }
+
+/**
+ * Match Stripe checkout / customer email to a single member_profiles.user_id (case-insensitive).
+ */
+export async function lookupMemberUserIdByEmail(
+  admin: AdminClient,
+  email: string,
+  logContext?: Record<string, unknown>,
+): Promise<MemberEmailLookupResult> {
+  const normalized = email.trim().toLowerCase()
+  if (!normalized) return { kind: "none" }
+
+  const { data: profiles, error } = await admin
+    .from("member_profiles")
+    .select("id, user_id, email")
+    .ilike("email", normalized)
+
+  if (error) {
+    console.error("[stripe-sync] member_profiles lookup by email failed", error.message, logContext)
+    return { kind: "db_error", message: error.message }
+  }
+  if (!profiles?.length) return { kind: "none" }
+  if (profiles.length > 1) {
+    const exact = profiles.filter((p) => (p.email ?? "").trim().toLowerCase() === normalized)
+    if (exact.length === 1) return { kind: "found", userId: exact[0].user_id }
+    console.warn("[stripe-sync] ambiguous member_profiles for email", {
+      ...logContext,
+      email: normalized,
+      count: profiles.length,
+    })
+    return { kind: "ambiguous", count: profiles.length }
+  }
+  return { kind: "found", userId: profiles[0].user_id }
+}
+
 /**
  * Resolve Supabase auth user id for a Checkout session: explicit ids first, then checkout email → member_profiles.
  */
@@ -142,26 +182,9 @@ export async function resolveUserIdForCheckoutSession(
   const email = typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : ""
   if (!email) return null
 
-  const { data: profiles, error } = await admin
-    .from("member_profiles")
-    .select("id, user_id, email")
-    .ilike("email", email)
-
-  if (error) {
-    console.error("[stripe-sync] member_profiles lookup by email failed", error.message, session.id)
-    return null
-  }
-  if (!profiles?.length) return null
-  if (profiles.length > 1) {
-    const exact = profiles.filter((p) => (p.email ?? "").trim().toLowerCase() === email)
-    if (exact.length === 1) return exact[0].user_id
-    console.warn(
-      "[stripe-sync] checkout.session.completed: ambiguous member_profiles for email; skipping",
-      { email, sessionId: session.id, count: profiles.length },
-    )
-    return null
-  }
-  return profiles[0].user_id
+  const lookedUp = await lookupMemberUserIdByEmail(admin, email, { sessionId: session.id })
+  if (lookedUp.kind === "found") return lookedUp.userId
+  return null
 }
 
 export async function syncFromCheckoutSession(

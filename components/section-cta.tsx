@@ -1,28 +1,19 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import Link from "next/link"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
-import { checkoutErrorMessage, startStripeCheckout } from "@/lib/start-checkout"
+import { onPricingCtaNavClick } from "@/lib/pricing-cta-nav"
 
 export default function SectionCTA() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
-  const [checkoutLoading, setCheckoutLoading] = useState(false)
 
   useEffect(() => {
     if (inView) {
       track("section_view", { section: 10 })
     }
   }, [inView])
-
-  const handleCheckout = async () => {
-    track("checkout_click", { placement: "final_cta" })
-    setCheckoutLoading(true)
-    const result = await startStripeCheckout()
-    setCheckoutLoading(false)
-    const msg = checkoutErrorMessage(result)
-    if (msg) window.alert(msg)
-  }
 
   return (
     <section id="section-cta" ref={ref} className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
@@ -36,14 +27,13 @@ export default function SectionCTA() {
           Stop relying on memory, manual work, and disconnected tools. Start running your business on a
           system.
         </p>
-        <button
-          type="button"
-          onClick={handleCheckout}
-          disabled={checkoutLoading}
-          className="inline-flex items-center justify-center px-7 py-3 rounded-full bg-accent text-background font-semibold hover:bg-accent/90 transition-all disabled:opacity-60"
+        <Link
+          href="/#pricing"
+          onClick={(e) => onPricingCtaNavClick("final_cta", e)}
+          className="inline-flex items-center justify-center px-7 py-3 rounded-full bg-accent text-background font-semibold hover:bg-accent/90 transition-all"
         >
-          {checkoutLoading ? "Redirecting…" : "Get DONNA — $500/month"}
-        </button>
+          Get DONNA — $500/month
+        </Link>
       </div>
     </section>
   )

@@ -1,28 +1,19 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import Link from "next/link"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
-import { checkoutErrorMessage, startStripeCheckout } from "@/lib/start-checkout"
+import { onPricingCtaNavClick } from "@/lib/pricing-cta-nav"
 
 export default function SectionHero() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
-  const [checkoutLoading, setCheckoutLoading] = useState(false)
 
   useEffect(() => {
     if (inView) {
       track("section_view", { section: 1 })
     }
   }, [inView])
-
-  const handleCTAClick = async () => {
-    track("checkout_click", { placement: "hero_primary" })
-    setCheckoutLoading(true)
-    const result = await startStripeCheckout()
-    setCheckoutLoading(false)
-    const msg = checkoutErrorMessage(result)
-    if (msg) window.alert(msg)
-  }
 
   const handleScrollToNext = () => {
     const nextSection = document.getElementById("follow-through-problem")
@@ -67,17 +58,14 @@ export default function SectionHero() {
           Nothing gets missed. Everything moves.
         </p>
         <div className="flex flex-col items-center gap-4">
-          <button
-            type="button"
-            onClick={handleCTAClick}
-            disabled={checkoutLoading}
-            className="px-7 py-3 rounded-full animated-edge-button text-foreground hover:bg-white/20 transition-all duration-300 font-semibold text-base sm:text-lg refract-on-hover animate-slide-up relative z-10 disabled:opacity-60"
+          <Link
+            href="/#pricing"
+            onClick={(e) => onPricingCtaNavClick("hero_primary", e)}
+            className="px-7 py-3 rounded-full animated-edge-button text-foreground hover:bg-white/20 transition-all duration-300 font-semibold text-base sm:text-lg refract-on-hover animate-slide-up relative z-10 inline-flex items-center justify-center"
             style={{ animationDelay: "200ms" }}
           >
-            <span className="relative z-10">
-              {checkoutLoading ? "Redirecting…" : "Get DONNA — $500/month"}
-            </span>
-          </button>
+            <span className="relative z-10">Get DONNA — $500/month</span>
+          </Link>
           <p className="text-xs sm:text-sm text-foreground/65 max-w-md px-2">
             No contracts. 30-day money-back guarantee. Early adopters lock in long-term advantages.
           </p>

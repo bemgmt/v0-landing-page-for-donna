@@ -3,12 +3,10 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { track } from "@vercel/analytics"
-import { checkoutErrorMessage, startStripeCheckout } from "@/lib/start-checkout"
+import { onPricingCtaNavClick } from "@/lib/pricing-cta-nav"
 
 export default function MinimalHeader() {
   const [isScrolled, setIsScrolled] = useState(false)
-  const [checkoutLoading, setCheckoutLoading] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,15 +16,6 @@ export default function MinimalHeader() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
-
-  const handleGetDonna = async () => {
-    track("checkout_click", { placement: "header" })
-    setCheckoutLoading(true)
-    const result = await startStripeCheckout()
-    setCheckoutLoading(false)
-    const msg = checkoutErrorMessage(result)
-    if (msg) window.alert(msg)
-  }
 
   return (
     <header
@@ -55,16 +44,13 @@ export default function MinimalHeader() {
               <span className="sm:hidden">Portal</span>
               <span className="hidden sm:inline">Member Portal</span>
             </Link>
-            <button
-              type="button"
-              onClick={handleGetDonna}
-              disabled={checkoutLoading}
-              className="px-4 py-2 rounded-lg animated-edge-button text-sm font-medium hover:bg-white/20 transition-all relative disabled:opacity-60"
+            <Link
+              href="/#pricing"
+              onClick={(e) => onPricingCtaNavClick("header", e)}
+              className="px-4 py-2 rounded-lg animated-edge-button text-sm font-medium hover:bg-white/20 transition-all relative inline-flex items-center justify-center"
             >
-              <span className="relative z-10">
-                {checkoutLoading ? "Redirecting…" : "Get DONNA"}
-              </span>
-            </button>
+              <span className="relative z-10">Get DONNA</span>
+            </Link>
           </div>
         </div>
       </div>

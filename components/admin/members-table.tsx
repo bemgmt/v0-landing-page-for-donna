@@ -59,14 +59,48 @@ export default function MembersTable({ rows, canAdmin }: { rows: MemberRow[]; ca
     notify("Role updated.", "ok")
   }
 
-  async function syncSubscription() {
+  async function syncSubscriptionGlobal() {
     if (!canAdmin) return
     const stripe_subscription_id = window.prompt("Stripe subscription id (sub_...)")
+    if (!stripe_subscription_id?.trim()) return
+    const optionalUser = window.prompt(
+      "Optional: this member’s Supabase user_id (UUID). Use if Stripe has no metadata/email match. Leave empty or Cancel to skip.",
+    )
+    const supabase_user_id =
+      optionalUser && typeof optionalUser === "string" && optionalUser.trim().length > 0
+        ? optionalUser.trim()
+        : undefined
+    const res = await fetch("/api/admin/billing/sync-subscription", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        stripe_subscription_id: stripe_subscription_id.trim(),
+        ...(supabase_user_id ? { supabase_user_id } : {}),
+      }),
+      credentials: "same-origin",
+    })
+    const body = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      notify((body as { error?: string }).error ?? "Sync failed.", "err")
+      return
+    }
+    notify("Subscription synced from Stripe.", "ok")
+    window.location.reload()
+  }
+
+  async function syncSubscriptionForRow(row: MemberRow) {
+    if (!canAdmin) return
+    const stripe_subscription_id = window.prompt(
+      `Stripe subscription id (sub_...) for ${row.display_name ?? row.email ?? "this member"}`,
+    )
     if (!stripe_subscription_id?.trim()) return
     const res = await fetch("/api/admin/billing/sync-subscription", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ stripe_subscription_id: stripe_subscription_id.trim() }),
+      body: JSON.stringify({
+        stripe_subscription_id: stripe_subscription_id.trim(),
+        supabase_user_id: row.user_id,
+      }),
       credentials: "same-origin",
     })
     const body = await res.json().catch(() => ({}))
@@ -127,6 +161,13 @@ export default function MembersTable({ rows, canAdmin }: { rows: MemberRow[]; ca
     <div className="space-y-3">
       {canAdmin ? (
         <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => void syncSubscriptionGlobal()}
+            className="text-xs rounded-lg border border-white/15 bg-black/40 px-3 py-1.5 hover:bg-white/5"
+          >
+            Sync subscription by id…
+          </button>
           <button
             type="button"
             onClick={() => void attachCheckout()}
@@ -202,7 +243,7 @@ export default function MembersTable({ rows, canAdmin }: { rows: MemberRow[]; ca
                       </button>
                       <button
                         type="button"
-                        onClick={() => void syncSubscription()}
+                        onClick={() => void syncSubscriptionForRow(r)}
                         className="text-left text-xs rounded border border-white/15 px-2 py-1 hover:bg-white/5"
                       >
                         Sync Stripe sub…
