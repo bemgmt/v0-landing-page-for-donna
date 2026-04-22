@@ -23,7 +23,8 @@ function CheckoutStatusBannerInner() {
         <div className="flex items-start justify-between gap-3">
           <p>
             <strong className="font-semibold">Welcome aboard.</strong> Your checkout completed — we&apos;ll
-            follow up with next steps.
+            follow up with next steps. If partner access doesn&apos;t appear in the portal yet, sign in using the{" "}
+            <strong className="font-semibold">same email</strong> you used at checkout, or contact support.
           </p>
           <button
             type="button"

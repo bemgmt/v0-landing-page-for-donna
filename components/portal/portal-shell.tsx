@@ -17,12 +17,16 @@ function navForRole(role: MemberRole, subscriptionActive: boolean): NavItem[] {
     { href: "/portal/forum", label: "Forum" },
     { href: "/portal/support", label: "Support chat" },
   ]
-  if (!partner) return base
+  const staffNav: NavItem[] =
+    role === "staff" || role === "admin" ? [{ href: "/admin/members", label: "Staff / members" }] : []
+
+  if (!partner) return [...base, ...staffNav]
   return [
     ...base,
     { href: "/portal/sales", label: "Sales" },
     { href: "/portal/leads/claim", label: "Claim a sale" },
     { href: "/portal/leads/round-robin", label: "Round robin" },
+    ...staffNav,
   ]
 }
 

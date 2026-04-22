@@ -1,0 +1,238 @@
+import "server-only"
+
+import Stripe from "stripe"
+import { createAdminClient } from "@/lib/supabase/admin"
+
+export type AdminClient = ReturnType<typeof createAdminClient>
+
+export function parseNotificationEmails(customer: Stripe.Customer): string[] {
+  const raw = customer.metadata?.donna_notification_emails
+  if (!raw || typeof raw !== "string") return []
+  try {
+    const parsed: unknown = JSON.parse(raw)
+    if (Array.isArray(parsed) && parsed.every((x) => typeof x === "string")) {
+      return parsed as string[]
+    }
+  } catch {
+    /* ignore invalid JSON */
+  }
+  return []
+}
+
+function primarySubscriptionItem(
+  items: Stripe.SubscriptionItem[],
+): Stripe.SubscriptionItem | undefined {
+  return [...items].sort((a, b) => a.id.localeCompare(b.id))[0]
+}
+
+function priceFieldsFromItem(item: Stripe.SubscriptionItem): {
+  stripe_price_id: string | null
+  price_lookup_key: string | null
+} {
+  const price = item.price
+  if (!price || typeof price === "string") {
+    return { stripe_price_id: typeof price === "string" ? price : null, price_lookup_key: null }
+  }
+  return {
+    stripe_price_id: price.id ?? null,
+    price_lookup_key: price.lookup_key ?? null,
+  }
+}
+
+async function upsertBillingCustomer(
+  admin: AdminClient,
+  stripeCustomerId: string,
+  customer: Stripe.Customer,
+) {
+  const email = (customer.email ?? "").trim()
+  if (!email) return
+  await admin.from("billing_customers").upsert(
+    {
+      stripe_customer_id: stripeCustomerId,
+      email,
+    },
+    { onConflict: "stripe_customer_id" },
+  )
+}
+
+export async function syncSubscriptionItems(
+  admin: AdminClient,
+  subscription: Stripe.Subscription,
+) {
+  const subId = subscription.id
+  await admin.from("billing_subscription_items").delete().eq("stripe_subscription_id", subId)
+
+  const rows = subscription.items.data.map((item) => {
+    const { stripe_price_id, price_lookup_key } = priceFieldsFromItem(item)
+    return {
+      stripe_subscription_id: subId,
+      stripe_subscription_item_id: item.id,
+      quantity: item.quantity ?? 1,
+      stripe_price_id,
+      price_lookup_key,
+    }
+  })
+
+  if (rows.length > 0) {
+    const { error } = await admin.from("billing_subscription_items").insert(rows)
+    if (error) throw error
+  }
+}
+
+export async function syncBillingFromSubscription(
+  admin: AdminClient,
+  subscription: Stripe.Subscription,
+  userId: string,
+  stripe: Stripe,
+) {
+  const customerId =
+    typeof subscription.customer === "string"
+      ? subscription.customer
+      : subscription.customer?.id ?? null
+
+  const customer = customerId ? await stripe.customers.retrieve(customerId) : null
+
+  if (customer && !("deleted" in customer && customer.deleted)) {
+    await upsertBillingCustomer(admin, customerId!, customer as Stripe.Customer)
+  }
+
+  const notificationEmails =
+    customer && !("deleted" in customer && customer.deleted)
+      ? parseNotificationEmails(customer as Stripe.Customer)
+      : []
+
+  const primary = primarySubscriptionItem(subscription.items.data)
+  const primaryPrice = primary ? priceFieldsFromItem(primary) : { stripe_price_id: null, price_lookup_key: null }
+
+  await admin.from("billing_subscriptions").upsert(
+    {
+      user_id: userId,
+      stripe_customer_id: customerId,
+      stripe_subscription_id: subscription.id,
+      status: subscription.status,
+      current_period_end: subscription.current_period_end
+        ? new Date(subscription.current_period_end * 1000).toISOString()
+        : null,
+      cancel_at_period_end: subscription.cancel_at_period_end ?? false,
+      stripe_price_id: primaryPrice.stripe_price_id,
+      price_lookup_key: primaryPrice.price_lookup_key,
+      notification_emails: notificationEmails,
+    },
+    { onConflict: "user_id" },
+  )
+
+  await syncSubscriptionItems(admin, subscription)
+}
+
+/**
+ * Resolve Supabase auth user id for a Checkout session: explicit ids first, then checkout email → member_profiles.
+ */
+export async function resolveUserIdForCheckoutSession(
+  admin: AdminClient,
+  session: Stripe.Checkout.Session,
+): Promise<string | null> {
+  const fromExplicit =
+    session.client_reference_id ??
+    (typeof session.metadata?.supabase_user_id === "string" ? session.metadata.supabase_user_id : null)
+  if (fromExplicit) return fromExplicit
+
+  const rawEmail =
+    session.customer_details?.email ??
+    (typeof session.customer_email === "string" ? session.customer_email : null)
+  const email = typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : ""
+  if (!email) return null
+
+  const { data: profiles, error } = await admin
+    .from("member_profiles")
+    .select("id, user_id, email")
+    .ilike("email", email)
+
+  if (error) {
+    console.error("[stripe-sync] member_profiles lookup by email failed", error.message, session.id)
+    return null
+  }
+  if (!profiles?.length) return null
+  if (profiles.length > 1) {
+    const exact = profiles.filter((p) => (p.email ?? "").trim().toLowerCase() === email)
+    if (exact.length === 1) return exact[0].user_id
+    console.warn(
+      "[stripe-sync] checkout.session.completed: ambiguous member_profiles for email; skipping",
+      { email, sessionId: session.id, count: profiles.length },
+    )
+    return null
+  }
+  return profiles[0].user_id
+}
+
+export async function syncFromCheckoutSession(
+  admin: AdminClient,
+  session: Stripe.Checkout.Session,
+  stripe: Stripe,
+): Promise<void> {
+  const userId = await resolveUserIdForCheckoutSession(admin, session)
+  if (!userId) {
+    console.warn("[stripe-sync] checkout.session.completed: could not resolve user_id", {
+      sessionId: session.id,
+    })
+    return
+  }
+
+  const subRef = session.subscription
+  const subId = typeof subRef === "string" ? subRef : subRef?.id
+  if (!subId) return
+
+  const subscription = await stripe.subscriptions.retrieve(subId, {
+    expand: ["items.data.price"],
+  })
+
+  await syncBillingFromSubscription(admin, subscription, userId, stripe)
+}
+
+export async function syncSubscriptionWebhook(
+  admin: AdminClient,
+  sub: Stripe.Subscription,
+  stripe: Stripe,
+): Promise<void> {
+  let userId = typeof sub.metadata?.supabase_user_id === "string" ? sub.metadata.supabase_user_id : null
+
+  if (!userId) {
+    const { data } = await admin
+      .from("billing_subscriptions")
+      .select("user_id")
+      .eq("stripe_subscription_id", sub.id)
+      .maybeSingle()
+    userId = data?.user_id ?? null
+  }
+
+  if (!userId) return
+
+  const subscription = await stripe.subscriptions.retrieve(sub.id, {
+    expand: ["items.data.price"],
+  })
+
+  await syncBillingFromSubscription(admin, subscription, userId, stripe)
+}
+
+export async function syncCustomerRecord(admin: AdminClient, customer: Stripe.Customer) {
+  if ("deleted" in customer && customer.deleted) return
+
+  const customerId = customer.id
+  const email = (customer.email ?? "").trim()
+  if (!email) return
+
+  await admin.from("billing_customers").upsert(
+    {
+      stripe_customer_id: customerId,
+      email,
+    },
+    { onConflict: "stripe_customer_id" },
+  )
+
+  const notificationEmails = parseNotificationEmails(customer)
+  const { error } = await admin
+    .from("billing_subscriptions")
+    .update({ notification_emails: notificationEmails })
+    .eq("stripe_customer_id", customerId)
+
+  if (error) throw error
+}

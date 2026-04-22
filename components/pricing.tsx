@@ -1,10 +1,11 @@
 "use client"
 
-import { createElement, useEffect } from "react"
+import { useEffect } from "react"
 import Script from "next/script"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
 import PricingComparisonChart from "@/components/pricing-comparison-chart"
+import StripePricingTableEmbed from "@/components/stripe-pricing-table-embed"
 
 const pricingTableId = process.env.NEXT_PUBLIC_STRIPE_PRICING_TABLE_ID ?? ""
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -43,10 +44,7 @@ export default function Pricing() {
 
         <div className="w-full max-w-6xl mx-auto min-h-[200px]">
           {hasStripeEmbed ? (
-            createElement("stripe-pricing-table", {
-              "pricing-table-id": pricingTableId,
-              "publishable-key": publishableKey,
-            })
+            <StripePricingTableEmbed />
           ) : process.env.NODE_ENV === "development" ? (
             <p className="rounded-xl border border-white/10 bg-white/5 p-6 text-center text-sm text-foreground/70">
               Set{" "}

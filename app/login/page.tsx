@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string; error?: string }>
+  searchParams: Promise<{ next?: string; error?: string; reason?: string }>
 }) {
   const params = await searchParams
   const nextPath = typeof params.next === "string" && params.next.startsWith("/") ? params.next : "/portal"
@@ -37,10 +37,24 @@ export default async function LoginPage({
       <div className="liquid-glass w-full max-w-lg rounded-2xl border border-white/10 p-8 shadow-xl">
         <h1 className="text-2xl font-semibold gradient-text mb-2 text-center">DONNA Member Portal</h1>
         <p className="text-sm text-muted-foreground text-center mb-8">
-          Sign in with Google or enter your email for a magic link.
+          Sign in with Google, email and password, or a magic link to your email.
         </p>
         {params.error === "auth" ? (
           <p className="text-sm text-red-400 text-center mb-4">Sign-in failed. Try again.</p>
+        ) : null}
+        {params.error === "oauth" ? (
+          <p className="text-sm text-red-400 text-center mb-4">
+            OAuth sign-in failed
+            {typeof params.reason === "string" && params.reason.length > 0
+              ? (() => {
+                  try {
+                    return `: ${decodeURIComponent(params.reason).slice(0, 200)}`
+                  } catch {
+                    return "."
+                  }
+                })()
+              : "."}
+          </p>
         ) : null}
         <LoginForm nextPath={nextPath} />
       </div>

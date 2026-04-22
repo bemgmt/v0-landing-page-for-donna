@@ -10,7 +10,9 @@ type Props = {
 export default function LoginForm({ nextPath }: Props) {
   const supabase = useMemo(() => createClient(), [])
   const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [status, setStatus] = useState<"idle" | "loading" | "sent" | "error">("idle")
+  const [passwordLoading, setPasswordLoading] = useState(false)
   const [oauthLoading, setOauthLoading] = useState(false)
   const [feedback, setFeedback] = useState<{ text: string; tone: "success" | "error" } | null>(null)
 
@@ -20,9 +22,9 @@ export default function LoginForm({ nextPath }: Props) {
       : process.env.NEXT_PUBLIC_SITE_URL ?? ""
 
   const baseOrigin = origin.replace(/\/$/, "")
-  const authBusy = status === "loading" || oauthLoading
+  const authBusy = status === "loading" || oauthLoading || passwordLoading
 
-  async function onSubmit(e: React.FormEvent) {
+  async function onMagicLinkSubmit(e: React.FormEvent) {
     e.preventDefault()
     setStatus("loading")
     setFeedback(null)
@@ -50,6 +52,34 @@ export default function LoginForm({ nextPath }: Props) {
     setFeedback({ text: "Check your email for the sign-in link.", tone: "success" })
   }
 
+  async function onPasswordSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setPasswordLoading(true)
+    setFeedback(null)
+
+    if (!baseOrigin) {
+      setPasswordLoading(false)
+      setFeedback({ text: "Set NEXT_PUBLIC_SITE_URL for this environment.", tone: "error" })
+      return
+    }
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    })
+
+    if (error) {
+      setPasswordLoading(false)
+      setFeedback({
+        text: "Could not sign in. Check your email and password, or use another sign-in method.",
+        tone: "error",
+      })
+      return
+    }
+
+    window.location.assign(nextPath)
+  }
+
   async function signInWithGoogle() {
     setOauthLoading(true)
     setFeedback(null)
@@ -61,7 +91,7 @@ export default function LoginForm({ nextPath }: Props) {
       return
     }
 
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo },
     })
@@ -69,7 +99,15 @@ export default function LoginForm({ nextPath }: Props) {
     if (error) {
       setOauthLoading(false)
       setFeedback({ text: error.message, tone: "error" })
+      return
     }
+
+    if (data?.url) {
+      window.location.assign(data.url)
+      return
+    }
+
+    setOauthLoading(false)
   }
 
   return (
@@ -86,7 +124,8 @@ export default function LoginForm({ nextPath }: Props) {
         <span className="relative z-10 bg-black/80 px-2">or</span>
         <span className="absolute inset-x-0 top-1/2 h-px bg-white/10" aria-hidden />
       </div>
-      <form onSubmit={onSubmit} className="flex flex-col gap-4">
+      <form onSubmit={onPasswordSubmit} className="flex flex-col gap-3">
+        <p className="text-xs text-muted-foreground">Email and password</p>
         <label className="flex flex-col gap-2 text-sm">
           <span className="text-muted-foreground">Email</span>
           <input
@@ -99,9 +138,33 @@ export default function LoginForm({ nextPath }: Props) {
             placeholder="you@company.com"
           />
         </label>
+        <label className="flex flex-col gap-2 text-sm">
+          <span className="text-muted-foreground">Password</span>
+          <input
+            type="password"
+            required
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-foreground outline-none ring-cyan-400/40 focus:ring-2"
+          />
+        </label>
         <button
           type="submit"
           disabled={authBusy}
+          className="rounded-lg border border-white/15 bg-black/40 px-4 py-2 text-sm font-medium text-foreground hover:bg-white/5 disabled:opacity-60"
+        >
+          {passwordLoading ? "Signing in…" : "Sign in with password"}
+        </button>
+      </form>
+      <div className="relative text-center text-xs text-muted-foreground">
+        <span className="relative z-10 bg-black/80 px-2">or magic link</span>
+        <span className="absolute inset-x-0 top-1/2 h-px bg-white/10" aria-hidden />
+      </div>
+      <form onSubmit={onMagicLinkSubmit} className="flex flex-col gap-4">
+        <button
+          type="submit"
+          disabled={authBusy || !email.trim()}
           className="rounded-lg animated-edge-button px-4 py-2 text-sm font-medium disabled:opacity-60"
         >
           {status === "loading" ? "Sending…" : "Email me a sign-in link"}
