@@ -13,6 +13,7 @@ import SectionAIHarness from "@/components/section-ai-harness"
 import Pricing from "@/components/pricing"
 import SectionEarlyAdopter from "@/components/section-early-adopter"
 import SectionCTA from "@/components/section-cta"
+import SectionExploreFurther from "@/components/section-explore-further"
 import DemoForm from "@/components/demo-form"
 import Footer from "@/components/footer"
 import Chatbot from "@/components/chatbot"
@@ -71,6 +72,7 @@ export default function Home() {
         <Pricing />
         <SectionEarlyAdopter />
         <SectionCTA />
+        <SectionExploreFurther />
         <DemoForm />
         <Footer />
       </main>

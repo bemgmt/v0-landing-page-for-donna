@@ -25,7 +25,7 @@ export function canAccessPortalSection(
   section:
     | "profile"
     | "can_donna"
-    | "documents"
+    | "content"
     | "socials"
     | "forum"
     | "sales"
@@ -37,7 +37,7 @@ export function canAccessPortalSection(
   switch (section) {
     case "profile":
     case "can_donna":
-    case "documents":
+    case "content":
     case "socials":
     case "forum":
       return roleAtLeast(role, "free_member")

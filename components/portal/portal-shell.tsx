@@ -12,7 +12,7 @@ function navForRole(role: MemberRole, subscriptionActive: boolean): NavItem[] {
     { href: "/portal/profile", label: "Profile" },
     { href: "/portal/billing", label: "Billing & seats" },
     { href: "/portal/can-donna", label: "Can DONNA" },
-    { href: "/portal/documents", label: "Documents" },
+    { href: "/portal/content", label: "Content" },
     { href: "/portal/socials", label: "Socials" },
     { href: "/portal/forum", label: "Forum" },
     { href: "/portal/support", label: "Support chat" },
