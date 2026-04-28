@@ -1,8 +1,11 @@
 import Link from "next/link"
 import { format } from "date-fns"
 import CheckoutStatusBanner from "@/components/checkout-status-banner"
+import { PageHeader } from "@/components/portal/dashboard/page-header"
+import { StatCard } from "@/components/portal/dashboard/stat-card"
 import { planShortLabel } from "@/lib/billing/plan-seats"
 import { resolveActiveSeatInvitePlan, resolveSubscriptionPlan } from "@/lib/billing/resolve-subscription-plan"
+import { hasPartnerCapabilities } from "@/lib/auth/roles"
 import { getPortalSession } from "@/lib/portal/session"
 import { fetchPortalCopy } from "@/lib/sanity/client"
 
@@ -17,6 +20,7 @@ export default async function PortalDashboardPage() {
     console.error("[portal] fetchPortalCopy failed", e)
   }
   const { supabase, profile, subscriptionActive, billing, seatAccess, user } = session
+  const partner = hasPartnerCapabilities(profile.role, subscriptionActive)
 
   let subscriptionValue = subscriptionActive ? "Active" : "Not active"
   if (subscriptionActive) {
@@ -47,28 +51,27 @@ export default async function PortalDashboardPage() {
       .eq("author_profile_id", profile.id),
   ])
 
-  const cards = [
-    { label: "Profile", value: profile.display_name ? "Complete" : "Add your name", href: "/portal/profile" },
-    {
-      label: "Subscription",
-      value: subscriptionValue,
-      href: "/portal/billing",
-    },
-    { label: "Approved / paid sales", value: String(salesCount ?? 0), href: "/portal/sales" },
-    { label: "Open leads (pool)", value: String(leadsOpen ?? 0), href: "/portal/leads/round-robin" },
-    { label: "Your forum posts", value: String(forumPosts ?? 0), href: "/portal/forum" },
-  ]
-
   return (
     <div className="space-y-8">
       <CheckoutStatusBanner />
-      <div>
-        <h1 className="text-2xl font-semibold gradient-text">Dashboard</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Signed in as {profile.email ?? session.user.email}. Last updated{" "}
-          {format(new Date(profile.updated_at), "MMM d, yyyy")}
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Member portal"
+        title="Dashboard"
+        subtitle={`Signed in as ${profile.email ?? session.user.email}. Last updated ${format(new Date(profile.updated_at), "MMM d, yyyy")}.`}
+      />
+
+      {partner ? (
+        <Link
+          href="/partner"
+          className="block rounded-2xl border border-cyan-500/25 liquid-glass p-5 hover:border-cyan-400/40 transition-colors"
+        >
+          <p className="text-xs uppercase tracking-widest text-cyan-400/90 font-medium">Strategic partner</p>
+          <p className="text-lg font-semibold text-foreground mt-1">Open partner command center</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Sales, commission documents, lead tools, and onboarding — separate from member billing and community.
+          </p>
+        </Link>
+      ) : null}
 
       {copy?.portalHelpMarkdown ? (
         <section className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-muted-foreground whitespace-pre-wrap">
@@ -77,16 +80,19 @@ export default async function PortalDashboardPage() {
       ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {cards.map((c) => (
-          <Link
-            key={c.label}
-            href={c.href}
-            className="rounded-xl border border-white/10 liquid-glass p-4 hover:border-cyan-400/30 transition-colors"
-          >
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">{c.label}</p>
-            <p className="text-lg font-medium mt-1">{c.value}</p>
-          </Link>
-        ))}
+        <StatCard label="Profile" value={profile.display_name ? "Complete" : "Add your name"} href="/portal/profile" />
+        <StatCard label="Subscription" value={subscriptionValue} href="/portal/billing" />
+        {partner ? (
+          <>
+            <StatCard
+              label="Approved / paid sales"
+              value={String(salesCount ?? 0)}
+              href="/partner/sales"
+            />
+            <StatCard label="Open leads (pool)" value={String(leadsOpen ?? 0)} href="/partner/leads/round-robin" />
+          </>
+        ) : null}
+        <StatCard label="Your forum posts" value={String(forumPosts ?? 0)} href="/portal/forum" />
       </div>
     </div>
   )

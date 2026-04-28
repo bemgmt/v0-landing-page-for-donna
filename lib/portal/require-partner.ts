@@ -6,7 +6,7 @@ import { getPortalSession } from "@/lib/portal/session"
 
 export async function requirePartnerPortal() {
   const session = await getPortalSession()
-  if (!session) redirect("/login?next=/portal/sales")
+  if (!session) redirect("/login?next=/partner")
 
   if (!hasPartnerCapabilities(session.profile.role, session.subscriptionActive)) {
     redirect("/portal/unauthorized")

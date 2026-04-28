@@ -1,20 +1,23 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
-import LoginForm from "@/components/auth/login-form"
+import LoginPanel from "@/components/auth/login-panel"
 import { createClient } from "@/lib/supabase/server"
 
 export const metadata: Metadata = {
   title: "Sign in — DONNA",
-  description: "Member Portal sign-in",
+  description: "Member and Strategic Partner sign-in",
 }
 
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string; error?: string; reason?: string }>
+  searchParams: Promise<{ next?: string; error?: string; reason?: string; mode?: string }>
 }) {
   const params = await searchParams
-  const nextPath = typeof params.next === "string" && params.next.startsWith("/") ? params.next : "/portal"
+  let nextPath = typeof params.next === "string" && params.next.startsWith("/") ? params.next : "/portal"
+  if (params.mode === "partner" && nextPath === "/portal") {
+    nextPath = "/partner"
+  }
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -35,9 +38,8 @@ export default async function LoginPage({
   return (
     <main className="min-h-screen bg-black text-foreground flex flex-col items-center justify-center px-4">
       <div className="liquid-glass w-full max-w-lg rounded-2xl border border-white/10 p-8 shadow-xl">
-        <h1 className="text-2xl font-semibold gradient-text mb-2 text-center">DONNA Member Portal</h1>
-        <p className="text-sm text-muted-foreground text-center mb-8">
-          Sign in with Google, email and password, or a magic link to your email.
+        <p className="text-xs text-muted-foreground text-center mb-4">
+          Sign in with Google, email and password, or a magic link.
         </p>
         {params.error === "auth" ? (
           <p className="text-sm text-red-400 text-center mb-4">Sign-in failed. Try again.</p>
@@ -56,7 +58,7 @@ export default async function LoginPage({
               : "."}
           </p>
         ) : null}
-        <LoginForm nextPath={nextPath} />
+        <LoginPanel nextFromUrl={nextPath} />
       </div>
       <a href="/" className="mt-10 text-sm text-muted-foreground hover:text-cyan-300 transition-colors">
         ← Back to site

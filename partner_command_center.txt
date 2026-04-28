@@ -1,0 +1,76 @@
+Create a “Partner Command Center”
+
+One clean landing page.
+
+This page should answer:
+
+What should I do first?
+Where are my leads/sales?
+How do I pitch DONNA?
+Where do I learn more?
+How do I get help?
+
+Everything else becomes secondary navigation.
+
+Recommended Layout
+Top Section = Immediate Clarity
+Welcome Card
+
+Example:
+
+Welcome to the DONNA Strategic Partner Network
+
+Then:
+
+Total Sales
+Pending Commissions
+Available Leads
+Quick Actions
+The MOST Important Improvement
+Add “Recommended Next Actions”
+
+This is the biggest UX improvement you could make.
+
+Example:
+
+Recommended Actions
+Review the 3-minute DONNA positioning demo
+Claim available leads
+Read the ICP guide
+Try the “Can DONNA” assistant
+Schedule your first live walkthrough
+
+This instantly removes paralysis.
+
+Keep Your Existing Systems
+
+What you built is already smart.
+
+You do NOT need:
+
+20 more modules,
+fake enterprise complexity,
+over-designed gamification.
+
+You need:
+
+guided simplicity.
+
+That’s the mature move.
+
+Small Tweaks That Would Improve It A LOT
+1. Add “Start Here”
+
+Very underrated.
+
+A single button:
+
+Start Here
+
+This launches:
+
+intro video,
+3-step onboarding,
+basic pitch,
+where to find leads,
+where to ask questions.
