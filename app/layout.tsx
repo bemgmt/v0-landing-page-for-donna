@@ -3,12 +3,14 @@ import type { Metadata, Viewport } from "next"
 import { GoogleTagManager } from "@next/third-parties/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
-import { Sora } from "next/font/google"
+import { Geist, Geist_Mono, Sora } from "next/font/google"
 import RegisterServiceWorker from "@/components/register-service-worker"
 import PwaInstallPrompt from "@/components/pwa-install-prompt"
 import { getSiteUrl } from "@/lib/site-url"
 import { OG_IMAGE_PATH } from "@/lib/metadata"
 
+const _geist = Geist({ subsets: ["latin"] })
+const _geistMono = Geist_Mono({ subsets: ["latin"] })
 const _sora = Sora({ subsets: ["latin"], variable: "--font-sora" })
 
 const siteUrl = getSiteUrl()
@@ -78,7 +80,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`font-sans antialiased ${_sora.variable}`}>
+      <body className={`${_geist.className} font-sans antialiased ${_sora.variable}`}>
         {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
         {children}
         <RegisterServiceWorker />
