@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import Script from "next/script"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
+import { pushDataLayer } from "@/lib/data-layer"
 import PricingComparisonChart from "@/components/pricing-comparison-chart"
 import StripePricingTableEmbed from "@/components/stripe-pricing-table-embed"
 
@@ -20,6 +21,7 @@ export default function Pricing() {
   }, [inView])
 
   const handleScrollToForm = () => {
+    pushDataLayer({ event: "schedule_demo_click", placement: "pricing_questions" })
     const form = document.getElementById("demo-form")
     form?.scrollIntoView({ behavior: "smooth" })
   }

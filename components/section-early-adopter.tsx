@@ -1,8 +1,10 @@
 "use client"
 
 import { useEffect } from "react"
+import Link from "next/link"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
+import { pushDataLayer } from "@/lib/data-layer"
 
 export default function SectionEarlyAdopter() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
@@ -50,6 +52,15 @@ export default function SectionEarlyAdopter() {
         </ul>
         <p className="text-center md:text-left text-base sm:text-lg text-foreground/75 pt-2">
           As the system grows, so does your leverage.
+        </p>
+        <p className="text-center md:text-left pt-4">
+          <Link
+            href="/early-adopter-program"
+            onClick={() => pushDataLayer({ event: "sign_up_click", placement: "early_adopter_section" })}
+            className="text-accent font-medium hover:underline underline-offset-4"
+          >
+            Read the Early Adopter Program overview →
+          </Link>
         </p>
       </div>
     </section>

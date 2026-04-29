@@ -1,5 +1,7 @@
 "use client"
 
+import { pushDataLayer } from "@/lib/data-layer"
+
 export default function CTAFooter() {
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-white/10">
@@ -13,7 +15,9 @@ export default function CTAFooter() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
+            type="button"
             onClick={() => {
+              pushDataLayer({ event: "schedule_demo_click", placement: "cta_footer" })
               const form = document.getElementById("demo-form")
               form?.scrollIntoView({ behavior: "smooth" })
             }}
@@ -22,7 +26,9 @@ export default function CTAFooter() {
             Request a Demo
           </button>
           <button
+            type="button"
             onClick={() => {
+              pushDataLayer({ event: "sign_up_click", placement: "cta_footer_pilot" })
               const form = document.getElementById("pilot-form")
               form?.scrollIntoView({ behavior: "smooth" })
             }}

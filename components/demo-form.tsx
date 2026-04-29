@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRef } from "react"
+import { pushDataLayer } from "@/lib/data-layer"
 
 interface FormData {
   name: string
@@ -34,6 +35,7 @@ export default function DemoForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
+    pushDataLayer({ event: "contact_submit", form_type: "discovery" })
 
     try {
       const response = await fetch("/api/send-email", {
@@ -54,6 +56,11 @@ export default function DemoForm() {
       const data = await response.json()
 
       if (response.ok) {
+        pushDataLayer({
+          event: "generate_lead",
+          form_type: "discovery",
+          method: "demo_form",
+        })
         setSubmitSuccess(true)
         setFormData({ name: "", email: "", company: "", role: "", useCase: "" })
         setTimeout(() => setSubmitSuccess(false), 5000)

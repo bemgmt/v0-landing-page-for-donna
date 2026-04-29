@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Breadcrumb } from '@/components/breadcrumb'
 import { generatePageMetadata } from '@/lib/metadata'
+import { breadcrumbListSchema } from '@/lib/schema-markup'
 import { 
   TrendingUp, 
   Users, 
@@ -19,14 +20,27 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = generatePageMetadata({
-  title: 'Investor Relations - DONNA',
-  description: 'Investment opportunity in DONNA - The Digital Operations Neural Network Assistant. High-margin, scalable AI workforce assistant with AWS foundation.',
-  path: '/investors',
+  title: "Investor relations",
+  description:
+    "Investment overview for DONNA — AI operational infrastructure for SMBs with unified communications, coordination, and execution, built on AWS-native foundations.",
+  path: "/investors",
 })
 
 export default function InvestorsPage() {
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    ...breadcrumbListSchema([
+      { name: "Home", path: "/" },
+      { name: "Investors", path: "/investors" },
+    ]),
+  }
+
   return (
     <div className="min-h-screen bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <div className="container mx-auto px-4 py-8">
         <Breadcrumb />
 
@@ -36,9 +50,9 @@ export default function InvestorsPage() {
             <span className="gradient-text">DONNA</span> Investment Opportunity
           </h1>
           <p className="text-xl text-foreground/70 max-w-4xl mx-auto leading-relaxed">
-            DONNA is the Digital Operations Neural Network Assistant, the AI employee that works everywhere. 
-            Built for small and mid-sized businesses, powered by AWS native infrastructure, with voice, email, 
-            SMS, and knowledge-driven automation in one system.
+            DONNA is AI operational infrastructure for SMBs — not a single-purpose chatbot, but a layer that
+            unifies communication, coordination, and execution. Built on AWS-native foundations with voice,
+            email, SMS, and workflow automation in one system.
           </p>
         </section>
 
@@ -75,8 +89,8 @@ export default function InvestorsPage() {
                 to powerful AI that is affordable and easy to deploy.
               </p>
               <p className="text-foreground/80">
-                DONNA fills the market gap as a hybrid horizontal + vertical AI employee designed to serve real estate, 
-                hospitality, health & beauty, contractors, and associations.
+                DONNA fills the market gap as hybrid horizontal plus vertical operational intelligence — designed
+                for real estate, hospitality, health and beauty, contractors, and associations.
               </p>
             </div>
           </div>
@@ -90,9 +104,9 @@ export default function InvestorsPage() {
               What is DONNA?
             </h2>
             <p className="text-lg text-foreground/80 mb-6">
-              DONNA is an AI employee that handles communications, customer service, scheduling, lead qualification, 
-              data lookup, task execution, and in-meeting presence. Unlike chatbots, DONNA actively works across all 
-              channels simultaneously, email, phone, SMS, voice, chat, and internal operations.
+              DONNA runs operational workflows across communications, customer service, scheduling, lead
+              qualification, data lookup, task execution, and in-meeting presence. Unlike simple chatbots, DONNA is
+              built to coordinate work across email, phone, SMS, voice, chat, and internal operations at once.
             </p>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
@@ -385,8 +399,9 @@ export default function InvestorsPage() {
           <div className="glass-card p-8 rounded-xl text-center">
             <h2 className="text-3xl font-bold mb-6">Join Us</h2>
             <p className="text-lg text-foreground/80 mb-8 max-w-3xl mx-auto">
-              DONNA is a high-margin, scalable AI workforce assistant with a powerful AWS foundation and telecom infrastructure. 
-              With strong demand already building, DONNA is positioned to become the AI employee for millions of businesses.
+              DONNA is high-margin, scalable operational intelligence infrastructure with a strong AWS foundation and
+              telecom reach. With demand building across SMBs, DONNA is positioned to become the execution layer
+              millions of businesses run on.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a

@@ -1,5 +1,10 @@
 import type React from "react"
+import type { Metadata } from "next"
 import { redirect } from "next/navigation"
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
 import PortalConfigError from "@/components/portal/portal-config-error"
 import PortalProfileMissing from "@/components/portal/portal-profile-missing"
 import PortalShell from "@/components/portal/portal-shell"

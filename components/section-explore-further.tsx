@@ -3,6 +3,7 @@
 import { useEffect } from "react"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
+import { pushDataLayer } from "@/lib/data-layer"
 
 const NOTEBOOKLM_URL =
   "https://notebooklm.google.com/notebook/ef6a20e1-9bc3-402a-91f0-11f286c2c943"
@@ -62,6 +63,13 @@ export default function SectionExploreFurther() {
                 href={card.href}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() =>
+                  pushDataLayer({
+                    event: "outbound_click",
+                    link_url: card.href,
+                    link_text: card.cta,
+                  })
+                }
                 className="inline-flex items-center justify-center w-fit px-5 py-2.5 rounded-full bg-accent text-background text-sm font-semibold hover:bg-accent/90 transition-colors"
               >
                 {card.cta}

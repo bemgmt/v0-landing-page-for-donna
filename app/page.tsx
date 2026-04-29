@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata } from "next"
 import ScrollCue from "@/components/scroll-cue"
 import ScrollbarFade from "@/components/scrollbar-fade"
 import MinimalHeader from "@/components/minimal-header"
@@ -19,32 +19,45 @@ import Footer from "@/components/footer"
 import Chatbot from "@/components/chatbot"
 import CheckoutStatusBanner from "@/components/checkout-status-banner"
 import StandaloneHomePortalCta from "@/components/standalone-home-portal-cta"
-import { generatePageMetadata } from '@/lib/metadata'
-import { softwareApplicationSchema } from '@/lib/schema-markup'
+import FAQ from "@/components/faq"
+import { generatePageMetadata } from "@/lib/metadata"
+import { marketingFaqs } from "@/lib/faq-content"
+import {
+  faqSchema,
+  organizationSchema,
+  softwareApplicationSchema,
+  webSiteSchema,
+} from "@/lib/schema-markup"
 
 export const metadata: Metadata = generatePageMetadata({
-  title: 'DONNA — AI Operational Infrastructure for Real Estate',
+  title: "AI Operational Infrastructure for SMBs",
   description:
-    'DONNA unifies communication, coordination, and execution for brokerages and real estate operators. Early access $500/month. Nothing gets missed. Everything moves.',
-  path: '/',
+    "DONNA is the AI operational infrastructure for SMBs, unifying communication, coordination, and execution so nothing gets missed.",
+  path: "/",
 })
 
 export default function Home() {
+  const orgDescription =
+    "DONNA is AI operational infrastructure for SMBs that unifies communication, coordination, and execution."
+
   const schemaMarkup = {
-    '@context': 'https://schema.org',
-    '@graph': [
+    "@context": "https://schema.org",
+    "@graph": [
+      organizationSchema({ name: "DONNA", description: orgDescription }),
+      webSiteSchema(),
       softwareApplicationSchema({
-        name: 'DONNA',
+        name: "DONNA",
         description:
-          'AI operational infrastructure for real estate — coordinates agents, staff, vendors, and systems so deals move faster.',
+          "AI operational infrastructure for SMBs — coordinates communication, tasks, and parties across high-communication operations.",
         features: [
-          'Deal communication and follow-through',
-          'Cross-party coordination (agents, lenders, title, vendors)',
-          'Tasks, reminders, and execution across the deal timeline',
-          'DONNA Intelligence Network (privacy-preserving patterns)',
-          'Early access subscription for brokerages and operators',
+          "Unified communication, coordination, and execution",
+          "Cross-party workflows (teams, vendors, clients)",
+          "Tasks, reminders, and follow-through across timelines",
+          "DONNA Intelligence Network (privacy-preserving operational patterns)",
+          "Early access subscriptions for operators and brokerages",
         ],
       }),
+      faqSchema(marketingFaqs),
     ],
   }
 
@@ -71,6 +84,7 @@ export default function Home() {
         <SectionAIHarness />
         <Pricing />
         <SectionEarlyAdopter />
+        <FAQ id="faq" />
         <SectionCTA />
         <SectionExploreFurther />
         <DemoForm />

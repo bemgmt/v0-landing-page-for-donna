@@ -4,8 +4,9 @@ import LoginPanel from "@/components/auth/login-panel"
 import { createClient } from "@/lib/supabase/server"
 
 export const metadata: Metadata = {
-  title: "Sign in — DONNA",
+  title: "Sign in",
   description: "Member and Strategic Partner sign-in",
+  robots: { index: false, follow: false },
 }
 
 export default async function LoginPage({

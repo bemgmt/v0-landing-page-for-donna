@@ -1,19 +1,27 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { GoogleTagManager } from "@next/third-parties/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Sora } from "next/font/google"
 import RegisterServiceWorker from "@/components/register-service-worker"
 import PwaInstallPrompt from "@/components/pwa-install-prompt"
+import { getSiteUrl } from "@/lib/site-url"
+import { OG_IMAGE_PATH } from "@/lib/metadata"
 
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
 const _sora = Sora({ subsets: ["latin"], variable: "--font-sora" })
 
+const siteUrl = getSiteUrl()
+const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim()
+
 export const metadata: Metadata = {
-  title: "DONNA - AI Office Assistant",
-  description: "Your AI Office Receptionist That Never Stops",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "DONNA | AI Operational Infrastructure for SMBs",
+    template: "DONNA | %s",
+  },
+  description:
+    "DONNA is the AI operational infrastructure for SMBs, unifying communication, coordination, and execution so nothing gets missed.",
   generator: "v0.app",
   applicationName: "DONNA",
   appleWebApp: {
@@ -35,6 +43,19 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
     apple: "/brand/icon/donna-icon-180.png",
   },
+  openGraph: {
+    type: "website",
+    siteName: "DONNA",
+    locale: "en_US",
+    images: [{ url: OG_IMAGE_PATH, width: 1024, height: 1024, alt: "DONNA" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: [OG_IMAGE_PATH],
+  },
+  ...(googleVerification
+    ? { verification: { google: googleVerification } }
+    : {}),
 }
 
 export const viewport: Viewport = {
@@ -48,6 +69,8 @@ export const viewport: Viewport = {
   ],
 }
 
+const gtmId = process.env.NEXT_PUBLIC_GTM_ID?.trim() ?? ""
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -55,30 +78,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        {/* Google Tag Manager */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-T3L8PF9N');`,
-          }}
-        />
-        {/* End Google Tag Manager */}
-      </head>
       <body className={`font-sans antialiased ${_sora.variable}`}>
-        {/* Google Tag Manager (noscript) */}
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-T3L8PF9N"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          />
-        </noscript>
-        {/* End Google Tag Manager (noscript) */}
+        {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
         {children}
         <RegisterServiceWorker />
         <PwaInstallPrompt />

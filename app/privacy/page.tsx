@@ -3,8 +3,8 @@ import { Breadcrumb } from "@/components/breadcrumb"
 import { generatePageMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "Privacy — DONNA",
-  description: "Privacy practices for DONNA and bemdonna.com.",
+  title: "Privacy",
+  description: "Privacy practices for DONNA and the aidonna.co website.",
   path: "/privacy",
 })
 

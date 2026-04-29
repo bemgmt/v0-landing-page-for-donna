@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react"
 import { Send, X, MessageCircle } from "lucide-react"
 import Image from "next/image"
+import { pushDataLayer } from "@/lib/data-layer"
 
 const API_BASE = process.env.NEXT_PUBLIC_DONNA_API_BASE || "https://app.bemdonna.com"
 const WIDGET_TOKEN = process.env.NEXT_PUBLIC_DONNA_WIDGET_TOKEN
@@ -164,6 +165,8 @@ export default function Chatbot() {
         assistantText = data.reply ?? ""
       }
 
+      pushDataLayer({ event: "chatbot_submit", chat_id: id })
+
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
@@ -207,6 +210,7 @@ export default function Chatbot() {
 
           <button
             onClick={() => {
+              pushDataLayer({ event: "chatbot_open" })
               setIsOpen(true)
               setShowPrompt(false)
             }}
@@ -236,7 +240,7 @@ export default function Chatbot() {
               </div>
               <div>
                 <h3 className="font-bold text-foreground">DONNA</h3>
-                <p className="text-xs text-foreground/60">AI Operations Assistant</p>
+                <p className="text-xs text-foreground/60">Operational intelligence</p>
               </div>
             </div>
             <button

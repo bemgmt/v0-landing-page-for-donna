@@ -3,9 +3,9 @@ import { Breadcrumb } from '@/components/breadcrumb'
 import { generatePageMetadata } from '@/lib/metadata'
 
 export const metadata: Metadata = generatePageMetadata({
-  title: 'Return Policy - DONNA',
-  description: 'Return policy for DONNA subscriptions and services.',
-  path: '/return-policy',
+  title: "Return policy",
+  description: "Return policy for DONNA subscriptions and services.",
+  path: "/return-policy",
 })
 
 export default function ReturnPolicyPage() {
