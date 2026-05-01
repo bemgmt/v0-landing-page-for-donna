@@ -38,6 +38,7 @@ export async function POST(request: Request) {
       case "checkout.session.completed":
         await syncFromCheckoutSession(admin, event.data.object as Stripe.Checkout.Session, stripe)
         break
+      case "customer.subscription.created":
       case "customer.subscription.updated":
       case "customer.subscription.deleted":
         await syncSubscriptionWebhook(admin, event.data.object as Stripe.Subscription, stripe)

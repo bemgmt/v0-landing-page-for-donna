@@ -1,6 +1,8 @@
 import "server-only"
 
 import Stripe from "stripe"
+import { sendOpsSubscriptionAlert } from "@/lib/email/send-ops-subscription-alert"
+import { planDisplayLabel, primaryPlanKey } from "@/lib/billing/plan-seats"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 export type AdminClient = ReturnType<typeof createAdminClient>
@@ -122,6 +124,92 @@ export async function syncBillingFromSubscription(
   )
 
   await syncSubscriptionItems(admin, subscription)
+
+  await maybeSendOpsSubscriptionNotify(admin, subscription, userId)
+}
+
+function planKeyFromStripeSubscription(subscription: Stripe.Subscription): string {
+  const sortedItems = [...subscription.items.data].sort((a, b) => a.id.localeCompare(b.id))
+  const items = sortedItems.map((item) => {
+    const { stripe_price_id, price_lookup_key } = priceFieldsFromItem(item)
+    return { stripe_price_id, price_lookup_key }
+  })
+  const primary = primarySubscriptionItem(sortedItems)
+  const primaryFields = primary ? priceFieldsFromItem(primary) : { stripe_price_id: null, price_lookup_key: null }
+  return primaryPlanKey({
+    price_lookup_key: primaryFields.price_lookup_key,
+    stripe_price_id: primaryFields.stripe_price_id,
+    items,
+  })
+}
+
+async function maybeSendOpsSubscriptionNotify(
+  admin: AdminClient,
+  subscription: Stripe.Subscription,
+  userId: string,
+): Promise<void> {
+  const status = subscription.status
+  if (status !== "active" && status !== "trialing") return
+
+  const { data: claimed, error: claimError } = await admin
+    .from("billing_subscriptions")
+    .update({
+      ops_subscribe_notified_at: new Date().toISOString(),
+      ops_subscribe_notified_stripe_subscription_id: subscription.id,
+    })
+    .eq("user_id", userId)
+    .in("status", ["active", "trialing"])
+    .or(
+      `ops_subscribe_notified_stripe_subscription_id.is.null,ops_subscribe_notified_stripe_subscription_id.neq.${subscription.id}`,
+    )
+    .select("id")
+    .maybeSingle()
+
+  if (claimError) {
+    console.error("[stripe-sync] ops subscription notify claim failed", claimError.message)
+    return
+  }
+  if (!claimed) return
+
+  const { data: profile, error: profileError } = await admin
+    .from("member_profiles")
+    .select("email")
+    .eq("user_id", userId)
+    .maybeSingle()
+
+  if (profileError) {
+    console.error("[stripe-sync] member_profiles read for ops notify failed", profileError.message)
+  }
+
+  const planKey = planKeyFromStripeSubscription(subscription)
+  const customerId =
+    typeof subscription.customer === "string"
+      ? subscription.customer
+      : subscription.customer?.id ?? null
+
+  const sent = await sendOpsSubscriptionAlert({
+    supabaseUserId: userId,
+    memberEmail: profile?.email ? String(profile.email).trim() || null : null,
+    planLabel: planDisplayLabel(planKey),
+    stripeSubscriptionId: subscription.id,
+    stripeCustomerId: customerId,
+    subscriptionStatus: status,
+  })
+
+  if (!sent) {
+    const { error: revertError } = await admin
+      .from("billing_subscriptions")
+      .update({
+        ops_subscribe_notified_at: null,
+        ops_subscribe_notified_stripe_subscription_id: null,
+      })
+      .eq("user_id", userId)
+      .eq("ops_subscribe_notified_stripe_subscription_id", subscription.id)
+
+    if (revertError) {
+      console.error("[stripe-sync] ops notify revert after failed send failed", revertError.message)
+    }
+  }
 }
 
 export type MemberEmailLookupResult =
@@ -227,7 +315,39 @@ export async function syncSubscriptionWebhook(
     userId = data?.user_id ?? null
   }
 
-  if (!userId) return
+  if (!userId) {
+    const customerRef = sub.customer
+    const customerId = typeof customerRef === "string" ? customerRef : customerRef?.id ?? null
+    if (customerId) {
+      const customer = await stripe.customers.retrieve(customerId)
+      if (!("deleted" in customer && customer.deleted)) {
+        const c = customer as Stripe.Customer
+        const email = (c.email ?? "").trim()
+        if (email) {
+          const lookedUp = await lookupMemberUserIdByEmail(admin, email, {
+            stripeSubscriptionId: sub.id,
+            stripeCustomerId: customerId,
+          })
+          if (lookedUp.kind === "found") {
+            userId = lookedUp.userId
+          } else if (lookedUp.kind === "ambiguous") {
+            console.warn("[stripe-sync] subscription webhook: ambiguous member_profiles for customer email", {
+              stripeSubscriptionId: sub.id,
+              stripeCustomerId: customerId,
+              count: lookedUp.count,
+            })
+          }
+        }
+      }
+    }
+  }
+
+  if (!userId) {
+    console.warn("[stripe-sync] subscription webhook: could not resolve user_id", {
+      stripeSubscriptionId: sub.id,
+    })
+    return
+  }
 
   const subscription = await stripe.subscriptions.retrieve(sub.id, {
     expand: ["items.data.price"],
