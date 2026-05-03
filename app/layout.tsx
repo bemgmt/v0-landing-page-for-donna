@@ -80,8 +80,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
       <body className={`${_geist.className} font-sans antialiased ${_sora.variable}`}>
-        {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
         {children}
         <RegisterServiceWorker />
         <PwaInstallPrompt />
@@ -90,3 +90,4 @@ export default function RootLayout({
     </html>
   )
 }
+
