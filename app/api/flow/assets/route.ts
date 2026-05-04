@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server"
 import { getPortalSession } from "@/lib/portal/session"
-import { listWorkspaceAssets } from "@/lib/flow/client"
 
 export async function GET() {
   const session = await getPortalSession()
@@ -14,7 +13,35 @@ export async function GET() {
   }
 
   try {
-    const assets = await listWorkspaceAssets()
+    const { data: files, error } = await session.supabase
+      .storage
+      .from("marketing-assets")
+      .list("", {
+        limit: 100,
+        sortBy: { column: "created_at", order: "desc" },
+      })
+
+    if (error) throw error
+
+    const assets = files
+      .filter((file) => file.name !== ".emptyFolderPlaceholder")
+      .map((file) => {
+        const { data: publicUrlData } = session.supabase
+          .storage
+          .from("marketing-assets")
+          .getPublicUrl(file.name)
+
+        return {
+          id: file.id || file.name,
+          type: file.metadata?.mimetype?.startsWith("video") ? "video" : "image",
+          prompt: "Supabase Asset",
+          url: publicUrlData.publicUrl,
+          mimeType: file.metadata?.mimetype ?? "image/jpeg",
+          createdAt: file.created_at,
+          metadata: file.metadata ?? {},
+        }
+      })
+
     return NextResponse.json({ assets })
   } catch (err: any) {
     console.error("[flow/assets]", err)
