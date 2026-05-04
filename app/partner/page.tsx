@@ -114,10 +114,9 @@ export default async function PartnerCommandCenterPage() {
               href: "/partner/leads/round-robin",
             },
             {
-              title: "Open NotebookLM — DONNA deep context",
-              description: "Curated reference (new tab).",
-              href: NOTEBOOKLM_URL,
-              external: true,
+              title: "Open Knowledge Base — DONNA deep context",
+              description: "Query your NotebookLM research notebook directly.",
+              href: "/partner/knowledge",
             },
             {
               title: "Practice with Can DONNA",
@@ -160,7 +159,7 @@ export default async function PartnerCommandCenterPage() {
           </ul>
           <div className="px-4 py-3 border-t border-white/10 text-xs text-muted-foreground">
             Forum posts (you): {forumPosts ?? 0}{" "}
-            <Link href="/portal/forum" className="text-cyan-300 hover:underline ml-1">
+            <Link href="/partner/forum" className="text-cyan-300 hover:underline ml-1">
               Open forum
             </Link>
           </div>

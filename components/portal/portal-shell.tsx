@@ -56,24 +56,21 @@ function NavSection({
 export default function PortalShell({ role, subscriptionActive, seatAccess, displayName, children }: Props) {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
+  
   const partner = hasPartnerCapabilities(role, subscriptionActive)
+  
   const account: NavItem[] = [
     { href: "/portal", label: "Dashboard" },
     { href: "/portal/profile", label: "Profile" },
     { href: "/portal/billing", label: "Billing & seats" },
   ]
-  const learn: NavItem[] = [
+  const support: NavItem[] = [
     { href: "/portal/can-donna", label: "Can DONNA" },
-    { href: "/portal/content", label: "Content" },
-    { href: "/portal/socials", label: "Socials" },
-  ]
-  const community: NavItem[] = [
-    { href: "/portal/forum", label: "Forum" },
     { href: "/portal/support", label: "Support chat" },
   ]
-  const partnerLink: NavItem[] = partner ? [{ href: "/partner", label: "Strategic partner network" }] : []
-  const staffNav: NavItem[] =
-    role === "staff" || role === "admin" ? [{ href: "/admin/members", label: "Staff / members" }] : []
+  
+  const partnerLink: NavItem[] = partner ? [{ href: "/partner", label: "Staff / Partner Portal" }] : []
+  const adminLink: NavItem[] = role === "admin" ? [{ href: "/admin", label: "Admin Portal" }] : []
 
   return (
     <div className="min-h-screen bg-black text-foreground flex flex-col md:flex-row">
@@ -82,7 +79,7 @@ export default function PortalShell({ role, subscriptionActive, seatAccess, disp
           <Link href="/portal" className="text-lg font-semibold gradient-text">
             DONNA Member Portal
           </Link>
-          <p className="text-[11px] uppercase tracking-wider text-cyan-400/70 mt-1">Account & community</p>
+          <p className="text-[11px] uppercase tracking-wider text-cyan-400/70 mt-1">General access</p>
           <p className="text-xs text-muted-foreground mt-2 truncate">{displayName ?? "Member"}</p>
           <div className="mt-2 flex flex-wrap gap-1">
             <span className="inline-block text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full border border-white/15 text-muted-foreground">
@@ -109,29 +106,14 @@ export default function PortalShell({ role, subscriptionActive, seatAccess, disp
           className={`flex-col gap-4 ${mobileOpen ? "flex" : "hidden"} md:flex`}
           aria-label="Member portal"
         >
-          <NavSection
-            title="Account"
-            items={account}
-            pathname={pathname}
-            onNavigate={() => setMobileOpen(false)}
-          />
-          <NavSection title="Learn" items={learn} pathname={pathname} onNavigate={() => setMobileOpen(false)} />
-          <NavSection
-            title="Community"
-            items={community}
-            pathname={pathname}
-            onNavigate={() => setMobileOpen(false)}
-          />
+          <NavSection title="Account" items={account} pathname={pathname} onNavigate={() => setMobileOpen(false)} />
+          <NavSection title="Help & Support" items={support} pathname={pathname} onNavigate={() => setMobileOpen(false)} />
+          
           {partnerLink.length ? (
-            <NavSection
-              title="Partner"
-              items={partnerLink}
-              pathname={pathname}
-              onNavigate={() => setMobileOpen(false)}
-            />
+            <NavSection title="Staff" items={partnerLink} pathname={pathname} onNavigate={() => setMobileOpen(false)} />
           ) : null}
-          {staffNav.length ? (
-            <NavSection title="Admin" items={staffNav} pathname={pathname} onNavigate={() => setMobileOpen(false)} />
+          {adminLink.length ? (
+            <NavSection title="Admin" items={adminLink} pathname={pathname} onNavigate={() => setMobileOpen(false)} />
           ) : null}
         </nav>
 

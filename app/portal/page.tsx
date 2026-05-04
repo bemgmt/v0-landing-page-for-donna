@@ -35,7 +35,7 @@ export default async function PortalDashboardPage() {
     }
   }
 
-  const [{ count: salesCount }, { count: leadsOpen }, { count: forumPosts }] = await Promise.all([
+  const [{ count: salesCount }, { count: leadsOpen }] = await Promise.all([
     supabase
       .from("sales")
       .select("*", { count: "exact", head: true })
@@ -45,10 +45,6 @@ export default async function PortalDashboardPage() {
       .from("lead_pool")
       .select("*", { count: "exact", head: true })
       .eq("status", "unclaimed"),
-    supabase
-      .from("forum_posts")
-      .select("*", { count: "exact", head: true })
-      .eq("author_profile_id", profile.id),
   ])
 
   return (
@@ -92,7 +88,7 @@ export default async function PortalDashboardPage() {
             <StatCard label="Open leads (pool)" value={String(leadsOpen ?? 0)} href="/partner/leads/round-robin" />
           </>
         ) : null}
-        <StatCard label="Your forum posts" value={String(forumPosts ?? 0)} href="/portal/forum" />
+
       </div>
     </div>
   )

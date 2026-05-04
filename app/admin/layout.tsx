@@ -13,7 +13,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!session) {
     redirect("/login?next=/admin")
   }
-  if (session.profile.role !== "staff" && session.profile.role !== "admin") {
+  if (session.profile.role !== "admin") {
     redirect("/portal/unauthorized")
   }
 
