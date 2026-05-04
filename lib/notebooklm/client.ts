@@ -1,21 +1,7 @@
 import "server-only"
-
-/**
- * NotebookLM client.
- *
- * Since there is no official public API, this client can operate in two modes:
- *
- * 1. **MCP Mode (development):** Queries are proxied through the NotebookLM MCP server
- *    configured in the IDE. This is used during development sessions.
- *
- * 2. **Direct Mode (portal):** For the admin portal, we use a lightweight HTTP proxy
- *    to the community MCP server running locally. The MCP server must be started
- *    separately (see setup instructions).
- *
- * Default notebook: ef6a20e1-9bc3-402a-91f0-11f286c2c943
- */
-
-const DEFAULT_NOTEBOOK_ID = process.env.NOTEBOOKLM_NOTEBOOK_ID ?? "ef6a20e1-9bc3-402a-91f0-11f286c2c943"
+import fs from "node:fs/promises"
+import { getFlowToken } from "@/lib/google/oauth"
+import { STRATEGIC_PARTNER_DOCS, getStrategicPartnerDocPath } from "@/lib/portal/strategic-partner-docs"
 
 export interface NotebookSource {
   title: string
@@ -31,57 +17,98 @@ export interface NotebookAnswer {
 }
 
 /**
- * Query a NotebookLM notebook with a natural language question.
- *
- * This attempts to connect to a locally-running NotebookLM MCP proxy.
- * If the proxy is not available, it returns a helpful fallback message.
+ * Reads all strategic partner docs from the filesystem to inject as context.
+ */
+async function getContextString(): Promise<string> {
+  const docs = []
+  for (const docMeta of STRATEGIC_PARTNER_DOCS) {
+    try {
+      const p = getStrategicPartnerDocPath(docMeta.filename)
+      const content = await fs.readFile(p, "utf-8")
+      docs.push(`--- ${docMeta.title} ---\n${content}`)
+    } catch (e) {
+      console.warn(`[notebooklm] Failed to read doc: ${docMeta.filename}`, e)
+    }
+  }
+  return docs.join("\n\n")
+}
+
+/**
+ * Query the Knowledge Base using Vertex AI (Gemini 1.5 Pro/Flash).
+ * This replaces the local MCP proxy by acting as a direct RAG integration.
  */
 export async function queryNotebook(
   question: string,
   notebookId?: string,
 ): Promise<NotebookAnswer> {
-  const nbId = notebookId ?? DEFAULT_NOTEBOOK_ID
-  const proxyUrl = process.env.NOTEBOOKLM_PROXY_URL ?? "http://localhost:4100"
+  const projectId = process.env.GOOGLE_FLOW_PROJECT_ID
+  const nbId = notebookId ?? "default"
+
+  if (!projectId) {
+    return {
+      answer: "Knowledge base is unavailable: Missing GOOGLE_FLOW_PROJECT_ID in environment variables.",
+      sources: [],
+      notebookId: nbId,
+      query: question,
+    }
+  }
 
   try {
-    const res = await fetch(`${proxyUrl}/query`, {
+    const token = await getFlowToken()
+    const context = await getContextString()
+    
+    // We use Gemini 1.5 Flash for fast reasoning, but could be Pro
+    const endpoint = `https://us-central1-aiplatform.googleapis.com/v1/projects/${projectId}/locations/us-central1/publishers/google/models/gemini-1.5-flash-001:generateContent`
+
+    const systemInstruction = {
+      role: "system",
+      parts: [
+        { 
+          text: `You are DONNA's internal Knowledge Base assistant. You must answer the user's question based strictly on the provided documents. If the answer is not in the documents, tell the user you don't know based on the available information. Be concise, helpful, and professional.\n\nAVAILABLE DOCUMENTS:\n${context}` 
+        }
+      ]
+    }
+
+    const requestBody = {
+      contents: [{ role: "user", parts: [{ text: question }] }],
+      systemInstruction,
+      generationConfig: {
+        temperature: 0.1, // Low temperature for factual accuracy
+      }
+    }
+
+    const res = await fetch(endpoint, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        notebookId: nbId,
-        question,
-      }),
-      signal: AbortSignal.timeout(30_000), // 30s timeout for browser automation
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
     })
 
     if (!res.ok) {
-      const body = await res.text()
-      throw new Error(`NotebookLM proxy error: ${res.status} ${body}`)
+      const text = await res.text()
+      throw new Error(`Vertex AI error: ${res.status} ${text}`)
     }
 
-    const json = (await res.json()) as {
-      answer?: string
-      sources?: NotebookSource[]
-    }
+    const data = await res.json()
+    const answer = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "No answer was generated."
+
+    // Map the internal documents as the sources used
+    const sources: NotebookSource[] = STRATEGIC_PARTNER_DOCS.map(d => ({
+      title: d.title,
+      snippet: d.description,
+      sourceId: d.slug
+    }))
 
     return {
-      answer: json.answer ?? "No answer was returned.",
-      sources: json.sources ?? [],
+      answer,
+      sources,
       notebookId: nbId,
       query: question,
     }
   } catch (err: any) {
-    // If the proxy is not running, return a helpful message
-    if (err.cause?.code === "ECONNREFUSED" || err.name === "AbortError") {
-      return {
-        answer:
-          "NotebookLM proxy is not running. Start the MCP server with:\n\n```\nnpx mcp-server-notebooklm\n```\n\nThen try again.",
-        sources: [],
-        notebookId: nbId,
-        query: question,
-      }
-    }
-
+    console.error("[notebooklm] query failed:", err)
     return {
       answer: `Query failed: ${err.message}`,
       sources: [],
@@ -92,18 +119,12 @@ export async function queryNotebook(
 }
 
 /**
- * List sources in a notebook.
+ * List sources in the current knowledge base.
  */
 export async function listNotebookSources(notebookId?: string): Promise<NotebookSource[]> {
-  const nbId = notebookId ?? DEFAULT_NOTEBOOK_ID
-  const proxyUrl = process.env.NOTEBOOKLM_PROXY_URL ?? "http://localhost:4100"
-
-  try {
-    const res = await fetch(`${proxyUrl}/sources?notebookId=${encodeURIComponent(nbId)}`)
-    if (!res.ok) return []
-    const json = (await res.json()) as { sources?: NotebookSource[] }
-    return json.sources ?? []
-  } catch {
-    return []
-  }
+  return STRATEGIC_PARTNER_DOCS.map(d => ({
+    title: d.title,
+    snippet: d.description,
+    sourceId: d.slug
+  }))
 }
