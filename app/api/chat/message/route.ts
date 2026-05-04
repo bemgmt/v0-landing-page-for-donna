@@ -7,6 +7,44 @@ const bodySchema = z.object({
   message: z.string().min(1).max(12000),
 })
 
+export async function GET(request: Request) {
+  const session = await getPortalSession()
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  const { searchParams } = new URL(request.url)
+  const sessionId = searchParams.get("session_id")
+  if (!sessionId) {
+    return NextResponse.json({ error: "Missing session_id" }, { status: 400 })
+  }
+
+  const isStaff = session.profile.role === "staff" || session.profile.role === "admin"
+
+  // Check access
+  const { data: chatSession } = await session.supabase
+    .from("chat_sessions")
+    .select("member_profile_id")
+    .eq("id", sessionId)
+    .maybeSingle()
+
+  if (!chatSession || (!isStaff && chatSession.member_profile_id !== session.profile.id)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
+
+  const { data, error } = await session.supabase
+    .from("chat_messages")
+    .select("*")
+    .eq("session_id", sessionId)
+    .order("created_at", { ascending: true })
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 400 })
+  }
+
+  return NextResponse.json({ messages: data ?? [] })
+}
+
 async function assistantReply(prompt: string): Promise<string | null> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey?.length) return null
@@ -49,6 +87,7 @@ export async function POST(request: Request) {
   }
 
   const { session_id, message } = parsed.data
+  const isStaff = session.profile.role === "staff" || session.profile.role === "admin"
 
   const { data: chatSession, error: sessErr } = await session.supabase
     .from("chat_sessions")
@@ -56,35 +95,46 @@ export async function POST(request: Request) {
     .eq("id", session_id)
     .maybeSingle()
 
-  if (sessErr || !chatSession || chatSession.member_profile_id !== session.profile.id) {
+  if (sessErr || !chatSession || (!isStaff && chatSession.member_profile_id !== session.profile.id)) {
     return NextResponse.json({ error: "Invalid session" }, { status: 400 })
   }
 
-  await session.supabase.from("chat_messages").insert({
+  const role = isStaff ? "staff" : "user"
+
+  const { error: msgErr } = await session.supabase.from("chat_messages").insert({
     session_id,
-    role: "user",
+    role,
     message,
     metadata: {},
   })
 
-  if (chatSession.status !== "ai") {
+  if (msgErr) {
+    return NextResponse.json({ error: msgErr.message }, { status: 400 })
+  }
+
+  // If staff sent a message, don't trigger AI
+  if (isStaff) {
     return NextResponse.json({ ok: true, assistant: null, mode: chatSession.status })
   }
 
-  const text = await assistantReply(message)
-  if (text) {
-    await session.supabase.from("chat_messages").insert({
-      session_id,
-      role: "assistant",
-      message: text,
-      metadata: {},
+  // If in AI mode, trigger assistant
+  if (chatSession.status === "ai") {
+    const text = await assistantReply(message)
+    if (text) {
+      await session.supabase.from("chat_messages").insert({
+        session_id,
+        role: "assistant",
+        message: text,
+        metadata: {},
+      })
+    }
+    return NextResponse.json({
+      ok: true,
+      assistant: text,
+      mode: chatSession.status,
+      aiUnavailable: text === null,
     })
   }
 
-  return NextResponse.json({
-    ok: true,
-    assistant: text,
-    mode: chatSession.status,
-    aiUnavailable: text === null,
-  })
+  return NextResponse.json({ ok: true, assistant: null, mode: chatSession.status })
 }

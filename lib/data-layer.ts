@@ -1,7 +1,3 @@
-
-
-import { sendGTMEvent } from "@next/third-parties/google"
-
 import { sendGTMEvent } from "@next/third-parties/google"
 
 /** Push to GTM dataLayer (no-op on server). */

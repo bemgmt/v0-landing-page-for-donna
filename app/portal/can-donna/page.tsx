@@ -1,4 +1,5 @@
 import CanDonnaPanel from "@/components/portal/can-donna-panel"
+import PortalChatbot from "@/components/chat/portal-chatbot"
 
 export default function CanDonnaPage() {
   return (
@@ -10,6 +11,7 @@ export default function CanDonnaPage() {
         </p>
       </div>
       <CanDonnaPanel />
+      <PortalChatbot />
     </div>
   )
 }
