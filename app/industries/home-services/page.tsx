@@ -4,16 +4,16 @@ import { MarketingSubpageShell } from "@/components/marketing-subpage-shell"
 import { generatePageMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "DONNA for home services",
+  title: "Contractor Dispatch Automation & Home Services Scheduling AI",
   description:
-    "Operational intelligence for contractors and home services — scheduling, dispatch coordination, and customer follow-through in one system.",
+    "AI software for contractors and home services — automate scheduling, dispatch coordination, and customer follow-through in one system.",
   path: "/industries/home-services",
 })
 
 export default function HomeServicesIndustryPage() {
   return (
     <MarketingSubpageShell
-      title="DONNA for home services"
+      title="Contractor Dispatch Automation & Scheduling AI"
       lead="Technicians, dispatch, and office staff stay synchronized so jobs start on time and customers stay informed."
     >
       <div className="glass-card p-6 rounded-xl space-y-4">

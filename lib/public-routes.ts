@@ -11,6 +11,8 @@ export const PUBLIC_SITEMAP_PATHS: {
   { path: "/early-adopter-program", changeFrequency: "monthly", priority: 0.9 },
   { path: "/donna-intelligence-network", changeFrequency: "monthly", priority: 0.85 },
   { path: "/faq", changeFrequency: "monthly", priority: 0.85 },
+  { path: "/docs", changeFrequency: "monthly", priority: 0.85 },
+  { path: "/tool-audit", changeFrequency: "monthly", priority: 0.85 },
   { path: "/contact", changeFrequency: "monthly", priority: 0.85 },
   { path: "/industries", changeFrequency: "monthly", priority: 0.85 },
   { path: "/industries/real-estate", changeFrequency: "monthly", priority: 0.8 },

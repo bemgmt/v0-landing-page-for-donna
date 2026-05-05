@@ -4,16 +4,16 @@ import { MarketingSubpageShell } from "@/components/marketing-subpage-shell"
 import { generatePageMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "DONNA for real estate",
+  title: "AI Transaction Coordinator Software & Real Estate Automation",
   description:
-    "AI operational infrastructure for brokerages and real estate operators — deal communication, coordination across agents, lenders, and title, without dropped handoffs.",
+    "AI transaction coordinator and operational infrastructure for brokerages — automate real estate workflows, deal communication, and coordination across agents, lenders, and title.",
   path: "/industries/real-estate",
 })
 
 export default function RealEstateIndustryPage() {
   return (
     <MarketingSubpageShell
-      title="DONNA for real estate"
+      title="AI Transaction Coordinator & Real Estate Automation"
       lead="One operational layer for listings, transactions, vendors, and client communication — built for brokerages and teams that cannot afford missed follow-ups."
     >
       <div className="glass-card p-6 rounded-xl space-y-4">

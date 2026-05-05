@@ -4,16 +4,16 @@ import { MarketingSubpageShell } from "@/components/marketing-subpage-shell"
 import { generatePageMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "DONNA for title & escrow",
+  title: "Title & Escrow Communication & Closing Workflow AI",
   description:
-    "Coordination infrastructure for title and escrow — clearing tasks, partner communication, and closing readiness without dropped items.",
+    "AI coordination infrastructure for title and escrow — automate clearing tasks, partner communication, and closing readiness without dropped items.",
   path: "/industries/title",
 })
 
 export default function TitleIndustryPage() {
   return (
     <MarketingSubpageShell
-      title="DONNA for title & escrow"
+      title="Title & Escrow Communication & Workflow AI"
       lead="Keep lenders, agents, vendors, and signing parties aligned through a single operational layer."
     >
       <div className="glass-card p-6 rounded-xl space-y-4">

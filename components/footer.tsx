@@ -22,6 +22,9 @@ export default function Footer() {
           <Link href="/donna-intelligence-network" className="hover:text-foreground transition-colors">
             Intelligence Network
           </Link>
+          <Link href="/tool-audit" className="hover:text-foreground transition-colors">
+            Tool Stack Audit
+          </Link>
           <Link href="/faq" className="hover:text-foreground transition-colors">
             FAQ
           </Link>

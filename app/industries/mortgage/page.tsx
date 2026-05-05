@@ -4,16 +4,16 @@ import { MarketingSubpageShell } from "@/components/marketing-subpage-shell"
 import { generatePageMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "DONNA for mortgage",
+  title: "Mortgage LO Automation & Pipeline Coordination AI",
   description:
-    "Operational intelligence for mortgage operations — pipeline coordination, document chase, and borrower communication in one execution layer.",
+    "AI pipeline coordination and LO automation software — manage document chase and borrower communication in one execution layer.",
   path: "/industries/mortgage",
 })
 
 export default function MortgageIndustryPage() {
   return (
     <MarketingSubpageShell
-      title="DONNA for mortgage"
+      title="Mortgage LO Automation & Pipeline Coordination AI"
       lead="Reduce friction between LOs, processors, underwriters, and partners with coordinated communication and task execution."
     >
       <div className="glass-card p-6 rounded-xl space-y-4">
