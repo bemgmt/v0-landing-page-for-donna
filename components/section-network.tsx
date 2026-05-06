@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
-import SignalPulsesVisualization from "@/components/signal-pulses-visualization"
+import Image from "next/image"
 
 export default function SectionNetwork() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
@@ -18,8 +18,17 @@ export default function SectionNetwork() {
     <section id="intelligence-network" ref={ref} className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div className="order-2 lg:order-1 flex items-center justify-center">
-          <div className="w-full max-w-md wow-card">
-            <SignalPulsesVisualization />
+          <div className="w-full relative rounded-2xl border border-white/10 bg-white/[0.02] p-2 sm:p-4 shadow-2xl overflow-hidden wow-card">
+            <div className="absolute inset-0 bg-gradient-to-tr from-accent/10 to-transparent opacity-50" />
+            <div className="relative rounded-xl overflow-hidden border border-white/5 bg-background">
+              <Image 
+                src="/DINscreenshot.png"
+                alt="DONNA Intelligence Network Interface"
+                width={1200}
+                height={800}
+                className="w-full h-auto object-cover"
+              />
+            </div>
           </div>
         </div>
         <div className="order-1 lg:order-2 space-y-5">

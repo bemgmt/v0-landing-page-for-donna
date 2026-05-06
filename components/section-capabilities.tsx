@@ -42,13 +42,15 @@ export default function SectionCapabilities() {
       <div className="max-w-6xl mx-auto grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
         <div className="space-y-6">
           <p className="text-xs sm:text-sm uppercase tracking-[0.3em] text-foreground/60">
-            What DONNA actually does
+            Operational Infrastructure
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight wow-glow">
-            One continuous system for how deals actually move
+            AI is the engine.
+            <br />
+            DONNA is the system that makes it work.
           </h2>
           <p className="text-base sm:text-lg text-foreground/80 leading-relaxed">
-            DONNA connects everything already in your business into one continuous system.
+            DONNA connects everything already in your business into one continuous workflow. We replace the gaps between your fragmented tools, structuring AI directly into your operations.
           </p>
           <ul className="space-y-5">
             {pillars.map(({ title, body, Icon }) => (
@@ -61,12 +63,12 @@ export default function SectionCapabilities() {
               </li>
             ))}
           </ul>
-          <p className="text-base sm:text-lg text-foreground/85 pt-2 border-t border-white/10">
-            Not another tool.{" "}
-            <span className="font-medium text-foreground">
-              The layer that makes your tools work together.
-            </span>
-          </p>
+          <div className="space-y-2 pt-4 border-t border-white/10">
+            <p className="text-base sm:text-lg text-foreground/85">
+              DONNA isn&apos;t another AI tool.
+            </p>
+            <p className="font-semibold text-foreground text-xl">It&apos;s the system your business runs on.</p>
+          </div>
         </div>
         <div className="flex items-center justify-center">
           <div className="w-full max-w-md">

@@ -24,15 +24,25 @@ export default function SectionReframe() {
           <br />
           It&apos;s about infrastructure.
         </h2>
-        <div className="space-y-4 text-base sm:text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto md:mx-0">
-          <p>Most AI tools help you write emails.</p>
-          <p>
-            DONNA automatically makes sure the right actions happen across your entire deal.
-          </p>
+        <div className="space-y-6 text-base sm:text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto md:mx-0">
+          <p>A lead comes in.</p>
+          <p className="font-medium text-foreground">DONNA initiates intelligent, persistent follow-up.</p>
+          
+          <p className="pt-2">A deal starts moving.</p>
+          <p className="font-medium text-foreground">DONNA unifies communication and tasks across all parties.</p>
+          
           <p className="pt-2">
-            It sits underneath your brokerage and coordinates agents, admins, vendors, and systems—
-            so your business actually runs as one.
+            Agents, lenders, title, and inspectors working…{" "}
+            <span className="font-medium text-foreground">together in one continuous workflow.</span>
           </p>
+          
+          <p className="pt-4 font-semibold text-foreground">The result?</p>
+          <ul className="list-disc pl-6 space-y-2 text-foreground/75">
+            <li>Flawless follow-through</li>
+            <li>Faster closings</li>
+            <li>Stronger client relationships</li>
+            <li>A business that runs as one</li>
+          </ul>
         </div>
       </div>
     </section>

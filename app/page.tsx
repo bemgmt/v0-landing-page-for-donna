@@ -9,10 +9,8 @@ import SectionReframe from "@/components/section-reframe"
 import SectionCapabilities from "@/components/section-capabilities"
 import SectionVerticals from "@/components/section-verticals"
 import SectionNetwork from "@/components/section-network"
-import SectionAIHarness from "@/components/section-ai-harness"
 import Pricing from "@/components/pricing"
 import SectionEarlyAdopter from "@/components/section-early-adopter"
-import SectionCTA from "@/components/section-cta"
 import SectionExploreFurther from "@/components/section-explore-further"
 import DemoForm from "@/components/demo-form"
 import Footer from "@/components/footer"
@@ -79,14 +77,12 @@ export default function Home() {
         <SectionRealEstatePain />
         <SectionReframe />
         <SectionCapabilities />
-        <SectionVerticals />
         <SectionNetwork />
-        <SectionAIHarness />
+        <SectionVerticals />
         <Pricing />
         <SectionEarlyAdopter />
-        <FAQ id="faq" />
-        <SectionCTA />
         <SectionExploreFurther />
+        <FAQ id="faq" />
         <DemoForm />
         <Footer />
       </main>
