@@ -122,9 +122,14 @@ export default function SectionVerticals() {
           Less chasing. More closing.
         </p>
         <div className="mt-8 text-center max-w-2xl mx-auto">
-          <p className="text-sm sm:text-base text-foreground/70">
-            Want to see how this fits your specific workflow? Open the chatbot in the corner and ask DONNA. Feel free to use hypotheticals, but please avoid sharing personal or financial information.
-          </p>
+          <div className="glass-card p-6 rounded-2xl border border-accent/20 bg-accent/5 inline-block text-left shadow-[0_0_30px_rgba(34,211,238,0.1)]">
+            <p className="text-base sm:text-lg text-foreground font-medium mb-2">
+              Want to see how this fits your specific workflow?
+            </p>
+            <p className="text-sm sm:text-base text-foreground/70">
+              Open the chatbot in the corner and ask DONNA. Feel free to use hypotheticals, but please avoid sharing personal or financial information.
+            </p>
+          </div>
         </div>
       </div>
     </section>

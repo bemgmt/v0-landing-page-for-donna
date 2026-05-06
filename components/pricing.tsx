@@ -79,10 +79,10 @@ export default function Pricing() {
             workflows adds more cost while still delivering only a portion of what DONNA offers — at early access
             pricing.
           </p>
-          <div className="mt-8">
+          <div className="mt-8 flex justify-center">
             <Link 
               href="/tool-audit" 
-              className="inline-flex items-center justify-center rounded-lg bg-white/5 border border-white/10 px-6 py-3 text-sm font-medium text-foreground hover:bg-white/10 transition-colors"
+              className="inline-flex items-center justify-center rounded-lg bg-background/50 border border-accent/30 px-6 py-3 text-sm font-medium text-accent hover:bg-accent/10 hover:border-accent hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all duration-300"
             >
               Compare against your stack
             </Link>
