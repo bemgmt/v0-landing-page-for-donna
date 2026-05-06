@@ -47,12 +47,10 @@ export default function SectionHero() {
           Real estate operations
         </p>
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-semibold mb-5 animate-fade-in wow-glow leading-tight">
-          Your business doesn&apos;t need more tools.
+          The Operational Layer for Real Estate.
         </h1>
         <p className="text-base sm:text-lg md:text-xl text-foreground/80 mb-4 max-w-2xl mx-auto animate-slide-up px-2 leading-relaxed">
-          DONNA is the AI operational infrastructure for the real estate industry. It maximizes the value
-          of your agents, staff, and software by unifying communication, coordination, and execution in
-          one system.
+          DONNA is the neural infrastructure that unifies your communication, coordination, and execution into one continuous system.
         </p>
         <p className="text-lg sm:text-xl md:text-2xl font-medium text-foreground mb-8 px-2 animate-slide-up">
           Nothing gets missed. Everything moves.
@@ -64,7 +62,7 @@ export default function SectionHero() {
             className="px-7 py-3 rounded-full animated-edge-button text-foreground hover:bg-white/20 transition-all duration-300 font-semibold text-base sm:text-lg refract-on-hover animate-slide-up relative z-10 inline-flex items-center justify-center"
             style={{ animationDelay: "200ms" }}
           >
-            <span className="relative z-10">Get DONNA — $500/month</span>
+            <span className="relative z-10">Deploy DONNA</span>
           </Link>
           <p className="text-xs sm:text-sm text-foreground/65 max-w-md px-2">
             No contracts. 14-day money-back guarantee. Early adopters lock in long-term advantages.

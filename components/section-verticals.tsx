@@ -124,10 +124,10 @@ export default function SectionVerticals() {
         <div className="mt-8 text-center max-w-2xl mx-auto">
           <div className="glass-card p-6 rounded-2xl border border-accent/20 bg-accent/5 inline-block text-left shadow-[0_0_30px_rgba(34,211,238,0.1)]">
             <p className="text-base sm:text-lg text-foreground font-medium mb-2">
-              Want to see how this fits your specific workflow?
+              Want to see how DONNA would handle your specific workflow? Ask it.
             </p>
             <p className="text-sm sm:text-base text-foreground/70">
-              Open the chatbot in the corner and ask DONNA. Feel free to use hypotheticals, but please avoid sharing personal or financial information.
+              Open the chatbot in the corner to run a hypothetical scenario. Please avoid sharing sensitive personal or financial information.
             </p>
           </div>
         </div>

@@ -30,13 +30,21 @@ function jsonPost(url: string, body: unknown, auth?: string): Request {
 function mockClient(opts: {
   viewRow?: Record<string, unknown> | null
   rpcData?: { count_after: number; exceeded: boolean; retry_after_seconds: number }
+  resolveAccessData?: Record<string, unknown>[] | null
 }): SupabaseClient {
-  const viewRow = opts.viewRow === undefined ? null : opts.viewRow
   const rpcData = opts.rpcData ?? {
     count_after: 1,
     exceeded: false,
     retry_after_seconds: 0,
   }
+  // resolveAccessData: if explicitly provided, use it for billing_s2s_resolve_access RPC.
+  // If not provided but viewRow is given, wrap viewRow in an array with seat_type=purchaser.
+  // If viewRow is null, return empty array.
+  const resolveAccessData = opts.resolveAccessData !== undefined
+    ? opts.resolveAccessData
+    : opts.viewRow
+      ? [{ ...opts.viewRow, seat_type: "purchaser" }]
+      : []
   return {
     from(table: string) {
       if (table === "billing_auth_failures") {
@@ -46,32 +54,13 @@ function mockClient(opts: {
           },
         }
       }
-      if (table === "billing_status_view") {
-        return {
-          select(_cols: string) {
-            return {
-              eq(_c: string, _v: string) {
-                return {
-                  order(_c2: string, _opts: { ascending: boolean }) {
-                    return {
-                      limit(_n: number) {
-                        return {
-                          maybeSingle() {
-                            return Promise.resolve({ data: viewRow, error: null })
-                          },
-                        }
-                      },
-                    }
-                  },
-                }
-              },
-            }
-          },
-        }
-      }
       return {}
     },
-    rpc(_name: string, _args: unknown) {
+    rpc(name: string, _args: unknown) {
+      if (name === "billing_s2s_resolve_access") {
+        return Promise.resolve({ data: resolveAccessData, error: null })
+      }
+      // Rate limit RPC
       return Promise.resolve({ data: rpcData, error: null })
     },
   } as unknown as SupabaseClient
@@ -114,16 +103,17 @@ Deno.test("parseBillingBody requires non-empty email string", () => {
   if (ok.ok) assertEquals(ok.body.email, "user@example.com")
 })
 
-Deno.test("sandbox: active trial pastdue canceled team and unknown", async () => {
-  const cases: [string, number, string][] = [
-    ["active@test.com", 200, "active"],
-    ["trial@test.com", 200, "trialing"],
-    ["pastdue@test.com", 200, "past_due"],
-    ["canceled@test.com", 200, "canceled"],
-    ["team@test.com", 200, "active"],
-    ["unknown@test.com", 404, "none"],
+Deno.test("sandbox: active trial pastdue canceled team seatinvite and unknown", async () => {
+  const cases: [string, number, string, string | null][] = [
+    ["active@test.com", 200, "active", "purchaser"],
+    ["trial@test.com", 200, "trialing", "purchaser"],
+    ["pastdue@test.com", 200, "past_due", "purchaser"],
+    ["canceled@test.com", 200, "canceled", "purchaser"],
+    ["team@test.com", 200, "active", "purchaser"],
+    ["seatinvite@test.com", 200, "active", "invite"],
+    ["unknown@test.com", 404, "none", null],
   ]
-  for (const [em, status, acct] of cases) {
+  for (const [em, status, acct, seatType] of cases) {
     const r = sandboxResponseForEmail(em)
     assertEquals(r!.status, status)
     const j = JSON.parse(await r!.text()) as Record<string, unknown>
@@ -135,7 +125,7 @@ Deno.test("sandbox: active trial pastdue canceled team and unknown", async () =>
       assertEquals(Array.isArray(j.notification_emails), true)
       assertEquals(typeof j.current_period_end, "string")
       assertEquals(typeof j.source_of_truth_at, "string")
-      assertEquals(typeof j.stripe_customer_id, "string")
+      assertEquals(j.seat_type, seatType)
       if (em === "team@test.com") {
         assertEquals(j.plan, "full_toolkit_1000")
         assertEquals(j.seats_purchased, 1)
@@ -144,6 +134,13 @@ Deno.test("sandbox: active trial pastdue canceled team and unknown", async () =>
       if (em === "active@test.com") {
         assertEquals(j.plan, "core_cloud_workspace_500")
         assertEquals(j.seats_allowance, 2)
+        assertEquals(typeof j.stripe_customer_id, "string")
+      }
+      if (em === "seatinvite@test.com") {
+        assertEquals(j.plan, "full_toolkit_1000")
+        assertEquals(j.seats_allowance, 6)
+        assertEquals(j.stripe_customer_id, null)
+        assertEquals(j.seat_type, "invite")
       }
     } else {
       assertEquals(Object.keys(j).sort().join(","), "account_status,email")
@@ -180,8 +177,8 @@ Deno.test("handleBillingRequest 400 missing email", async () => {
   assertEquals(res.status, 400)
 })
 
-Deno.test("handleBillingRequest 404 unknown real email", async () => {
-  const mock = mockClient({ viewRow: null })
+Deno.test("handleBillingRequest 404 unknown real email (RPC returns empty)", async () => {
+  const mock = mockClient({ resolveAccessData: [] })
   const res = await handleBillingRequest(
     jsonPost("https://x.test/functions/v1/billing-status", {
       email: "nobody@example.com",
@@ -195,7 +192,7 @@ Deno.test("handleBillingRequest 404 unknown real email", async () => {
   assertEquals(j, { email: "nobody@example.com", account_status: "none" })
 })
 
-Deno.test("handleBillingRequest 200 real lookup shape", async () => {
+Deno.test("handleBillingRequest 200 direct purchaser via RPC", async () => {
   const viewRow = {
     billing_email: "paid@example.com",
     stripe_customer_id: "cus_123",
@@ -208,8 +205,9 @@ Deno.test("handleBillingRequest 200 real lookup shape", async () => {
     seats_purchased: 3,
     seats_allowance: 3,
     source_of_truth_at: "2030-01-01T00:00:00.000Z",
+    seat_type: "purchaser",
   }
-  const mock = mockClient({ viewRow })
+  const mock = mockClient({ resolveAccessData: [viewRow] })
   const res = await handleBillingRequest(
     jsonPost("https://x.test/functions/v1/billing-status", {
       email: "paid@example.com",
@@ -230,6 +228,41 @@ Deno.test("handleBillingRequest 200 real lookup shape", async () => {
   assertEquals(j.notification_emails, ["ops@example.com"])
   assertEquals(typeof j.current_period_end, "string")
   assertEquals(typeof j.source_of_truth_at, "string")
+  assertEquals(j.seat_type, "purchaser")
+})
+
+Deno.test("handleBillingRequest 200 seat invite via RPC (stripe_customer_id null)", async () => {
+  const inviteRow = {
+    billing_email: "invited@example.com",
+    stripe_customer_id: null,
+    stripe_subscription_id: "sub_purchaser_456",
+    subscription_status: "active",
+    cancel_at_period_end: false,
+    current_period_end: "2030-06-01T12:00:00.000Z",
+    notification_emails: [],
+    plan: "full_toolkit_1000",
+    seats_purchased: 1,
+    seats_allowance: 6,
+    source_of_truth_at: "2030-01-01T00:00:00.000Z",
+    seat_type: "invite",
+  }
+  const mock = mockClient({ resolveAccessData: [inviteRow] })
+  const res = await handleBillingRequest(
+    jsonPost("https://x.test/functions/v1/billing-status", {
+      email: "invited@example.com",
+      requested_at: new Date().toISOString(),
+      nonce: "n",
+    }, `Bearer ${secret}`),
+    baseEnv(mock),
+  )
+  assertEquals(res.status, 200)
+  const j = JSON.parse(await res.text()) as Record<string, unknown>
+  assertEquals(j.email, "invited@example.com")
+  assertEquals(j.account_status, "active")
+  assertEquals(j.plan, "full_toolkit_1000")
+  assertEquals(j.stripe_customer_id, null)
+  assertEquals(j.seat_type, "invite")
+  assertEquals(j.seats_allowance, 6)
 })
 
 Deno.test("handleBillingRequest 429 when rate limited", async () => {

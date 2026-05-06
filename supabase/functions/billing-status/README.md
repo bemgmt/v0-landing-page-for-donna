@@ -23,12 +23,24 @@ Missing or empty `email` → **400**.
 
 ## Responses
 
-- **200**: Full billing object (`plan` is Stripe price `lookup_key` or price id; `seats_purchased` is Stripe subscription item quantity; `account_status` maps from Stripe subscription status).
-- **404** (unknown billing email / no subscription row): `{ "email": "...", "account_status": "none" }`.
+- **200**: Full billing object (`plan` is Stripe price `lookup_key` or price id; `seats_purchased` is Stripe subscription item quantity; `account_status` maps from Stripe subscription status). Includes `seat_type`:
+  - `"purchaser"` — the email is a direct subscription owner.
+  - `"invite"` — the email is a team member invited via `billing_seat_invites`. In this case `stripe_customer_id` is `null` (the purchaser's Stripe ID is not exposed).
+- **404** (unknown billing email / no subscription row / no active seat invite): `{ "email": "...", "account_status": "none" }`.
 - **401**: Invalid or missing bearer token. Each failure appends a row to `public.billing_auth_failures` with the client IP (never the token).
 - **429**: More than 60 authenticated requests per UTC minute (per deployment token fingerprint). Includes `Retry-After` (seconds).
 
 Other Stripe statuses (`incomplete`, `paused`, `inactive`, etc.) map to **`canceled`** in the API response for conservative defaults.
+
+## Resolution order
+
+The endpoint calls `billing_s2s_resolve_access(email)` which:
+
+1. Normalizes the email (`lower(trim())`).
+2. Looks up the email as a **direct purchaser** in `billing_status_view`.
+3. If not found, checks `billing_seat_invites` for any invite matching this email where the **purchaser's subscription is active/trialing**.
+4. If a seat invite resolves, returns `seat_type: "invite"` with the purchaser's plan data but `stripe_customer_id: null`.
+5. If neither resolves, returns 404.
 
 ## Entitlements (out of scope here)
 

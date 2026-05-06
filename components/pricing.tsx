@@ -38,10 +38,10 @@ export default function Pricing() {
             Pricing
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4 wow-glow">
-            Early access for real estate operators
+            Early Infrastructure Access
           </h2>
-          <p className="text-base sm:text-lg text-foreground/70">
-            Choose the plan that fits your team. Prices and features are shown in the table below.
+          <p className="text-base sm:text-lg text-foreground/70 max-w-2xl mx-auto">
+            Early deployment offers foundational advantages: influence over system evolution, priority network integration, and fixed infrastructure costs.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ export default function Pricing() {
         </div>
 
         <div className="mt-12">
-          <h3 className="text-xl sm:text-2xl font-semibold mb-4 text-center">DONNA vs Fragmented Tools</h3>
+          <h3 className="text-xl sm:text-2xl font-semibold mb-4 text-center">Integrated System vs. Fragmented Stack</h3>
           <PricingComparisonChart />
         </div>
 

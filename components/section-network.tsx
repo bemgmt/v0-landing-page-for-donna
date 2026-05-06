@@ -37,21 +37,16 @@ export default function SectionNetwork() {
             DONNA Intelligence Network
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold wow-glow">
-            The more DONNAs, the more powerful it gets
+            <span className="italic font-light">Intelligence that scales with you.</span>
           </h2>
           <p className="text-base sm:text-lg text-foreground/75 leading-relaxed">
-            As each DONNA learns, that intelligence compounds across the network. As more connecting
-            companies run DONNA, they can expedite co-working projects and even refer leads to each
-            other.
+            As DONNA operates, it identifies patterns that move deals faster. Real estate is a network of brokerages, lenders, and vendors. Usually, that network is held together by manual effort.
           </p>
           <p className="text-base sm:text-lg text-foreground/80 leading-relaxed">
-            DONNA never shares your data — just{" "}
-            <strong className="text-foreground font-semibold">
-              the patterns that make deals move faster.
-            </strong>
+            DONNA replaces manual effort with digital infrastructure, ensuring every handoff is visible and every milestone is met.
           </p>
           <p className="text-base sm:text-lg font-medium text-foreground pt-2">
-            Every new business makes every other business better.
+            Your business learns while operating without compromising data privacy.
           </p>
           <div className="pt-2">
             <Link 

@@ -7,8 +7,10 @@ import SectionHero from "@/components/section-hero"
 import SectionRealEstatePain from "@/components/section-real-estate-pain"
 import SectionReframe from "@/components/section-reframe"
 import SectionCapabilities from "@/components/section-capabilities"
+import SectionStackedLayers from "@/components/section-stacked-layers"
 import SectionVerticals from "@/components/section-verticals"
 import SectionNetwork from "@/components/section-network"
+import SectionTrust from "@/components/section-trust"
 import Pricing from "@/components/pricing"
 import SectionEarlyAdopter from "@/components/section-early-adopter"
 import SectionExploreFurther from "@/components/section-explore-further"
@@ -28,15 +30,15 @@ import {
 } from "@/lib/schema-markup"
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "AI Operational Infrastructure for SMBs",
+  title: "AI Operational Infrastructure for Real Estate",
   description:
-    "DONNA is the AI operational infrastructure for SMBs, unifying communication, coordination, and execution so nothing gets missed.",
+    "DONNA is the AI operational infrastructure for the real estate industry, unifying communication, coordination, and execution so nothing gets missed.",
   path: "/",
 })
 
 export default function Home() {
   const orgDescription =
-    "DONNA is AI operational infrastructure for SMBs that unifies communication, coordination, and execution."
+    "DONNA is AI operational infrastructure for the real estate industry that unifies communication, coordination, and execution."
 
   const schemaMarkup = {
     "@context": "https://schema.org",
@@ -46,7 +48,7 @@ export default function Home() {
       softwareApplicationSchema({
         name: "DONNA",
         description:
-          "AI operational infrastructure for SMBs — coordinates communication, tasks, and parties across high-communication operations.",
+          "AI operational infrastructure for real estate — coordinates communication, tasks, and parties across high-communication operations.",
         features: [
           "Unified communication, coordination, and execution",
           "Cross-party workflows (teams, vendors, clients)",
@@ -77,7 +79,9 @@ export default function Home() {
         <SectionRealEstatePain />
         <SectionReframe />
         <SectionCapabilities />
+        <SectionStackedLayers />
         <SectionNetwork />
+        <SectionTrust />
         <SectionVerticals />
         <Pricing />
         <SectionEarlyAdopter />

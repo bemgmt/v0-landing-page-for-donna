@@ -104,6 +104,7 @@ function sandboxResponseForEmail(email: string): Response | null {
     periodEndIso: string,
     seatsPurchased: number,
     seatsAllowance: number,
+    seatType: "purchaser" | "invite" = "purchaser",
   ) => {
     const body = {
       email: e,
@@ -113,9 +114,10 @@ function sandboxResponseForEmail(email: string): Response | null {
       cancel_at_period_end: false,
       seats_purchased: seatsPurchased,
       seats_allowance: seatsAllowance,
-      stripe_customer_id: `cus_sandbox_${e.replace(/[^a-z0-9]/gi, "_").slice(0, 40)}`,
+      stripe_customer_id: seatType === "invite" ? null : `cus_sandbox_${e.replace(/[^a-z0-9]/gi, "_").slice(0, 40)}`,
       notification_emails: [] as string[],
       source_of_truth_at: new Date().toISOString(),
+      seat_type: seatType,
     }
     return new Response(JSON.stringify(body), { status: 200, headers: JSON_HEADERS })
   }
@@ -126,6 +128,7 @@ function sandboxResponseForEmail(email: string): Response | null {
   if (e === "pastdue@test.com") return base("past_due", "core_cloud_workspace_500", isoAddMs(-2 * d), 1, 2)
   if (e === "canceled@test.com") return base("canceled", "core_cloud_workspace_500", isoAddMs(-60 * d), 1, 2)
   if (e === "team@test.com") return base("active", "full_toolkit_1000", isoAddMs(300 * d), 1, 6)
+  if (e === "seatinvite@test.com") return base("active", "full_toolkit_1000", isoAddMs(300 * d), 1, 6, "invite")
   if (e === "unknown@test.com") {
     return new Response(JSON.stringify({ email: e, account_status: "none" }), {
       status: 404,
@@ -153,12 +156,15 @@ type BillingViewRow = {
   seats_purchased: number
   seats_allowance: number
   source_of_truth_at: string
+  seat_type?: string
 }
 
 function rowToSuccessResponse(row: BillingViewRow, email: string): Response {
   const account_status = mapAccountStatus(row.subscription_status)
+  const seatType = row.seat_type ?? "purchaser"
+  const isInvite = seatType === "invite"
   const current_period_end =
-    row.current_period_end && row.current_period_end.length > 0
+    row.current_period_end && String(row.current_period_end).length > 0
       ? new Date(row.current_period_end).toISOString()
       : new Date().toISOString()
 
@@ -170,9 +176,10 @@ function rowToSuccessResponse(row: BillingViewRow, email: string): Response {
     cancel_at_period_end: Boolean(row.cancel_at_period_end),
     seats_purchased: Number(row.seats_purchased) || 1,
     seats_allowance: Number(row.seats_allowance) || 1,
-    stripe_customer_id: row.stripe_customer_id ?? "",
+    stripe_customer_id: isInvite ? null : (row.stripe_customer_id ?? ""),
     notification_emails: normalizeNotificationEmails(row.notification_emails),
     source_of_truth_at: new Date(row.source_of_truth_at).toISOString(),
+    seat_type: seatType,
   }
   return new Response(JSON.stringify(body), { status: 200, headers: JSON_HEADERS })
 }
@@ -284,15 +291,10 @@ async function handleBillingRequest(req: Request, env: BillingEnv): Promise<Resp
     })
   }
 
-  const { data, error } = await supabase
-    .from("billing_status_view")
-    .select(
-      "billing_email,stripe_customer_id,stripe_subscription_id,subscription_status,cancel_at_period_end,current_period_end,notification_emails,plan,seats_purchased,seats_allowance,source_of_truth_at",
-    )
-    .eq("billing_email", email)
-    .order("source_of_truth_at", { ascending: false })
-    .limit(1)
-    .maybeSingle()
+  // Single RPC resolves direct purchaser first, then seat-invite fallback
+  const { data, error } = await supabase.rpc("billing_s2s_resolve_access", {
+    p_email: email,
+  })
 
   if (error) {
     return new Response(JSON.stringify({ error: "Lookup failed" }), {
@@ -301,14 +303,17 @@ async function handleBillingRequest(req: Request, env: BillingEnv): Promise<Resp
     })
   }
 
-  if (!data) {
+  // RPC returns an array; take the first row if present
+  const row = Array.isArray(data) ? data[0] : data
+
+  if (!row) {
     return new Response(JSON.stringify({ email, account_status: "none" }), {
       status: 404,
       headers: JSON_HEADERS,
     })
   }
 
-  return rowToSuccessResponse(data as BillingViewRow, email)
+  return rowToSuccessResponse(row as BillingViewRow, email)
 }
 
 function readEnv(): BillingEnv | null {

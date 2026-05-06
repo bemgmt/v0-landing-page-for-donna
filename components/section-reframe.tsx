@@ -20,19 +20,14 @@ export default function SectionReframe() {
           Reframe
         </p>
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight wow-glow">
-          The DONNA difference.
-          <br />
+          Move Beyond AI Tools.
         </h2>
-        <div className="space-y-6 text-base sm:text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto md:mx-0">
-          <p>A lead comes in.</p>
-          <p className="font-medium text-foreground">DONNA initiates intelligent, persistent follow-up.</p>
-          
-          <p className="pt-2">A deal starts moving.</p>
-          <p className="font-medium text-foreground">DONNA unifies communication and tasks across all parties.</p>
-          
-          <p className="pt-2">
-            Agents, lenders, title, and inspectors working…{" "}
-            <span className="font-medium text-foreground">together in one continuous workflow.</span>
+        <div className="space-y-6 text-base sm:text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto md:mx-0 mt-6">
+          <p>
+            Agents and brokers have tried CRMs, transaction management tools, and AI chatbots, but none of it feels connected or actually changes how they work. DONNA solves that.
+          </p>
+          <p>
+            While tools generate content, <span className="font-medium text-foreground">DONNA governs action</span>. It sits beneath your existing stack to route information and ensure deal progression without manual intervention.
           </p>
           
           <p className="pt-4 font-semibold text-foreground">The result?</p>

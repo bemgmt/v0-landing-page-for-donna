@@ -60,3 +60,39 @@ else
 fi
 
 rm -f "$TMP"
+
+# Optional: test seat invite resolution
+if [[ -n "${SMOKE_SEAT_INVITE_EMAIL:-}" ]]; then
+  echo ""
+  echo "--- Seat invite test: $SMOKE_SEAT_INVITE_EMAIL ---"
+  BODY2="$(jq -n \
+    --arg email "$SMOKE_SEAT_INVITE_EMAIL" \
+    --arg ts "$TS" \
+    --arg nonce "${NONCE}_seat" \
+    '{email:$email, requested_at:$ts, nonce:$nonce}')"
+
+  TMP2="$(mktemp)"
+  HTTP_CODE2="$(curl -sS -o "$TMP2" -w "%{http_code}" \
+    -X POST "$SUPABASE_FUNCTION_URL" \
+    -H "Authorization: Bearer ${DONNA_BILLING_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "$BODY2")"
+
+  echo "HTTP $HTTP_CODE2"
+  cat "$TMP2"
+  echo ""
+
+  if [[ "$HTTP_CODE2" == "200" ]]; then
+    jq -e '
+      (.account_status | IN("active", "trialing"))
+      and (.plan | type) == "string"
+      and (.seat_type | type) == "string"
+    ' "$TMP2" > /dev/null
+    echo "Seat invite schema OK (200, seat_type=$(jq -r '.seat_type' "$TMP2"))"
+  elif [[ "$HTTP_CODE2" == "404" ]]; then
+    echo "Seat invite not found (404) — check billing_seat_invites table"
+  else
+    echo "Unexpected seat invite status $HTTP_CODE2"
+  fi
+  rm -f "$TMP2"
+fi
