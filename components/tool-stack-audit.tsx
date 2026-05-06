@@ -29,11 +29,19 @@ const INDUSTRY_TOOLS: Record<string, ToolItem[]> = {
     { id: "callcenter", name: "Answering Service / Receptionist", defaultCost: 450, description: "Handling inbound leads." },
     { id: "marketing", name: "Lead Nurture / CRM", defaultCost: 150, description: "Follow-ups and estimates." },
     { id: "zapier", name: "Automations", defaultCost: 50, description: "Syncing leads to dispatch." },
+  ],
+  "Other / Custom": [
+    { id: "crm", name: "Primary CRM / Database", defaultCost: 150, description: "Lead tracking and pipeline." },
+    { id: "marketing", name: "Marketing & Communications", defaultCost: 100, description: "Email and SMS platforms." },
+    { id: "ops", name: "Operations & Task Management", defaultCost: 80, description: "Checklists and project tracking." },
+    { id: "admin", name: "Virtual Assistants / Admin Support", defaultCost: 500, description: "Manual data entry and task chasing." },
+    { id: "automations", name: "Automations & Integrations", defaultCost: 50, description: "Patching tools together." },
+    { id: "other", name: "Other Subscriptions", defaultCost: 0, description: "Any other tool costs." },
   ]
 }
 
 export default function ToolStackAudit() {
-  const [industry, setIndustry] = useState<"Real Estate" | "Mortgage" | "Home Services">("Real Estate")
+  const [industry, setIndustry] = useState<"Real Estate" | "Mortgage" | "Home Services" | "Other / Custom">("Real Estate")
   
   // Custom costs overriding defaults
   const [customCosts, setCustomCosts] = useState<Record<string, number>>({})
@@ -56,7 +64,7 @@ export default function ToolStackAudit() {
   const hardCost = currentTools.reduce((acc, tool) => acc + getCost(tool.id, tool.defaultCost), 0)
   const hiddenCost = (hoursLost * hourlyRate) * 4 // approx 4 weeks per month
   const totalCost = hardCost + hiddenCost
-  const donnaCost = 300 // Baseline tier comparison
+  const donnaCost = 500 // Baseline tier comparison
 
   return (
     <div className="max-w-5xl mx-auto space-y-12">
