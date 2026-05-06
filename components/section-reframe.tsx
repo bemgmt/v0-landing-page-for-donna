@@ -20,9 +20,8 @@ export default function SectionReframe() {
           Reframe
         </p>
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight wow-glow">
-          This isn&apos;t about AI.
+          The DONNA difference.
           <br />
-          It&apos;s about infrastructure.
         </h2>
         <div className="space-y-6 text-base sm:text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto md:mx-0">
           <p>A lead comes in.</p>
