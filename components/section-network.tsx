@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function SectionNetwork() {
   const { ref, inView } = useInView({ threshold: 0.3, once: true })
@@ -52,6 +53,16 @@ export default function SectionNetwork() {
           <p className="text-base sm:text-lg font-medium text-foreground pt-2">
             Every new business makes every other business better.
           </p>
+          <div className="pt-2">
+            <Link 
+              href="https://www.donna.business/din/intelligence"
+              target="_blank"
+              rel="noopener noreferrer" 
+              className="text-sm text-foreground/60 hover:text-accent transition-colors underline underline-offset-4"
+            >
+              Curious? Take a peek at the network in action
+            </Link>
+          </div>
         </div>
       </div>
     </section>

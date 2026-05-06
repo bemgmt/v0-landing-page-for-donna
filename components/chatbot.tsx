@@ -101,10 +101,11 @@ export default function Chatbot() {
     scrollToBottom()
   }, [messages])
 
-  const handleSend = useCallback(async () => {
-    if (!input.trim() || isLoading) return
+  const handleSend = useCallback(async (optionalInput?: string) => {
+    const textToUse = typeof optionalInput === 'string' ? optionalInput : input;
+    if (!textToUse.trim() || isLoading) return
 
-    const text = input.trim()
+    const text = textToUse.trim()
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
@@ -279,6 +280,27 @@ export default function Chatbot() {
               <div className="flex justify-start">
                 <div className="liquid-glass-clear border border-white/10 rounded-xl px-4 py-2.5 glow-accent">
                   <p className="text-sm text-foreground animate-pulse">...</p>
+                </div>
+              </div>
+            )}
+            
+            {messages.length === 1 && !isLoading && (
+              <div className="flex flex-col gap-2 pt-4">
+                <p className="text-xs text-foreground/50 mb-2 px-2 text-center">Try asking:</p>
+                <div className="flex flex-col gap-2 items-end">
+                  {[
+                    "How does DONNA automate lead follow-ups?",
+                    "Can DONNA connect to my existing CRM?",
+                    "How do you coordinate with lenders and title?"
+                  ].map((q) => (
+                    <button
+                      key={q}
+                      onClick={() => void handleSend(q)}
+                      className="text-sm text-right px-4 py-2 rounded-xl liquid-glass border border-white/10 hover:bg-white/15 transition-colors text-foreground/80 hover:text-foreground"
+                    >
+                      {q}
+                    </button>
+                  ))}
                 </div>
               </div>
             )}

@@ -7,6 +7,7 @@ import { track } from "@vercel/analytics"
 import { pushDataLayer } from "@/lib/data-layer"
 import PricingComparisonChart from "@/components/pricing-comparison-chart"
 import StripePricingTableEmbed from "@/components/stripe-pricing-table-embed"
+import Link from "next/link"
 
 const pricingTableId = process.env.NEXT_PUBLIC_STRIPE_PRICING_TABLE_ID ?? ""
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -78,6 +79,14 @@ export default function Pricing() {
             workflows adds more cost while still delivering only a portion of what DONNA offers — at early access
             pricing.
           </p>
+          <div className="mt-8">
+            <Link 
+              href="/tool-audit" 
+              className="inline-flex items-center justify-center rounded-lg bg-white/5 border border-white/10 px-6 py-3 text-sm font-medium text-foreground hover:bg-white/10 transition-colors"
+            >
+              Compare against your stack
+            </Link>
+          </div>
         </div>
       </div>
     </section>
