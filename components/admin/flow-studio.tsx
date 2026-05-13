@@ -18,8 +18,8 @@ const PRESETS: Preset[] = [
   { label: "Story / Reel Cover", type: "image", dimensions: "1080x1920", description: "Instagram/TikTok vertical" },
   { label: "Hero Banner", type: "image", dimensions: "1920x1080", description: "Website hero section" },
   { label: "OG Image", type: "image", dimensions: "1200x630", description: "Social share preview" },
-  { label: "Short Video", type: "video", duration: 15, aspectRatio: "16:9", description: "15s promotional clip" },
-  { label: "Social Video", type: "video", duration: 30, aspectRatio: "9:16", description: "30s vertical video" },
+  { label: "Short Video", type: "video", duration: 5, aspectRatio: "16:9", description: "5s promotional clip" },
+  { label: "Social Video", type: "video", duration: 10, aspectRatio: "9:16", description: "10s vertical video" },
 ]
 
 interface GeneratedAsset {
@@ -62,6 +62,52 @@ export default function FlowStudio() {
     void fetchHistory()
     return () => { isMounted = false }
   }, [])
+
+  // Smart Background Poller: Periodically queries Cloud status for processing video generations
+  useEffect(() => {
+    const processingIds = assets
+      .filter((a) => a.url === "processing" || (a.metadata as any)?.status === "processing")
+      .map((a) => a.id)
+
+    if (processingIds.length === 0) return
+
+    const runSyncCheck = async () => {
+      for (const id of processingIds) {
+        try {
+          const res = await fetch(`/api/flow/check-status?id=${id}`)
+          const data = await res.json()
+          
+          if (res.ok && data.status !== "processing") {
+            setAssets((prev) =>
+              prev.map((asset) => {
+                if (asset.id === id) {
+                  if (data.status === "completed" && data.asset) {
+                    return data.asset
+                  } else if (data.status === "failed") {
+                    return {
+                      ...asset,
+                      url: "failed",
+                      metadata: { ...asset.metadata, status: "failed", error: data.error }
+                    }
+                  }
+                }
+                return asset
+              })
+            )
+          }
+        } catch (err) {
+          console.error("[flow-studio] Polling error for job ID", id, err)
+        }
+      }
+    }
+
+    // Query backend once every 10s for current active sessions
+    const pollInterval = setInterval(() => {
+      void runSyncCheck()
+    }, 10000)
+
+    return () => clearInterval(pollInterval)
+  }, [assets])
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return
@@ -210,17 +256,43 @@ export default function FlowStudio() {
                 className="rounded-2xl border border-border bg-background overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col"
               >
                 <div className="aspect-square bg-muted/50 flex items-center justify-center relative group overflow-hidden">
-                  {asset.type === "image" ? (
-                    asset.url ? (
-                      <img src={asset.url} alt={asset.prompt} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    ) : (
-                      <Image className="w-12 h-12 text-muted-foreground/20" />
-                    )
+                  {asset.url === "processing" || (asset.metadata as any)?.status === "processing" ? (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/90 space-y-3 p-4 text-center">
+                      <div className="relative flex items-center justify-center">
+                        <div className="w-12 h-12 border-2 border-accent/20 border-t-accent rounded-full animate-spin" />
+                        <Video className="w-5 h-5 text-accent absolute animate-pulse" />
+                      </div>
+                      <div className="space-y-1 animate-pulse">
+                        <p className="text-[11px] font-bold text-foreground tracking-wide">Rendering Video...</p>
+                        <p className="text-[9px] text-muted-foreground max-w-[85%] mx-auto leading-relaxed">
+                          Cloud generation running in the background (Est. 2-5 mins). Safe to browse away.
+                        </p>
+                      </div>
+                    </div>
+                  ) : asset.url === "failed" || (asset.metadata as any)?.status === "failed" ? (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-destructive/5 space-y-2 p-4 text-center">
+                      <div className="w-8 h-8 rounded-full bg-destructive/10 flex items-center justify-center text-destructive">
+                        <Info className="w-4 h-4" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-[11px] font-bold text-destructive">Rendering FAILED</p>
+                        <p className="text-[9px] text-muted-foreground max-w-[85%] mx-auto leading-tight line-clamp-2">
+                          {String((asset.metadata as any)?.error || "Internal Vertex capacity error.")}
+                        </p>
+                      </div>
+                    </div>
                   ) : (
-                    <Video className="w-12 h-12 text-muted-foreground/20" />
-                  )}
-                  {asset.type === "video" && asset.url && (
-                    <video src={asset.url} controls className="w-full h-full object-cover" />
+                    <>
+                      {asset.type === "image" ? (
+                        <img
+                          src={asset.url}
+                          alt={asset.prompt}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <video src={asset.url} controls className="w-full h-full object-cover" />
+                      )}
+                    </>
                   )}
                 </div>
                 
@@ -263,7 +335,7 @@ export default function FlowStudio() {
                   </div>
 
                   <div className="flex gap-2 pt-2 border-t border-border/50">
-                    {asset.url && (
+                    {asset.url && asset.url !== "processing" && asset.url !== "failed" && (
                       <>
                         <a
                           href={asset.url}

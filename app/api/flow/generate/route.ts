@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import { getPortalSession } from "@/lib/portal/session"
 import { generateVertexAsset, type AssetType } from "@/lib/flow/client"
 
+export const maxDuration = 900 // Set maximum runtime to 15 minutes to support Veo video generation window
+
 export async function GET() {
   const session = await getPortalSession()
   if (!session) {
@@ -63,7 +65,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { bytesBase64Encoded, mimeType, optimizedPrompt } = await generateVertexAsset({
+    const genResult = await generateVertexAsset({
       prompt: json.prompt,
       type: json.type,
       dimensions: json.dimensions,
@@ -72,64 +74,77 @@ export async function POST(request: Request) {
       style: json.style,
     })
 
-    // Upload to Supabase marketing-assets bucket
-    const buffer = Buffer.from(bytesBase64Encoded, "base64")
-    const ext = mimeType.split("/")[1] ?? "jpg"
-    const filename = `${crypto.randomUUID()}.${ext}`
+    let finalUrl = "processing"
+    let mimeType = json.type === "video" ? "video/mp4" : "image/jpeg"
+    let metadata: Record<string, any> = {
+      dimensions: json.dimensions,
+      duration: json.duration,
+      aspectRatio: json.aspectRatio,
+    }
 
-    const { data: uploadData, error: uploadError } = await session.supabase
-      .storage
-      .from("marketing-assets")
-      .upload(filename, buffer, {
-        contentType: mimeType,
-      })
+    if (genResult.status === "sync") {
+      // Sync Upload: Write directly into Object Storage
+      const buffer = Buffer.from(genResult.bytesBase64Encoded, "base64")
+      mimeType = genResult.mimeType
+      const ext = mimeType.split("/")[1] ?? "jpg"
+      const filename = `${crypto.randomUUID()}.${ext}`
 
-    if (uploadError) throw uploadError
+      const { error: uploadError } = await session.supabase
+        .storage
+        .from("marketing-assets")
+        .upload(filename, buffer, {
+          contentType: mimeType,
+        })
 
-    const { data: publicUrlData } = session.supabase
-      .storage
-      .from("marketing-assets")
-      .getPublicUrl(filename)
+      if (uploadError) throw uploadError
 
-    const finalUrl = publicUrlData.publicUrl
+      const { data: publicUrlData } = session.supabase
+        .storage
+        .from("marketing-assets")
+        .getPublicUrl(filename)
 
-    // Save metadata to Supabase table public.marketing_assets
+      finalUrl = publicUrlData.publicUrl
+      metadata.status = "completed"
+    } else {
+      // Async Workflow: Record cloud state tokens in metadata payload
+      metadata.status = "processing"
+      metadata.operationName = genResult.operationName
+    }
+
+    // Record index row in Supabase relational store
     const { data: dbRow, error: dbError } = await session.supabase
       .from("marketing_assets")
       .insert({
         creator_profile_id: session.profile.id,
         type: json.type,
         prompt: json.prompt,
-        optimized_prompt: optimizedPrompt,
+        optimized_prompt: genResult.optimizedPrompt,
         url: finalUrl,
         mime_type: mimeType,
-        metadata: { 
-          dimensions: json.dimensions, 
-          duration: json.duration,
-          aspectRatio: json.aspectRatio,
-        },
+        metadata,
       })
       .select()
       .single()
 
     if (dbError) {
-      console.error("[flow/generate] DB Insert warning (asset is generated and uploaded but not indexed in history):", dbError)
+      console.error("[flow/generate] Relational Insert Error:", dbError)
+      throw new Error(`Relational persistence failure: ${dbError.message}`)
     }
 
     const asset = {
-      id: dbRow?.id ?? filename,
+      id: dbRow.id,
       type: json.type,
       prompt: json.prompt,
-      optimizedPrompt,
+      optimizedPrompt: genResult.optimizedPrompt,
       url: finalUrl,
       mimeType,
-      createdAt: dbRow?.created_at ?? new Date().toISOString(),
-      metadata: { dimensions: json.dimensions, duration: json.duration },
+      createdAt: dbRow.created_at,
+      metadata: dbRow.metadata,
     }
 
-    return NextResponse.json({ asset })
+    return NextResponse.json({ asset, status: metadata.status })
   } catch (err: any) {
-    console.error("[flow/generate]", err)
+    console.error("[flow/generate] Fatal pipeline handler catch:", err)
     return NextResponse.json({ error: err.message ?? "Generation failed" }, { status: 500 })
   }
 }

@@ -165,9 +165,6 @@ Return only that verdict.`
 }
 
 /**
- * Execute Step: High-efficiency generation
- */
-/**
  * Helper to download external URLs to base64 (if returned by Vertex instead of inline base64)
  */
 async function downloadUrlToBase64(url: string): Promise<string> {
@@ -177,166 +174,17 @@ async function downloadUrlToBase64(url: string): Promise<string> {
   return Buffer.from(arrayBuffer).toString("base64")
 }
 
-/**
- * Execute Step: High-efficiency generation
- * Supports synchronous Imagen generation and asynchronous Veo polling (LROs)
- */
-async function runRawGeneration(
-  prompt: string,
-  options: GenerateOptions,
-  projectId: string,
-  token: string
-): Promise<{ bytesBase64Encoded: string; mimeType: string }> {
-  const isVideo = options.type === "video"
-  const modelId = isVideo ? "veo-2.0-generate-001" : "imagen-3.0-generate-001"
-  
-  // Videos require Long Running Operations (predictLongRunning), images use direct predict.
-  const apiAction = isVideo ? "predictLongRunning" : "predict"
-  const endpoint = `https://us-central1-aiplatform.googleapis.com/v1/projects/${projectId}/locations/us-central1/publishers/google/models/${modelId}:${apiAction}`
-
-  const requestBody: any = {
-    instances: [{ prompt }],
-    parameters: { sampleCount: 1 }
-  }
-
-  if (isVideo) {
-    requestBody.parameters.aspectRatio = options.aspectRatio ?? "16:9"
-    // Veo takes durationSeconds. Default/cap at 5s for predictable speeds.
-    requestBody.parameters.durationSeconds = 5 
-  } else {
-    const ratioMap: Record<string, string> = {
-      "1080x1080": "1:1",
-      "1080x1920": "9:16",
-      "1920x1080": "16:9",
-      "1200x630": "16:9"
-    }
-    requestBody.parameters.aspectRatio = ratioMap[options.dimensions ?? "1080x1080"] ?? "1:1"
-    requestBody.parameters.outputOptions = { mimeType: "image/jpeg" }
-  }
-
-  const res = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  })
-
-  if (!res.ok) {
-    const body = await res.text()
-    throw new Error(`Vertex AI initial dispatch failed: ${res.status} ${body}`)
-  }
-
-  const json = await res.json()
-
-  // -------------------------------------------------------
-  // Synchronous Image Branch
-  // -------------------------------------------------------
-  if (!isVideo) {
-    const prediction = json.predictions?.[0]
-    if (!prediction || (!prediction.bytesBase64Encoded && !prediction.videoBase64Encoded)) {
-      throw new Error("Unexpected Vertex AI image response format")
-    }
-    return {
-      bytesBase64Encoded: prediction.bytesBase64Encoded || prediction.videoBase64Encoded,
-      mimeType: prediction.mimeType ?? "image/jpeg"
-    }
-  }
-
-  // -------------------------------------------------------
-  // Asynchronous Video Branch (Veo Long Running Operation Polling)
-  // -------------------------------------------------------
-  const operationName = json.name
-  if (!operationName) {
-    throw new Error("Veo request succeeded but returned no Operation name. Check Vertex AI configuration.")
-  }
-
-  console.log(`[ClearCopy] Veo LRO dispatched. Operation: ${operationName}. Polling until complete...`)
-
-  let attempts = 0
-  const maxAttempts = 40 // 40 attempts * 5s = 200 seconds maximum timeout
-  let done = false
-  let completedOp: any = null
-
-  while (!done && attempts < maxAttempts) {
-    attempts++
-    
-    // Wait 5 seconds before each polling iteration
-    await new Promise(resolve => setTimeout(resolve, 5000))
-
-    const pollUrl = `https://us-central1-aiplatform.googleapis.com/v1/${operationName}`
-    const pollRes = await fetch(pollUrl, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-
-    if (!pollRes.ok) {
-      console.warn(`[ClearCopy] Veo polling HTTP warn: ${pollRes.status}. Retrying in loop...`)
-      continue
-    }
-
-    const op = await pollRes.json()
-    if (op.error) {
-      throw new Error(`Veo server side failure: ${op.error.message || JSON.stringify(op.error)}`)
-    }
-
-    if (op.done) {
-      done = true
-      completedOp = op
-    } else {
-      console.log(`[ClearCopy] Veo generation working (pass ${attempts}/${maxAttempts})...`)
-    }
-  }
-
-  if (!done || !completedOp) {
-    throw new Error("Veo video generation exceeded the 200 second execution window.")
-  }
-
-  // The finalized Operation embeds outputs inside the 'response' key.
-  const lroResponse = completedOp.response
-  if (!lroResponse) {
-    throw new Error("Veo operation finished but yielded a blank response field.")
-  }
-
-  // Access predictions - check multiple standard structures returned by Vertex for videos
-  const prediction = lroResponse.predictions?.[0] || lroResponse.generatedSamples?.[0] || lroResponse
-  if (!prediction) {
-    throw new Error("Could not map predictions in completed Veo payload structure.")
-  }
-
-  // Attempt extraction of base64 from all standard Vertex locations
-  let base64Data = 
-    prediction.videoBase64Encoded || 
-    prediction.bytesBase64Encoded || 
-    prediction.video?.bytesBase64Encoded ||
-    prediction.video?.videoBase64Encoded
-
-  const mimeType = prediction.mimeType || prediction.video?.mimeType || "video/mp4"
-
-  // If no inline base64 exists, look for temporary signed URLs/URIs and download directly
-  if (!base64Data) {
-    const externalUrl = prediction.uri || prediction.url || prediction.video?.uri || prediction.video?.url
-    if (externalUrl && externalUrl.startsWith("http")) {
-      console.log(`[ClearCopy] Veo output found via URI. Downloading binary stream: ${externalUrl}`)
-      base64Data = await downloadUrlToBase64(externalUrl)
-    } else {
-      throw new Error(`Could not resolve usable base64 or URI in Veo output: ${JSON.stringify(prediction)}`)
-    }
-  }
-
-  console.log("[ClearCopy] Veo video stream loaded successfully.")
-  return {
-    bytesBase64Encoded: base64Data,
-    mimeType
-  }
-}
+export type GenerationResult = 
+  | { status: "sync"; bytesBase64Encoded: string; mimeType: string; optimizedPrompt: string }
+  | { status: "async"; operationName: string; optimizedPrompt: string }
 
 /**
- * Main Generation Endpoint implementing the "Plan-Execute-Verify" loop
+ * Main Generation Endpoint implementing the "Plan-Execute-Verify" loop.
+ * For videos, dispatches instantly and returns background tracking context.
  */
 export async function generateVertexAsset(
   options: GenerateOptions
-): Promise<{ bytesBase64Encoded: string; mimeType: string; optimizedPrompt: string }> {
+): Promise<GenerationResult> {
   const token = await getFlowToken()
   const projectId = process.env.GOOGLE_FLOW_PROJECT_ID
 
@@ -353,35 +201,173 @@ export async function generateVertexAsset(
   console.log(`[ClearCopy] Optimized Prompt: ${optimizedPrompt}`)
 
   // Step 2: Execution Phase
-  console.log("[ClearCopy] Executing generation...")
-  let result = await runRawGeneration(optimizedPrompt, options, projectId, token)
+  const isVideo = options.type === "video"
+  const modelId = isVideo ? "veo-2.0-generate-001" : "imagen-3.0-generate-001"
+  
+  const apiAction = isVideo ? "predictLongRunning" : "predict"
+  const endpoint = `https://us-central1-aiplatform.googleapis.com/v1/projects/${projectId}/locations/us-central1/publishers/google/models/${modelId}:${apiAction}`
+
+  const requestBody: any = {
+    instances: [{ prompt: optimizedPrompt }],
+    parameters: { sampleCount: 1 }
+  }
+
+  if (isVideo) {
+    requestBody.parameters.aspectRatio = options.aspectRatio ?? "16:9"
+    requestBody.parameters.durationSeconds = Math.min(options.duration ?? 5, 15)
+  } else {
+    const ratioMap: Record<string, string> = {
+      "1080x1080": "1:1",
+      "1080x1920": "9:16",
+      "1920x1080": "16:9",
+      "1200x630": "16:9"
+    }
+    requestBody.parameters.aspectRatio = ratioMap[options.dimensions ?? "1080x1080"] ?? "1:1"
+    requestBody.parameters.outputOptions = { mimeType: "image/jpeg" }
+  }
+
+  console.log(`[ClearCopy] Dispatching ${options.type} to Vertex AI...`)
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  })
+
+  if (!res.ok) {
+    const body = await res.text()
+    throw new Error(`Vertex AI initial dispatch failed: ${res.status} ${body}`)
+  }
+
+  const json = await res.json()
+
+  // ------------------------------------------------------------------
+  // ASYNC BRANCH: VIDEOS DISPATCH IMMEDIATELY FOR BACKGROUND RUNNING
+  // ------------------------------------------------------------------
+  if (isVideo) {
+    const operationName = json.name
+    if (!operationName) {
+      throw new Error("Veo dispatch succeeded but returned no Tracking Operation Name.")
+    }
+    console.log(`[ClearCopy] Veo LRO initiated. Operation Tracking ID: ${operationName}`)
+    return {
+      status: "async",
+      operationName,
+      optimizedPrompt
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // SYNC BRANCH: IMAGES PROCESS INLINE WITH INTELLIGENT 1X RETRY
+  // ------------------------------------------------------------------
+  let prediction = json.predictions?.[0]
+  if (!prediction || (!prediction.bytesBase64Encoded && !prediction.videoBase64Encoded)) {
+    throw new Error("Unexpected image generation response structure.")
+  }
+
+  let finalBytes = prediction.bytesBase64Encoded || prediction.videoBase64Encoded
+  let finalMime = prediction.mimeType ?? "image/jpeg"
 
   // Step 3: Verification Phase (Vision Agent)
-  if (options.type === "image") {
-    console.log("[ClearCopy] Verifying generation output for clear copy...")
-    const verification = await verifyAsset(result.bytesBase64Encoded, options.prompt, projectId, token)
+  console.log("[ClearCopy] Verifying generation output for clear copy...")
+  const verification = await verifyAsset(finalBytes, options.prompt, projectId, token)
+  
+  if (!verification.passed) {
+    console.warn(`[ClearCopy] Vision Check FAILED: ${verification.feedback}. Initiating 1x Re-roll...`)
     
-    if (!verification.passed) {
-      console.warn(`[ClearCopy] Vision Check FAILED: ${verification.feedback}. Initiating 1x Re-roll...`)
-      
-      // Planning Re-roll: Simpler prompt
-      optimizedPrompt = await planPrompt(options.prompt, projectId, token, brandRules, rulesJson, true)
-      console.log(`[ClearCopy] Re-roll Optimized Prompt: ${optimizedPrompt}`)
-      
-      // Re-Execute
-      result = await runRawGeneration(optimizedPrompt, options, projectId, token)
-      console.log("[ClearCopy] Re-roll execution completed.")
-    } else {
-      console.log("[ClearCopy] Vision Check PASSED.")
-    }
+    // Re-Plan
+    optimizedPrompt = await planPrompt(options.prompt, projectId, token, brandRules, rulesJson, true)
+    console.log(`[ClearCopy] Re-roll Optimized Prompt: ${optimizedPrompt}`)
+    
+    // Re-Execute
+    requestBody.instances[0].prompt = optimizedPrompt
+    const retryRes = await fetch(endpoint, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody),
+    })
+
+    if (!retryRes.ok) throw new Error("Re-roll execution failed.")
+    
+    const retryJson = await retryRes.json()
+    const retryPred = retryJson.predictions?.[0]
+    if (!retryPred) throw new Error("Re-roll response empty.")
+    
+    finalBytes = retryPred.bytesBase64Encoded || retryPred.videoBase64Encoded
+    finalMime = retryPred.mimeType ?? "image/jpeg"
+    console.log("[ClearCopy] Re-roll completed successfully.")
   } else {
-    console.log("[ClearCopy] Asset type is Video. Bypassing Vision verification loop.")
+    console.log("[ClearCopy] Vision Check PASSED.")
   }
 
   return {
-    bytesBase64Encoded: result.bytesBase64Encoded,
-    mimeType: result.mimeType,
+    status: "sync",
+    bytesBase64Encoded: finalBytes,
+    mimeType: finalMime,
     optimizedPrompt
   }
 }
+
+/**
+ * Polling handler called by client status tickers to resolve background tasks.
+ */
+export async function checkVertexOperation(
+  operationName: string
+): Promise<{ done: boolean; bytesBase64Encoded?: string; mimeType?: string; error?: string }> {
+  const token = await getFlowToken()
+  
+  const pollRes = await fetch(`https://us-central1-aiplatform.googleapis.com/v1/${operationName}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+
+  if (!pollRes.ok) {
+    throw new Error(`Failed to query operation status: ${pollRes.status}`)
+  }
+
+  const op = await pollRes.json()
+  if (op.error) {
+    return { done: true, error: op.error.message || JSON.stringify(op.error) }
+  }
+
+  if (!op.done) {
+    return { done: false }
+  }
+
+  const lroResponse = op.response
+  if (!lroResponse) {
+    throw new Error("Finished but returned empty response body.")
+  }
+
+  const prediction = lroResponse.predictions?.[0] || lroResponse.generatedSamples?.[0] || lroResponse
+  if (!prediction) {
+    throw new Error("Could not map output prediction structure.")
+  }
+
+  let base64Data = 
+    prediction.videoBase64Encoded || 
+    prediction.bytesBase64Encoded || 
+    prediction.video?.bytesBase64Encoded ||
+    prediction.video?.videoBase64Encoded
+
+  const mimeType = prediction.mimeType || prediction.video?.mimeType || "video/mp4"
+
+  if (!base64Data) {
+    const externalUrl = prediction.uri || prediction.url || prediction.video?.uri || prediction.video?.url
+    if (externalUrl && externalUrl.startsWith("http")) {
+      console.log(`[ClearCopy] Downloading background video output binary: ${externalUrl}`)
+      base64Data = await downloadUrlToBase64(externalUrl)
+    } else {
+      throw new Error(`Unable to extract payload in op resolution: ${JSON.stringify(prediction)}`)
+    }
+  }
+
+  return {
+    done: true,
+    bytesBase64Encoded: base64Data,
+    mimeType
+  }
+}
+
 
