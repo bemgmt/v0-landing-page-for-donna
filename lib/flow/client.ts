@@ -167,6 +167,20 @@ Return only that verdict.`
 /**
  * Execute Step: High-efficiency generation
  */
+/**
+ * Helper to download external URLs to base64 (if returned by Vertex instead of inline base64)
+ */
+async function downloadUrlToBase64(url: string): Promise<string> {
+  const res = await fetch(url)
+  if (!res.ok) throw new Error(`Failed to fetch external media from ${url}`)
+  const arrayBuffer = await res.arrayBuffer()
+  return Buffer.from(arrayBuffer).toString("base64")
+}
+
+/**
+ * Execute Step: High-efficiency generation
+ * Supports synchronous Imagen generation and asynchronous Veo polling (LROs)
+ */
 async function runRawGeneration(
   prompt: string,
   options: GenerateOptions,
@@ -175,7 +189,10 @@ async function runRawGeneration(
 ): Promise<{ bytesBase64Encoded: string; mimeType: string }> {
   const isVideo = options.type === "video"
   const modelId = isVideo ? "veo-2.0-generate-001" : "imagen-3.0-generate-001"
-  const endpoint = `https://us-central1-aiplatform.googleapis.com/v1/projects/${projectId}/locations/us-central1/publishers/google/models/${modelId}:predict`
+  
+  // Videos require Long Running Operations (predictLongRunning), images use direct predict.
+  const apiAction = isVideo ? "predictLongRunning" : "predict"
+  const endpoint = `https://us-central1-aiplatform.googleapis.com/v1/projects/${projectId}/locations/us-central1/publishers/google/models/${modelId}:${apiAction}`
 
   const requestBody: any = {
     instances: [{ prompt }],
@@ -184,6 +201,8 @@ async function runRawGeneration(
 
   if (isVideo) {
     requestBody.parameters.aspectRatio = options.aspectRatio ?? "16:9"
+    // Veo takes durationSeconds. Default/cap at 5s for predictable speeds.
+    requestBody.parameters.durationSeconds = 5 
   } else {
     const ratioMap: Record<string, string> = {
       "1080x1080": "1:1",
@@ -206,18 +225,109 @@ async function runRawGeneration(
 
   if (!res.ok) {
     const body = await res.text()
-    throw new Error(`Vertex AI generation failed: ${res.status} ${body}`)
+    throw new Error(`Vertex AI initial dispatch failed: ${res.status} ${body}`)
   }
 
   const json = await res.json()
-  const prediction = json.predictions?.[0]
-  if (!prediction || (!prediction.bytesBase64Encoded && !prediction.videoBase64Encoded)) {
-    throw new Error("Unexpected Vertex AI response format")
+
+  // -------------------------------------------------------
+  // Synchronous Image Branch
+  // -------------------------------------------------------
+  if (!isVideo) {
+    const prediction = json.predictions?.[0]
+    if (!prediction || (!prediction.bytesBase64Encoded && !prediction.videoBase64Encoded)) {
+      throw new Error("Unexpected Vertex AI image response format")
+    }
+    return {
+      bytesBase64Encoded: prediction.bytesBase64Encoded || prediction.videoBase64Encoded,
+      mimeType: prediction.mimeType ?? "image/jpeg"
+    }
   }
 
+  // -------------------------------------------------------
+  // Asynchronous Video Branch (Veo Long Running Operation Polling)
+  // -------------------------------------------------------
+  const operationName = json.name
+  if (!operationName) {
+    throw new Error("Veo request succeeded but returned no Operation name. Check Vertex AI configuration.")
+  }
+
+  console.log(`[ClearCopy] Veo LRO dispatched. Operation: ${operationName}. Polling until complete...`)
+
+  let attempts = 0
+  const maxAttempts = 40 // 40 attempts * 5s = 200 seconds maximum timeout
+  let done = false
+  let completedOp: any = null
+
+  while (!done && attempts < maxAttempts) {
+    attempts++
+    
+    // Wait 5 seconds before each polling iteration
+    await new Promise(resolve => setTimeout(resolve, 5000))
+
+    const pollUrl = `https://us-central1-aiplatform.googleapis.com/v1/${operationName}`
+    const pollRes = await fetch(pollUrl, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+
+    if (!pollRes.ok) {
+      console.warn(`[ClearCopy] Veo polling HTTP warn: ${pollRes.status}. Retrying in loop...`)
+      continue
+    }
+
+    const op = await pollRes.json()
+    if (op.error) {
+      throw new Error(`Veo server side failure: ${op.error.message || JSON.stringify(op.error)}`)
+    }
+
+    if (op.done) {
+      done = true
+      completedOp = op
+    } else {
+      console.log(`[ClearCopy] Veo generation working (pass ${attempts}/${maxAttempts})...`)
+    }
+  }
+
+  if (!done || !completedOp) {
+    throw new Error("Veo video generation exceeded the 200 second execution window.")
+  }
+
+  // The finalized Operation embeds outputs inside the 'response' key.
+  const lroResponse = completedOp.response
+  if (!lroResponse) {
+    throw new Error("Veo operation finished but yielded a blank response field.")
+  }
+
+  // Access predictions - check multiple standard structures returned by Vertex for videos
+  const prediction = lroResponse.predictions?.[0] || lroResponse.generatedSamples?.[0] || lroResponse
+  if (!prediction) {
+    throw new Error("Could not map predictions in completed Veo payload structure.")
+  }
+
+  // Attempt extraction of base64 from all standard Vertex locations
+  let base64Data = 
+    prediction.videoBase64Encoded || 
+    prediction.bytesBase64Encoded || 
+    prediction.video?.bytesBase64Encoded ||
+    prediction.video?.videoBase64Encoded
+
+  const mimeType = prediction.mimeType || prediction.video?.mimeType || "video/mp4"
+
+  // If no inline base64 exists, look for temporary signed URLs/URIs and download directly
+  if (!base64Data) {
+    const externalUrl = prediction.uri || prediction.url || prediction.video?.uri || prediction.video?.url
+    if (externalUrl && externalUrl.startsWith("http")) {
+      console.log(`[ClearCopy] Veo output found via URI. Downloading binary stream: ${externalUrl}`)
+      base64Data = await downloadUrlToBase64(externalUrl)
+    } else {
+      throw new Error(`Could not resolve usable base64 or URI in Veo output: ${JSON.stringify(prediction)}`)
+    }
+  }
+
+  console.log("[ClearCopy] Veo video stream loaded successfully.")
   return {
-    bytesBase64Encoded: prediction.bytesBase64Encoded || prediction.videoBase64Encoded,
-    mimeType: prediction.mimeType ?? (isVideo ? "video/mp4" : "image/jpeg")
+    bytesBase64Encoded: base64Data,
+    mimeType
   }
 }
 
