@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { getPortalSession } from "@/lib/portal/session"
 import { generateVertexAsset, type AssetType } from "@/lib/flow/client"
 
-export const maxDuration = 900 // Set maximum runtime to 15 minutes to support Veo video generation window
+export const maxDuration = 300 // Scale back to 5 minutes to comply with Vercel Pro limits (1-800 range)
 
 export async function GET() {
   const session = await getPortalSession()
