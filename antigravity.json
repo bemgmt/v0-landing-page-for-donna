@@ -1,0 +1,11 @@
+{
+  "agent_rules": {
+    "image_gen": {
+      "mandatory_prefix": "RENDER TEXT CLEARLY:",
+      "style_anchor": "Reference /brand_rules.md for hex codes and visual constraints",
+      "text_enforcement": "Always wrap literal overlay copy in triple quotes: '''COPY HERE''' to isolate it.",
+      "resolution": "1024x1024",
+      "model": "imagen-3.0-generate-001"
+    }
+  }
+}

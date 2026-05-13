@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { Wand2, Image, Video, Download, Copy, Loader2 } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Wand2, Image, Video, Download, Copy, Loader2, Info, ChevronDown, ChevronUp } from "lucide-react"
 
 type AssetType = "image" | "video"
 type Preset = {
@@ -26,6 +26,7 @@ interface GeneratedAsset {
   id: string
   type: AssetType
   prompt: string
+  optimizedPrompt?: string
   url: string
   thumbnailUrl?: string
   mimeType: string
@@ -36,8 +37,31 @@ export default function FlowStudio() {
   const [prompt, setPrompt] = useState("")
   const [selectedPreset, setSelectedPreset] = useState<Preset>(PRESETS[0])
   const [loading, setLoading] = useState(false)
+  const [loadingHistory, setLoadingHistory] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [assets, setAssets] = useState<GeneratedAsset[]>([])
+  const [expandedAssetId, setExpandedAssetId] = useState<string | null>(null)
+
+  // Fetch existing history on mount
+  useEffect(() => {
+    let isMounted = true
+    async function fetchHistory() {
+      try {
+        const res = await fetch("/api/flow/generate")
+        if (!res.ok) throw new Error("Failed to fetch history")
+        const json = await res.json()
+        if (isMounted && json.assets) {
+          setAssets(json.assets)
+        }
+      } catch (err) {
+        console.error("History fetch failed:", err)
+      } finally {
+        if (isMounted) setLoadingHistory(false)
+      }
+    }
+    void fetchHistory()
+    return () => { isMounted = false }
+  }, [])
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return
@@ -60,6 +84,7 @@ export default function FlowStudio() {
       if (!res.ok) throw new Error(json.error ?? "Generation failed")
       if (json.asset) {
         setAssets((prev) => [json.asset, ...prev])
+        setPrompt("") // clear prompt on success
       }
     } catch (err: any) {
       setError(err.message)
@@ -70,6 +95,10 @@ export default function FlowStudio() {
 
   const copyUrl = (url: string) => {
     void navigator.clipboard.writeText(url)
+  }
+
+  const toggleExpandAsset = (id: string) => {
+    setExpandedAssetId(expandedAssetId === id ? null : id)
   }
 
   return (
@@ -117,11 +146,11 @@ export default function FlowStudio() {
           <textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Describe the marketing asset you want to create... (DONNA brand guidelines are auto-applied)"
+            placeholder="Describe the marketing asset you want to create... (e.g. 'Infographic showing system scalability')"
             className="mt-2 w-full rounded-xl border border-border bg-muted px-4 py-3 text-sm min-h-[100px] focus:outline-none focus:ring-1 focus:ring-accent"
           />
           <p className="text-[10px] text-muted-foreground mt-1.5">
-            Brand colors, typography, and style guidelines are automatically prepended to your prompt.
+            Project ClearCopy automatically reads <strong>brand_rules.md</strong> to apply your palette and ensure legible text overlay rendering.
           </p>
         </div>
 
@@ -133,7 +162,7 @@ export default function FlowStudio() {
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              Generating...
+              Planning & Executing Agent Loop...
             </>
           ) : (
             <>
@@ -150,35 +179,96 @@ export default function FlowStudio() {
         )}
       </div>
 
-      {/* Asset Gallery */}
-      {assets.length > 0 && (
-        <div className="space-y-4">
-          <h3 className="text-sm font-bold">Generated Assets</h3>
+      {/* Asset Gallery / History */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold flex items-center gap-2">
+            Asset History
+            {loadingHistory && <Loader2 className="w-3 h-3 animate-spin text-muted-foreground" />}
+          </h3>
+        </div>
+
+        {loadingHistory && assets.length === 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="aspect-square rounded-2xl border border-border bg-muted/20 animate-pulse flex items-center justify-center">
+                <Loader2 className="w-5 h-5 animate-spin text-muted-foreground/30" />
+              </div>
+            ))}
+          </div>
+        ) : assets.length === 0 ? (
+          <div className="text-center py-12 border border-dashed border-border rounded-2xl">
+            <Image className="w-8 h-8 mx-auto text-muted-foreground/30 mb-3" />
+            <p className="text-xs font-medium text-muted-foreground">No generated assets yet.</p>
+            <p className="text-[10px] text-muted-foreground/75">Create your first collateral item above.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-in fade-in duration-500">
             {assets.map((asset) => (
               <div
                 key={asset.id}
-                className="rounded-2xl border border-border bg-background overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                className="rounded-2xl border border-border bg-background overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col"
               >
-                <div className="aspect-square bg-muted/50 flex items-center justify-center">
+                <div className="aspect-square bg-muted/50 flex items-center justify-center relative group overflow-hidden">
                   {asset.type === "image" ? (
                     asset.url ? (
-                      <img src={asset.url} alt={asset.prompt} className="w-full h-full object-cover" />
+                      <img src={asset.url} alt={asset.prompt} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     ) : (
                       <Image className="w-12 h-12 text-muted-foreground/20" />
                     )
                   ) : (
                     <Video className="w-12 h-12 text-muted-foreground/20" />
                   )}
+                  {asset.type === "video" && asset.url && (
+                    <video src={asset.url} controls className="w-full h-full object-cover" />
+                  )}
                 </div>
-                <div className="p-4 space-y-2">
-                  <p className="text-xs text-muted-foreground line-clamp-2">{asset.prompt}</p>
-                  <div className="flex gap-2">
+                
+                <div className="p-4 flex-1 flex flex-col justify-between space-y-3 bg-background/40 backdrop-blur-sm">
+                  <div className="space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-[10px] font-semibold uppercase text-accent tracking-wider">
+                        {asset.type}
+                      </p>
+                      <p className="text-[9px] text-muted-foreground font-mono">
+                        {new Date(asset.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <p className="text-xs text-muted-foreground line-clamp-3">"{asset.prompt}"</p>
+
+                    {/* Logic Chain Disclosure */}
+                    {asset.optimizedPrompt && (
+                      <div className="mt-2 rounded-lg border border-border/40 bg-muted/10 overflow-hidden">
+                        <button
+                          onClick={() => toggleExpandAsset(asset.id)}
+                          className="w-full flex items-center justify-between p-2 text-[9px] font-bold uppercase tracking-wider text-muted-foreground hover:bg-muted/30 transition-colors"
+                        >
+                          <span className="flex items-center gap-1">
+                            <Info className="w-2.5 h-2.5 text-accent" />
+                            Logic Chain (Architect)
+                          </span>
+                          {expandedAssetId === asset.id ? (
+                            <ChevronUp className="w-2.5 h-2.5" />
+                          ) : (
+                            <ChevronDown className="w-2.5 h-2.5" />
+                          )}
+                        </button>
+                        {expandedAssetId === asset.id && (
+                          <div className="p-2 border-t border-border/30 text-[10px] text-muted-foreground bg-muted/5 italic leading-relaxed animate-in slide-in-from-top-1 duration-200">
+                            {asset.optimizedPrompt}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2 pt-2 border-t border-border/50">
                     {asset.url && (
                       <>
                         <a
                           href={asset.url}
-                          download
+                          target="_blank"
+                          rel="noreferrer"
                           className="flex-1 text-[10px] font-bold text-center py-1.5 rounded-lg bg-muted border border-border hover:bg-accent/10 transition-colors flex items-center justify-center gap-1"
                         >
                           <Download className="w-3 h-3" />
@@ -198,8 +288,9 @@ export default function FlowStudio() {
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
+
