@@ -3,6 +3,7 @@ import { z } from "zod"
 import { planDisplayLabel, primaryPlanKey, seatsAllowanceForPlanKey } from "@/lib/billing/plan-seats"
 import { resolveActiveSeatInvitePlan } from "@/lib/billing/resolve-subscription-plan"
 import { getPortalSession } from "@/lib/portal/session"
+import { sendTeamSeatInvitation } from "@/lib/email/resend"
 
 const putSchema = z.object({
   emails: z.union([z.string(), z.array(z.string())]),
@@ -137,6 +138,14 @@ export async function PUT(request: Request) {
     )
   }
 
+  // Retrieve existing invites before deletion to identify newly added teammates
+  const { data: oldInvites } = await supabase
+    .from("billing_seat_invites")
+    .select("email")
+    .eq("purchaser_user_id", user.id)
+
+  const oldInviteSet = new Set((oldInvites ?? []).map((row) => row.email.trim().toLowerCase()))
+
   const { error: delErr } = await supabase.from("billing_seat_invites").delete().eq("purchaser_user_id", user.id)
   if (delErr) {
     return NextResponse.json({ error: delErr.message }, { status: 400 })
@@ -150,11 +159,32 @@ export async function PUT(request: Request) {
     }
   }
 
+  // Identify emails that were newly added in this request
+  const newlyInvitedEmails = emails.filter((email) => !oldInviteSet.has(email.trim().toLowerCase()))
+  const planLabel = planDisplayLabel(planKey)
+  const purchaserEmail = user.email ?? session.profile?.email ?? "your teammate"
+
+  if (newlyInvitedEmails.length > 0) {
+    for (const newEmail of newlyInvitedEmails) {
+      try {
+        console.log(`[seats] Sending team seat invitation to ${newEmail} from ${purchaserEmail}`)
+        await sendTeamSeatInvitation({
+          inviteeEmail: newEmail,
+          purchaserEmail,
+          planLabel,
+        })
+        console.log(`[seats] Sent seat invite successfully to ${newEmail}`)
+      } catch (inviteErr) {
+        console.error(`[seats] Failed to send team seat invite to ${newEmail}:`, inviteErr)
+      }
+    }
+  }
+
   return NextResponse.json({
     ok: true,
     invites: emails.map((email) => ({ email, created_at: null })),
     seatsAllowance,
     planKey,
-    planLabel: planDisplayLabel(planKey),
+    planLabel,
   })
 }

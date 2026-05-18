@@ -2,6 +2,7 @@ import "server-only"
 
 import Stripe from "stripe"
 import { sendOpsSubscriptionAlert } from "@/lib/email/send-ops-subscription-alert"
+import { sendUserSubscriptionWelcome } from "@/lib/email/resend"
 import { planDisplayLabel, primaryPlanKey } from "@/lib/billing/plan-seats"
 import { createAdminClient } from "@/lib/supabase/admin"
 
@@ -196,7 +197,23 @@ async function maybeSendOpsSubscriptionNotify(
     subscriptionStatus: status,
   })
 
-  if (!sent) {
+  if (sent) {
+    if (profile?.email) {
+      const subEmail = String(profile.email).trim()
+      if (subEmail) {
+        try {
+          console.log("[stripe-sync] Dispatching welcome email to subscriber:", subEmail)
+          await sendUserSubscriptionWelcome({
+            email: subEmail,
+            planLabel: planDisplayLabel(planKey),
+          })
+          console.log("[stripe-sync] Welcome email sent successfully")
+        } catch (welcomeErr) {
+          console.error("[stripe-sync] Failed to send subscriber welcome email:", welcomeErr)
+        }
+      }
+    }
+  } else {
     const { error: revertError } = await admin
       .from("billing_subscriptions")
       .update({

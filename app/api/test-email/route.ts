@@ -1,77 +1,78 @@
 import { NextResponse } from "next/server"
-import nodemailer from "nodemailer"
+import { sendEmail, getGlassmorphicLayout } from "@/lib/email/resend"
 
 export async function GET() {
   try {
-    // Check environment variables
-    const config = {
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      user: process.env.SMTP_USER,
-      hasPassword: !!process.env.SMTP_PASSWORD,
-    }
+    const hasApiKey = !!process.env.RESEND_API_KEY
+    const sender = process.env.RESEND_FROM_EMAIL || "DONNA <derek@aidonna.co>"
+    const recipient = process.env.CONTACT_EMAIL || "derek@bem.studio"
 
-    console.log("SMTP Configuration:", config)
-
-    if (!config.host || !config.user || !config.hasPassword) {
+    if (!hasApiKey) {
       return NextResponse.json(
         {
           success: false,
-          error: "Missing SMTP configuration",
+          error: "Missing RESEND_API_KEY in environment variables",
           config: {
-            host: config.host || "NOT SET",
-            port: config.port || "NOT SET",
-            user: config.user || "NOT SET",
-            password: config.hasPassword ? "SET" : "NOT SET",
+            hasApiKey: false,
+            sender,
+            recipient,
           },
         },
         { status: 500 }
       )
     }
 
-    // Create transporter
-    const transporter = nodemailer.createTransport({
-      host: config.host,
-      port: parseInt(config.port || "465"),
-      secure: true,
-      auth: {
-        user: config.user,
-        pass: process.env.SMTP_PASSWORD,
-      },
+    const testHtml = getGlassmorphicLayout({
+      title: "Resend Integration Verified!",
+      preheader: "Transactional Email Diagnostics",
+      bodyHtml: `
+        <p class="text-paragraph">Congratulations! The transactional email engine has been successfully refactored and is now operating on **Resend**.</p>
+        <p class="text-paragraph">This diagnostic email confirms that your API credentials, network path, and the custom premium **liquid-glass branding design template** are fully functional.</p>
+        
+        <div class="data-table-card">
+          <div class="data-row">
+            <p class="data-label">Diagnostic Status</p>
+            <p class="data-value" style="color: #10b981; font-weight: bold;">PASSED</p>
+          </div>
+          <div class="data-row">
+            <p class="data-label">Sender Address</p>
+            <p class="data-value"><code>${sender}</code></p>
+          </div>
+          <div class="data-row">
+            <p class="data-label">Recipient Address</p>
+            <p class="data-value"><code>${recipient}</code></p>
+          </div>
+          <div class="data-row">
+            <p class="data-label">Timestamp</p>
+            <p class="data-value">${new Date().toLocaleString()}</p>
+          </div>
+        </div>
+        
+        <p class="text-paragraph">All standard waitlist requests, demo coordination alerts, portal teammate invites, and subscriber welcomes will now use this highly aesthetic branding.</p>
+      `,
+      ctaText: "Open Resend Dashboard",
+      ctaUrl: "https://resend.com/emails"
     })
 
-    // Verify connection
-    await transporter.verify()
-
-    // Send test email
-    await transporter.sendMail({
-      from: config.user,
-      to: config.user,
-      subject: "DONNA Test Email",
-      html: `
-        <h2>Test Email Successful!</h2>
-        <p>Your SMTP configuration is working correctly.</p>
-        <p><strong>Configuration:</strong></p>
-        <ul>
-          <li>Host: ${config.host}</li>
-          <li>Port: ${config.port}</li>
-          <li>User: ${config.user}</li>
-        </ul>
-        <p>Time: ${new Date().toLocaleString()}</p>
-      `,
+    console.log("[test-email] Sending diagnostic test email via Resend to:", recipient)
+    const result = await sendEmail({
+      to: recipient,
+      subject: "DONNA Resend Integration Verified",
+      html: testHtml,
     })
 
     return NextResponse.json({
       success: true,
-      message: "Test email sent successfully!",
+      message: "Resend integration verified and diagnostic email sent successfully!",
+      result,
       config: {
-        host: config.host,
-        port: config.port,
-        user: config.user,
+        hasApiKey: true,
+        sender,
+        recipient,
       },
     })
   } catch (error) {
-    console.error("Test email error:", error)
+    console.error("[test-email] Diagnostic error:", error)
     return NextResponse.json(
       {
         success: false,
@@ -82,4 +83,3 @@ export async function GET() {
     )
   }
 }
-

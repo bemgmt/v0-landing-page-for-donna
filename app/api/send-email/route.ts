@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import nodemailer from "nodemailer"
+import { sendEmail, getGlassmorphicLayout } from "@/lib/email/resend"
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,51 +11,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
-    // Check if SMTP credentials are configured
-    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
-      console.error("SMTP credentials not configured")
+    // Check if Resend is configured
+    if (!process.env.RESEND_API_KEY) {
+      console.error("[send-email] RESEND_API_KEY not configured")
       return NextResponse.json(
         { error: "Email service not configured. Please contact support." },
         { status: 500 }
       )
-    }
-
-    // Normalize and validate SMTP host (fix common typos)
-    let smtpHost = process.env.SMTP_HOST.trim().toLowerCase()
-    
-    // Fix common typo: "stmp" -> "smtp"
-    if (smtpHost === "stmp.gmail.com") {
-      console.warn("Fixed typo in SMTP_HOST: stmp.gmail.com -> smtp.gmail.com")
-      smtpHost = "smtp.gmail.com"
-    }
-    
-    // Validate hostname
-    if (!smtpHost || smtpHost.length < 3) {
-      return NextResponse.json(
-        { error: `Invalid SMTP host: "${process.env.SMTP_HOST}". Please check your SMTP_HOST environment variable.` },
-        { status: 500 }
-      )
-    }
-
-    // Create a transporter using Gmail SMTP
-    const port = parseInt(process.env.SMTP_PORT || "465")
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: port,
-      secure: port === 465, // true for 465, false for other ports (like 587)
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
-      },
-    })
-
-    // Try to verify SMTP connection (optional - will fail gracefully if it doesn't work)
-    try {
-      await transporter.verify()
-      console.log("SMTP connection verified")
-    } catch (verifyError) {
-      console.warn("SMTP verification failed, but will attempt to send anyway:", verifyError)
-      // Don't return error here - sometimes verification fails but sending works
     }
 
     const notificationRecipient = process.env.CONTACT_EMAIL || "derek@bem.studio"
@@ -67,86 +29,95 @@ export async function POST(request: NextRequest) {
           ? "Demo request"
           : "Lead"
 
-    const mailOptions = {
-      from: process.env.SMTP_USER,
-      to: notificationRecipient,
-      subject: `DONNA ${leadLabel} — ${name}`,
-      html: `
-        <h2>New ${leadLabel}</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Company:</strong> ${company}</p>
-        <p><strong>Role:</strong> ${role}</p>
-        <p><strong>Use Case:</strong></p>
-        <p>${useCase || "Not provided"}</p>
-        <p><strong>Submitted at:</strong> ${new Date().toLocaleString()}</p>
-      `,
-    }
+    // 1. Build Notification Email to internal team (Derek)
+    const notificationHtml = getGlassmorphicLayout({
+      title: `New Lead: ${leadLabel}`,
+      preheader: "Internal Lead Alert",
+      bodyHtml: `
+        <p class="text-paragraph">A new request has been submitted from the landing page. Here are the submission details:</p>
+        <div class="data-table-card">
+          <div class="data-row">
+            <p class="data-label">Name</p>
+            <p class="data-value">${name}</p>
+          </div>
+          <div class="data-row">
+            <p class="data-label">Email</p>
+            <p class="data-value">${email}</p>
+          </div>
+          <div class="data-row">
+            <p class="data-label">Company</p>
+            <p class="data-value">${company}</p>
+          </div>
+          <div class="data-row">
+            <p class="data-label">Role</p>
+            <p class="data-value">${role}</p>
+          </div>
+          <div class="data-row">
+            <p class="data-label">Use Case</p>
+            <p class="data-value">${useCase || "Not provided"}</p>
+          </div>
+          <div class="data-row">
+            <p class="data-label">Submitted at</p>
+            <p class="data-value">${new Date().toLocaleString()}</p>
+          </div>
+        </div>
+      `
+    })
 
-    console.log("Sending notification email to:", notificationRecipient)
+    console.log("[send-email] Sending notification email via Resend to:", notificationRecipient)
     try {
-      await transporter.sendMail(mailOptions)
-      console.log("Notification email sent successfully")
+      await sendEmail({
+        to: notificationRecipient,
+        subject: `DONNA ${leadLabel} — ${name}`,
+        html: notificationHtml,
+        reply_to: email, // Directly reply to the user who signed up!
+      })
+      console.log("[send-email] Notification email sent successfully")
     } catch (sendError) {
-      console.error("Failed to send notification email:", sendError)
-      const errorMessage = sendError instanceof Error ? sendError.message : "Unknown error"
-      // Check for common Gmail errors
-      if (errorMessage.includes("Invalid login") || errorMessage.includes("authentication")) {
-        return NextResponse.json(
-          { error: "Gmail authentication failed. Please check your app-specific password." },
-          { status: 500 }
-        )
-      }
-      if (errorMessage.includes("ECONNREFUSED") || errorMessage.includes("timeout") || errorMessage.includes("getaddrinfo")) {
-        return NextResponse.json(
-          { error: `Could not connect to SMTP server "${smtpHost}". Please check your SMTP_HOST environment variable (should be "smtp.gmail.com").` },
-          { status: 500 }
-        )
-      }
-      throw sendError // Re-throw to be caught by outer catch
+      console.error("[send-email] Failed to send notification email:", sendError)
+      return NextResponse.json(
+        { error: "Failed to dispatch lead notification. Please try again." },
+        { status: 500 }
+      )
     }
 
-    // Also send confirmation to user
-    const userMailOptions = {
-      from: process.env.SMTP_USER,
-      to: email,
-      subject: "DONNA - We Received Your Request",
-      html: `
-        <h2>Thank you, ${name}!</h2>
-        <p>${
-          isEarlyAdopterDiscovery
-            ? "We've received your interest and will reach out to schedule a short discovery call with a DONNA rep. Our team will be in touch within 24 hours."
-            : type === "demo"
-              ? "We've received your demo request. Our team will be in touch within 24 hours."
-              : "We've received your request. Our team will be in touch within 24 hours."
-        }</p>
-        <p>Best regards,<br>The DONNA Team</p>
+    // 2. Build and send confirmation email to the user
+    const autoReplyText = isEarlyAdopterDiscovery
+      ? "We've received your interest and will reach out to schedule a short discovery call with a DONNA representative. Our team will be in touch within 24 hours."
+      : type === "demo"
+        ? "We've received your demo request. One of our operational specialists will reach out to you within 24 hours to coordinate a walkthrough."
+        : "We've received your request. Our operations team will be in touch within 24 hours."
+
+    const confirmationHtml = getGlassmorphicLayout({
+      title: `Welcome to the future of SMB operations, ${name}!`,
+      preheader: "We Received Your Request",
+      bodyHtml: `
+        <p class="text-paragraph">Thank you for reaching out to DONNA. We are thrilled to partner with you in streamlining your business systems and establishing a premium, scalable operational infrastructure.</p>
+        <p class="text-paragraph"><strong>Here is what happens next:</strong></p>
+        <p class="text-paragraph">${autoReplyText}</p>
+        <p class="text-paragraph">In the meantime, you can explore more about our core philosophy and operational capabilities online.</p>
       `,
-    }
+      ctaText: "Explore aidonna.co",
+      ctaUrl: "https://aidonna.co"
+    })
 
-    console.log("Sending confirmation email to:", email)
+    console.log("[send-email] Sending auto-reply confirmation email via Resend to:", email)
     try {
-      await transporter.sendMail(userMailOptions)
-      console.log("Confirmation email sent successfully")
+      await sendEmail({
+        to: email,
+        subject: "DONNA - We Received Your Request",
+        html: confirmationHtml,
+      })
+      console.log("[send-email] User confirmation email sent successfully")
     } catch (sendError) {
-      console.error("Failed to send confirmation email:", sendError)
-      // Don't fail the whole request if confirmation email fails
-      // The notification email was already sent
+      console.error("[send-email] Failed to send user confirmation email:", sendError)
+      // Don't fail the whole request if only the user's confirmation email fails
     }
 
     return NextResponse.json({ message: "Email sent successfully" }, { status: 200 })
   } catch (error) {
-    console.error("Email error:", error)
+    console.error("[send-email] General route error:", error)
     const errorMessage = error instanceof Error ? error.message : "Unknown error"
-    
-    // Check for hostname/DNS errors
-    if (errorMessage.includes("getaddrinfo") || errorMessage.includes("EBUSY") || errorMessage.includes("ENOTFOUND")) {
-      return NextResponse.json(
-        { error: `Invalid SMTP hostname. Please check your SMTP_HOST environment variable. It should be "smtp.gmail.com" (not "stmp.gmail.com").` },
-        { status: 500 }
-      )
-    }
-    
     return NextResponse.json({ error: `Failed to send email: ${errorMessage}` }, { status: 500 })
   }
 }
