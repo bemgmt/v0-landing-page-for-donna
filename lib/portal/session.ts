@@ -4,6 +4,8 @@ import type { SupabaseClient } from "@supabase/supabase-js"
 import { createClient } from "@/lib/supabase/server"
 import type { MemberRole } from "@/lib/auth/roles"
 import { isRole } from "@/lib/auth/roles"
+import { createAdminClient } from "@/lib/supabase/admin"
+import { autoSyncUserSubscription } from "@/lib/billing/stripe-sync"
 
 export type MemberProfileRow = {
   id: string
@@ -99,7 +101,21 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
     .eq("user_id", user.id)
     .maybeSingle()
 
-  let subscriptionActive = billing?.status === "active" || billing?.status === "trialing"
+  let billingRow = billing as BillingRow | null
+
+  if (!billingRow && user.email) {
+    const admin = createAdminClient()
+    await autoSyncUserSubscription(admin, user.id, user.email)
+
+    const { data: reFetchedBilling } = await supabase
+      .from("billing_subscriptions")
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle()
+    billingRow = reFetchedBilling as BillingRow | null
+  }
+
+  let subscriptionActive = billingRow?.status === "active" || billingRow?.status === "trialing"
   let seatAccess = false
 
   if (!subscriptionActive) {
@@ -114,7 +130,7 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
     supabase,
     user: { id: user.id, email: user.email },
     profile,
-    billing: billing as BillingRow | null,
+    billing: billingRow,
     subscriptionActive,
     seatAccess,
   }

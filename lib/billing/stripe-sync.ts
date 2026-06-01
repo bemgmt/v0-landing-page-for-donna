@@ -396,3 +396,88 @@ export async function syncCustomerRecord(admin: AdminClient, customer: Stripe.Cu
 
   if (error) throw error
 }
+
+export async function autoSyncUserSubscription(
+  admin: AdminClient,
+  userId: string,
+  email: string,
+): Promise<boolean> {
+  const secretKey = process.env.STRIPE_SECRET_KEY
+  if (!secretKey?.trim()) return false
+
+  const stripe = new Stripe(secretKey)
+  try {
+    const normalizedEmail = email.trim().toLowerCase()
+    if (!normalizedEmail) return false
+
+    // 1. Search for customer by email
+    const customers = await stripe.customers.list({
+      email: normalizedEmail,
+      limit: 5,
+    })
+
+    if (customers.data.length === 0) {
+      // No stripe customer found for this email. Create inactive subscription row to avoid re-checking.
+      await admin.from("billing_subscriptions").upsert(
+        {
+          user_id: userId,
+          status: "inactive",
+        },
+        { onConflict: "user_id" }
+      )
+      return false
+    }
+
+    // 2. Look for active or trialing subscriptions for these customers
+    for (const customer of customers.data) {
+      const subscriptions = await stripe.subscriptions.list({
+        customer: customer.id,
+        status: "active",
+        limit: 5,
+        expand: ["data.items.data.price"],
+      })
+
+      let subList = subscriptions.data
+      if (subList.length === 0) {
+        const trialing = await stripe.subscriptions.list({
+          customer: customer.id,
+          status: "trialing",
+          limit: 5,
+          expand: ["data.items.data.price"],
+        })
+        subList = trialing.data
+      }
+
+      if (subList.length > 0) {
+        // Found an active/trialing subscription! Let's sync it.
+        const subscription = subList[0]
+        await syncBillingFromSubscription(admin, subscription, userId, stripe)
+
+        // Also update Stripe subscription metadata with the supabase user id
+        if (subscription.metadata?.supabase_user_id !== userId) {
+          const nextMeta: Record<string, string> = {}
+          for (const [k, v] of Object.entries(subscription.metadata ?? {})) {
+            if (typeof v === "string") nextMeta[k] = v
+          }
+          nextMeta.supabase_user_id = userId
+          await stripe.subscriptions.update(subscription.id, { metadata: nextMeta })
+        }
+        return true
+      }
+    }
+
+    // If we have customer(s) but no active/trialing subscription, insert inactive row
+    await admin.from("billing_subscriptions").upsert(
+      {
+        user_id: userId,
+        status: "inactive",
+        stripe_customer_id: customers.data[0].id,
+      },
+      { onConflict: "user_id" }
+    )
+    return false
+  } catch (err) {
+    console.error("[stripe-sync] autoSyncUserSubscription failed:", err)
+    return false
+  }
+}
