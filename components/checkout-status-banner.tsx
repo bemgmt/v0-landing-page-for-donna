@@ -10,6 +10,11 @@ function CheckoutStatusBannerInner() {
 
   useEffect(() => {
     setDismissed(false)
+    if (checkout) {
+      const url = new URL(window.location.href)
+      url.searchParams.delete("checkout")
+      window.history.replaceState({}, "", url.pathname + url.search)
+    }
   }, [checkout])
 
   if (dismissed || !checkout) return null

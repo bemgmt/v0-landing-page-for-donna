@@ -1,6 +1,5 @@
 import "server-only"
 
-import type { SupabaseClient } from "@supabase/supabase-js"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { planDisplayLabel, primaryPlanKey, seatsAllowanceForPlanKey } from "@/lib/billing/plan-seats"
 
@@ -17,14 +16,17 @@ type BillingPlanSource = {
 }
 
 export async function resolveSubscriptionPlan(
-  supabase: SupabaseClient,
+  _supabaseOrAdmin: unknown,
   billing: BillingPlanSource | null,
 ): Promise<SubscriptionPlanSnapshot> {
   if (!billing?.stripe_subscription_id) {
     return { planKey: "", planLabel: planDisplayLabel(""), seatsAllowance: 0 }
   }
 
-  const { data: items } = await supabase
+  // billing_subscription_items has no RLS policy for authenticated users —
+  // only service_role can read it, so always use the admin client here.
+  const admin = createAdminClient()
+  const { data: items } = await admin
     .from("billing_subscription_items")
     .select("price_lookup_key, stripe_price_id")
     .eq("stripe_subscription_id", billing.stripe_subscription_id)
@@ -77,7 +79,8 @@ export async function resolveActiveSeatInvitePlan(
       return await resolveSubscriptionPlan(admin, bs)
     }
     return null
-  } catch {
+  } catch (err) {
+    console.error("[resolve-subscription-plan] resolveActiveSeatInvitePlan failed", err)
     return null
   }
 }

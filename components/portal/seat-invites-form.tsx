@@ -101,8 +101,7 @@ export default function SeatInvitesForm() {
           ) : null}
         </p>
         <p className="text-xs text-muted-foreground/90">
-          Ask the subscription owner to add or change your email if you cannot sign in. Lookup key:{" "}
-          <span className="font-mono text-foreground/80">{data.planKey || "—"}</span>
+          Ask the subscription owner to add or change your email if you cannot sign in.
         </p>
       </div>
     )

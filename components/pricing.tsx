@@ -31,7 +31,6 @@ export default function Pricing() {
 
   return (
     <section id="pricing" ref={ref} className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
-      <Script src="https://js.stripe.com/v3/pricing-table.js" strategy="afterInteractive" />
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-10">
           <p className="text-xs sm:text-sm uppercase tracking-[0.3em] text-foreground/60 mb-3">
@@ -47,7 +46,10 @@ export default function Pricing() {
 
         <div className="w-full max-w-6xl mx-auto min-h-[200px]">
           {hasStripeEmbed ? (
-            <StripePricingTableEmbed />
+            <>
+              <Script src="https://js.stripe.com/v3/pricing-table.js" strategy="afterInteractive" />
+              <StripePricingTableEmbed />
+            </>
           ) : process.env.NODE_ENV === "development" ? (
             <p className="rounded-xl border border-white/10 bg-white/5 p-6 text-center text-sm text-foreground/70">
               Set{" "}

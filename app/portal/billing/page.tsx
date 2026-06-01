@@ -1,6 +1,7 @@
 import { format } from "date-fns"
 import { getPortalSession } from "@/lib/portal/session"
 import SeatInvitesForm from "@/components/portal/seat-invites-form"
+import ManageBillingButton from "@/components/portal/manage-billing-button"
 import { resolveActiveSeatInvitePlan, resolveSubscriptionPlan } from "@/lib/billing/resolve-subscription-plan"
 
 export default async function PortalBillingPage() {
@@ -19,6 +20,8 @@ export default async function PortalBillingPage() {
     billing?.current_period_end && !seatAccess
       ? format(new Date(billing.current_period_end), "MMM d, yyyy")
       : null
+
+  const showManageBilling = !seatAccess && billing?.stripe_customer_id && active
 
   return (
     <div className="space-y-6">
@@ -53,15 +56,22 @@ export default async function PortalBillingPage() {
                 </p>
               </>
             ) : null}
-            <p className="text-xs pt-1">
-              Lookup key: <span className="font-mono text-foreground/80">{summary.planKey || "—"}</span>
-            </p>
           </div>
+          {showManageBilling ? (
+            <div className="pt-2">
+              <ManageBillingButton />
+            </div>
+          ) : null}
         </section>
       ) : !seatAccess && billing && !active ? (
         <section className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-muted-foreground">
           <p className="text-foreground/90 font-medium">No active subscription</p>
           <p className="mt-1">When your plan is active, your plan name and renewal date will appear here.</p>
+          {billing?.stripe_customer_id ? (
+            <div className="pt-3">
+              <ManageBillingButton />
+            </div>
+          ) : null}
         </section>
       ) : null}
 

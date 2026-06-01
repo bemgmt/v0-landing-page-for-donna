@@ -35,13 +35,13 @@ export async function POST(request: Request) {
       : (process.env.STRIPE_PRICE_LOOKUP_CORE?.trim() || STRIPE_PRICE_LOOKUP_CORE)
 
   try {
-    let user: { id: string } | null = null
+    let user: { id: string; email?: string | null } | null = null
     if (supabaseConfigured) {
       const supabase = await createClient()
       const {
         data: { user: authUser },
       } = await supabase.auth.getUser()
-      if (authUser) user = { id: authUser.id }
+      if (authUser) user = { id: authUser.id, email: authUser.email }
     }
 
     const stripe = new Stripe(secretKey)
@@ -87,6 +87,9 @@ export async function POST(request: Request) {
       sessionParams.metadata = { supabase_user_id: user.id }
       sessionParams.subscription_data = {
         metadata: { supabase_user_id: user.id },
+      }
+      if (user.email) {
+        sessionParams.customer_email = user.email
       }
     }
 
