@@ -18,6 +18,7 @@ import DemoForm from "@/components/demo-form"
 import Footer from "@/components/footer"
 import Chatbot from "@/components/chatbot"
 import CheckoutStatusBanner from "@/components/checkout-status-banner"
+import PromoLandingBanner from "@/components/promo-landing-banner"
 import StandaloneHomePortalCta from "@/components/standalone-home-portal-cta"
 import FAQ from "@/components/faq"
 import { generatePageMetadata } from "@/lib/metadata"
@@ -68,6 +69,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
       />
       <CheckoutStatusBanner />
+      <PromoLandingBanner />
       <ScrollCue />
       <ScrollbarFade />
       <MinimalHeader />

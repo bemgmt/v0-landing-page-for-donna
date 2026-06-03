@@ -126,6 +126,22 @@ export async function syncBillingFromSubscription(
 
   await syncSubscriptionItems(admin, subscription)
 
+  // Calculate amount for sales attribution
+  const quantity = primary?.quantity ?? 1
+  const unitAmount = primary?.price?.unit_amount ?? 0
+  let amount = (unitAmount * quantity) / 100
+
+  if (subscription.discount) {
+    const coupon = subscription.discount.coupon
+    if (coupon.amount_off) {
+      amount = Math.max(0, amount - coupon.amount_off / 100)
+    } else if (coupon.percent_off) {
+      amount = Math.max(0, amount * (1 - coupon.percent_off / 100))
+    }
+  }
+
+  await attributeSaleIfPromoCode(admin, subscription, customer as Stripe.Customer | null, amount)
+
   await maybeSendOpsSubscriptionNotify(admin, subscription, userId)
 }
 
@@ -310,7 +326,7 @@ export async function syncFromCheckoutSession(
   if (!subId) return
 
   const subscription = await stripe.subscriptions.retrieve(subId, {
-    expand: ["items.data.price"],
+    expand: ["items.data.price", "discount.promotion_code"],
   })
 
   await syncBillingFromSubscription(admin, subscription, userId, stripe)
@@ -367,7 +383,7 @@ export async function syncSubscriptionWebhook(
   }
 
   const subscription = await stripe.subscriptions.retrieve(sub.id, {
-    expand: ["items.data.price"],
+    expand: ["items.data.price", "discount.promotion_code"],
   })
 
   await syncBillingFromSubscription(admin, subscription, userId, stripe)
@@ -434,7 +450,7 @@ export async function autoSyncUserSubscription(
         customer: customer.id,
         status: "active",
         limit: 5,
-        expand: ["data.items.data.price"],
+        expand: ["data.items.data.price", "data.discount.promotion_code"],
       })
 
       let subList = subscriptions.data
@@ -443,7 +459,7 @@ export async function autoSyncUserSubscription(
           customer: customer.id,
           status: "trialing",
           limit: 5,
-          expand: ["data.items.data.price"],
+          expand: ["data.items.data.price", "data.discount.promotion_code"],
         })
         subList = trialing.data
       }
@@ -479,5 +495,62 @@ export async function autoSyncUserSubscription(
   } catch (err) {
     console.error("[stripe-sync] autoSyncUserSubscription failed:", err)
     return false
+  }
+}
+
+async function attributeSaleIfPromoCode(
+  admin: AdminClient,
+  subscription: Stripe.Subscription,
+  customer: Stripe.Customer | null,
+  amount: number,
+) {
+  const discount = subscription.discount
+  if (!discount) return
+
+  const promotionCode = discount.promotion_code
+  if (!promotionCode || typeof promotionCode === "string") return
+
+  const promoCodeString = promotionCode.code
+  if (!promoCodeString) return
+
+  const { data: promoCodeRow, error: promoError } = await admin
+    .from("promo_codes")
+    .select("id, partner_profile_id")
+    .ilike("code", promoCodeString.trim())
+    .eq("status", "active")
+    .maybeSingle()
+
+  if (promoError) {
+    console.error("[stripe-sync] Failed to look up promo code in database:", promoError)
+    return
+  }
+
+  if (!promoCodeRow) {
+    console.log(`[stripe-sync] Promo code ${promoCodeString} not found or is inactive.`)
+    return
+  }
+
+  const customerEmail = customer?.email ?? null
+  const customerName = customer?.name ?? customer?.description ?? null
+
+  const { error: saleError } = await admin.from("sales").upsert(
+    {
+      promo_code_id: promoCodeRow.id,
+      partner_profile_id: promoCodeRow.partner_profile_id,
+      external_sale_id: subscription.id,
+      customer_name: customerName,
+      customer_email: customerEmail,
+      amount,
+      status: "approved",
+      attribution_source: "promo_code",
+      sale_date: new Date(subscription.created * 1000).toISOString(),
+    },
+    { onConflict: "external_sale_id" },
+  )
+
+  if (saleError) {
+    console.error("[stripe-sync] Failed to attribute sale:", saleError)
+  } else {
+    console.log(`[stripe-sync] Successfully attributed sale for subscription ${subscription.id} to partner ${promoCodeRow.partner_profile_id}`)
   }
 }

@@ -3,7 +3,10 @@ import Stripe from "stripe"
 import { createClient } from "@/lib/supabase/server"
 import { STRIPE_PRICE_LOOKUP_CORE, STRIPE_PRICE_LOOKUP_FULL } from "@/lib/billing/plan-seats"
 
-export async function POST(request: Request) {
+async function createCheckoutSession(params: {
+  tier: "core" | "full"
+  promoCode?: string
+}) {
   const secretKey = process.env.STRIPE_SECRET_KEY
   const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://bemdonna.com").replace(/\/$/, "")
 
@@ -13,31 +16,19 @@ export async function POST(request: Request) {
 
   if (!secretKey?.trim()) {
     console.error("[checkout] Missing STRIPE_SECRET_KEY")
-    return NextResponse.json(
-      {
-        error: "Stripe is not configured. Set STRIPE_SECRET_KEY on the server.",
-        code: "STRIPE_ENV",
-      },
-      { status: 503 },
-    )
-  }
-
-  let tier: "core" | "full" = "core"
-  const contentType = request.headers.get("content-type") ?? ""
-  if (contentType.includes("application/json")) {
-    const raw = (await request.json().catch(() => null)) as { tier?: unknown } | null
-    if (raw && typeof raw === "object" && raw.tier === "full") tier = "full"
+    return { error: "Stripe is not configured. Set STRIPE_SECRET_KEY on the server.", code: "STRIPE_ENV", status: 503 }
   }
 
   const lookupKey =
-    tier === "full"
+    params.tier === "full"
       ? (process.env.STRIPE_PRICE_LOOKUP_FULL?.trim() || STRIPE_PRICE_LOOKUP_FULL)
       : (process.env.STRIPE_PRICE_LOOKUP_CORE?.trim() || STRIPE_PRICE_LOOKUP_CORE)
 
   try {
     let user: { id: string; email?: string | null } | null = null
+    let supabase: any = null
     if (supabaseConfigured) {
-      const supabase = await createClient()
+      supabase = await createClient()
       const {
         data: { user: authUser },
       } = await supabase.auth.getUser()
@@ -53,20 +44,43 @@ export async function POST(request: Request) {
     })
     let priceId = prices.data[0]?.id ?? null
 
-    if (!priceId && tier === "core") {
+    if (!priceId && params.tier === "core") {
       const legacy = process.env.STRIPE_PRICE_ID?.trim()
       if (legacy) priceId = legacy
     }
 
     if (!priceId) {
       console.error("[checkout] No Stripe price for lookup_key:", lookupKey)
-      return NextResponse.json(
-        {
-          error: `No active Stripe price found for lookup_key "${lookupKey}". Set lookup_key on the Price in Stripe Dashboard (Products → Price → Lookup key) and/or set STRIPE_PRICE_LOOKUP_CORE / STRIPE_PRICE_LOOKUP_FULL.`,
-          code: "STRIPE_PRICE_LOOKUP",
-        },
-        { status: 503 },
-      )
+      return {
+        error: `No active Stripe price found for lookup_key "${lookupKey}". Set lookup_key on the Price in Stripe Dashboard (Products → Price → Lookup key) and/or set STRIPE_PRICE_LOOKUP_CORE / STRIPE_PRICE_LOOKUP_FULL.`,
+        code: "STRIPE_PRICE_LOOKUP",
+        status: 503,
+      }
+    }
+
+    // Look up stripe promotion code ID if a promo code is passed
+    let stripePromoCodeId: string | null = null
+    if (params.promoCode && supabase) {
+      const { data: promoCodeRow } = await supabase
+        .from("promo_codes")
+        .select("code, stripe_promotion_code_id")
+        .ilike("code", params.promoCode.trim())
+        .eq("status", "active")
+        .maybeSingle()
+
+      if (promoCodeRow) {
+        if (promoCodeRow.stripe_promotion_code_id) {
+          stripePromoCodeId = promoCodeRow.stripe_promotion_code_id
+        } else {
+          // Backup search via Stripe API
+          const list = await stripe.promotionCodes.list({
+            code: promoCodeRow.code,
+            active: true,
+            limit: 1,
+          })
+          stripePromoCodeId = list.data[0]?.id ?? null
+        }
+      }
     }
 
     const successUrl = user
@@ -79,7 +93,12 @@ export async function POST(request: Request) {
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: successUrl,
       cancel_url: cancelUrl,
-      allow_promotion_codes: true,
+    }
+
+    if (stripePromoCodeId) {
+      sessionParams.discounts = [{ promotion_code: stripePromoCodeId }]
+    } else {
+      sessionParams.allow_promotion_codes = true
     }
 
     if (user) {
@@ -96,13 +115,48 @@ export async function POST(request: Request) {
     const session = await stripe.checkout.sessions.create(sessionParams)
 
     if (!session.url) {
-      return NextResponse.json({ error: "Checkout session missing URL.", code: "STRIPE_NO_URL" }, { status: 500 })
+      return { error: "Checkout session missing URL.", code: "STRIPE_NO_URL", status: 500 }
     }
 
-    return NextResponse.json({ url: session.url })
+    return { url: session.url }
   } catch (e) {
     console.error("[checkout]", e)
     const message = e instanceof Error ? e.message : "Checkout failed"
-    return NextResponse.json({ error: message, code: "CHECKOUT" }, { status: 500 })
+    return { error: message, code: "CHECKOUT", status: 500 }
   }
 }
+
+export async function POST(request: Request) {
+  let tier: "core" | "full" = "core"
+  let promoCode: string | undefined = undefined
+
+  const contentType = request.headers.get("content-type") ?? ""
+  if (contentType.includes("application/json")) {
+    const raw = (await request.json().catch(() => null)) as { tier?: unknown; promo?: unknown } | null
+    if (raw && typeof raw === "object") {
+      if (raw.tier === "full") tier = "full"
+      if (typeof raw.promo === "string" && raw.promo.trim()) promoCode = raw.promo
+    }
+  }
+
+  const result = await createCheckoutSession({ tier, promoCode })
+  if ("error" in result) {
+    return NextResponse.json({ error: result.error, code: result.code }, { status: result.status })
+  }
+  return NextResponse.json({ url: result.url })
+}
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const promo = searchParams.get("promo") ?? undefined
+  const tierRaw = searchParams.get("tier")
+  const tier: "core" | "full" = tierRaw === "full" ? "full" : "core"
+
+  const result = await createCheckoutSession({ tier, promoCode: promo })
+  if ("error" in result) {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://bemdonna.com"
+    return NextResponse.redirect(`${baseUrl}/?checkout=error&msg=${encodeURIComponent(result.error || "Checkout failed")}`)
+  }
+  return NextResponse.redirect(result.url)
+}
+
