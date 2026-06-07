@@ -492,50 +492,72 @@ export default function LearnPage() {
 
             {/* 2. Materials Tab */}
             {activeTab === "materials" && (
-              <div className="grid gap-6 md:grid-cols-3 animate-fade-in">
-                {MATERIALS.map(m => (
-                  <div key={m.filename} className="glass-card rounded-xl p-5 md:p-6 flex flex-col justify-between hover:border-white/30 transition-all">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-muted-foreground">
-                          {m.filename}
-                        </span>
-                        <button
-                          onClick={() => handleCopy(m.content, m.filename)}
-                          className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-foreground/80 hover:text-foreground transition-all cursor-pointer"
-                          title="Copy file text"
-                        >
-                          {copiedId === m.filename ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                        </button>
-                      </div>
-                      <h3 className="text-base font-bold">
-                        {m.title}
-                      </h3>
-                      <p className="text-muted-foreground text-sm">
-                        {m.description}
-                      </p>
-                    </div>
-                    
-                    <div className="mt-5 pt-4 border-t border-white/5 flex flex-col gap-2">
-                      <div className="flex items-center justify-between">
-                        <a
-                          href={m.path}
-                          download={m.filename}
-                          className="inline-flex items-center gap-1.5 text-xs text-accent hover:underline font-semibold"
-                        >
-                          <Download className="w-3.5 h-3.5" /> Download (.md)
-                        </a>
-                        <a
-                          href={m.pdfPath}
-                          download={m.pdfFilename}
-                          className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline font-semibold"
-                        >
-                          <Download className="w-3.5 h-3.5" /> Download (.pdf)
-                        </a>
-                      </div>
-                    </div>
+              <div className="space-y-8 animate-fade-in">
+                {/* Embedded Gamma Presentation */}
+                <div className="glass-card rounded-2xl p-5 md:p-6 border border-white/10 flex flex-col items-center">
+                  <h3 className="text-lg font-bold mb-4 flex items-center gap-2 self-start">
+                    <Sparkles className="w-5 h-5 text-accent animate-pulse" />
+                    Interactive Workshop Presentation Slides
+                  </h3>
+                  <div className="w-full max-w-3xl aspect-[16/10] sm:aspect-[16/9] rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-black">
+                    <iframe
+                      src="https://gamma.app/embed/250lg3ywcyp9zxm"
+                      className="w-full h-full border-none"
+                      allow="fullscreen"
+                      title="Meet the Major AI Models"
+                    />
                   </div>
-                ))}
+                  <p className="text-xs text-muted-foreground mt-3 self-start">
+                    Tip: Use the fullscreen button inside the presentation frame to view the slides in full screen mode.
+                  </p>
+                </div>
+
+                {/* Materials Downloads Grid */}
+                <div className="grid gap-6 md:grid-cols-3">
+                  {MATERIALS.map(m => (
+                    <div key={m.filename} className="glass-card rounded-xl p-5 md:p-6 flex flex-col justify-between hover:border-white/30 transition-all">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-muted-foreground">
+                            {m.filename}
+                          </span>
+                          <button
+                            onClick={() => handleCopy(m.content, m.filename)}
+                            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-foreground/80 hover:text-foreground transition-all cursor-pointer"
+                            title="Copy file text"
+                          >
+                            {copiedId === m.filename ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                          </button>
+                        </div>
+                        <h3 className="text-base font-bold">
+                          {m.title}
+                        </h3>
+                        <p className="text-muted-foreground text-sm">
+                          {m.description}
+                        </p>
+                      </div>
+                      
+                      <div className="mt-5 pt-4 border-t border-white/5 flex flex-col gap-2">
+                        <div className="flex items-center justify-between">
+                          <a
+                            href={m.path}
+                            download={m.filename}
+                            className="inline-flex items-center gap-1.5 text-xs text-accent hover:underline font-semibold"
+                          >
+                            <Download className="w-3.5 h-3.5" /> Download (.md)
+                          </a>
+                          <a
+                            href={m.pdfPath}
+                            download={m.pdfFilename}
+                            className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline font-semibold"
+                          >
+                            <Download className="w-3.5 h-3.5" /> Download (.pdf)
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
