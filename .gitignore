@@ -32,3 +32,9 @@ next-env.d.ts
 *.doc
 *.pdf
 Landing page update (final).txt
+
+# Stripe migration scripts
+scripts/stripe-migration-helper.mjs
+scripts/repair-supabase-sync.mjs
+scripts/create-stripe-webhook.mjs
+
