@@ -169,6 +169,8 @@ const MATERIALS = [
     title: "Class Reference Notes",
     description: "Complete summary of core workshop concepts, why AI fails without context, and handbook construction details.",
     path: "/downloads/learn/class_notes.md",
+    pdfPath: "/downloads/learn/class_notes.pdf",
+    pdfFilename: "class_notes.pdf",
     content: `# Class Notes: AI Business Workshop
 
 ## Core Concept
@@ -190,6 +192,8 @@ Instead of writing complex prompts every time, build an "AI Employee Handbook" c
     title: "Presentation Slides Outlines",
     description: "The complete presentation deck formatted in Markdown, perfect for slide building or offline viewing.",
     path: "/downloads/learn/presentation_slides.md",
+    pdfPath: "/downloads/learn/presentation_slides.pdf",
+    pdfFilename: "presentation_slides.pdf",
     content: `# Presentation: Training AI for Your Business
 ## Slide Deck Outline
 
@@ -214,6 +218,8 @@ Instead of writing complex prompts every time, build an "AI Employee Handbook" c
     title: "Prompt Cheat Sheet",
     description: "Quick-access prompts covering Marketing, Sales, Customer Service, and Operations.",
     path: "/downloads/learn/prompt_cheat_sheet.md",
+    pdfPath: "/downloads/learn/prompt_cheat_sheet.pdf",
+    pdfFilename: "prompt_cheat_sheet.pdf",
     content: `# AI Prompt Cheat Sheet
 
 A compilation of business prompts from the AI Business Workshop. For best results, upload your AI Employee Handbook files before running these.
@@ -248,13 +254,28 @@ const RECOMMENDED_TOOLS = [
     tools: [
       { name: "Canva", desc: "Design graphics, presentations, and branding elements easily with native AI-powered layout generation.", link: "https://canva.com" },
       { name: "Gamma", desc: "Create gorgeous web pages, slides, or documents in minutes from a single prompt outline.", link: "https://gamma.app" },
-      { name: "VEED.IO", desc: "Smart online video editor. Great for translating scripts into video, adding subtitles, and editing marketing videos.", link: "https://veed.io" }
+      { name: "VEED.IO", desc: "Smart online video editor. Great for translating scripts into video, adding subtitles, and editing marketing videos.", link: "https://veed.io" },
+      { name: "ChatGPT Images (DALL-E)", desc: "Create stunning custom illustrations and visual assets directly within your chat workflow.", link: "https://chatgpt.com" },
+      { name: "Google Flow", desc: "Streamline creation workflows and process automation using Gemini's native intelligence orchestration.", link: "https://gemini.google.com" },
+      { name: "Google Omni", desc: "Omnipresent AI assistance designed to generate contextual copy, layouts, and translations on the fly.", link: "https://gemini.google.com" },
+      { name: "Lumen5", desc: "AI-driven video creator that automatically transforms blog posts and text outlines into high-quality social videos.", link: "https://lumen5.com" }
     ]
   },
   {
     category: "Voice Generation",
     tools: [
       { name: "ElevenLabs", desc: "Industry-leading AI voice cloning and speech generation. Ideal for creating clean voiceovers for demos and videos.", link: "https://elevenlabs.io" }
+    ]
+  },
+  {
+    category: "IDE & Coding Assistants",
+    tools: [
+      { name: "Antigravity (Recommended)", desc: "A next-generation AI coding assistant built by the DeepMind team, specialized in rapid, highly-aesthetic application development.", link: "https://github.com", highlight: true },
+      { name: "Cursor", desc: "An AI-powered fork of VS Code that provides inline code editing, codebase-wide indexing, and natural language chat.", link: "https://cursor.com" },
+      { name: "VS Code Editor", desc: "The gold standard code editor, extensible with Copilot and external AI agents for custom developer environments.", link: "https://code.visualstudio.com" },
+      { name: "Claude Code", desc: "Anthropic's terminal-based agent that writes, tests, and refines code directly from your local terminal workspace.", link: "https://claude.ai" },
+      { name: "Codex (OpenAI)", desc: "OpenAI's foundational model that powers multiple programming interfaces and handles advanced coding translations.", link: "https://openai.com" },
+      { name: "Augment", desc: "An enterprise-grade AI developer assistant focusing on ultra-fast autocomplete, codebase search, and context retention.", link: "https://augment.co" }
     ]
   }
 ]
@@ -495,14 +516,23 @@ export default function LearnPage() {
                       </p>
                     </div>
                     
-                    <div className="mt-5 pt-4 border-t border-white/5 flex justify-end">
-                      <a
-                        href={m.path}
-                        download={m.filename}
-                        className="inline-flex items-center gap-1.5 text-xs text-accent hover:underline font-semibold"
-                      >
-                        <Download className="w-3.5 h-3.5" /> Download (.md)
-                      </a>
+                    <div className="mt-5 pt-4 border-t border-white/5 flex flex-col gap-2">
+                      <div className="flex items-center justify-between">
+                        <a
+                          href={m.path}
+                          download={m.filename}
+                          className="inline-flex items-center gap-1.5 text-xs text-accent hover:underline font-semibold"
+                        >
+                          <Download className="w-3.5 h-3.5" /> Download (.md)
+                        </a>
+                        <a
+                          href={m.pdfPath}
+                          download={m.pdfFilename}
+                          className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline font-semibold"
+                        >
+                          <Download className="w-3.5 h-3.5" /> Download (.pdf)
+                        </a>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -575,10 +605,19 @@ export default function LearnPage() {
                           href={tool.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="glass-card rounded-xl p-5 border border-white/5 hover:border-white/20 transition-all flex flex-col justify-between group"
+                          className={`glass-card rounded-xl p-5 border transition-all flex flex-col justify-between group relative overflow-hidden ${
+                            tool.highlight 
+                              ? "border-accent/40 bg-accent/5 shadow-[0_0_15px_rgba(132,204,255,0.15)] hover:border-accent"
+                              : "border-white/5 hover:border-white/20"
+                          }`}
                         >
+                          {tool.highlight && (
+                            <div className="absolute top-0 right-0 bg-accent text-black font-bold text-[9px] uppercase px-2 py-0.5 rounded-bl-lg tracking-wider">
+                              Recommended
+                            </div>
+                          )}
                           <div className="space-y-2">
-                            <h4 className="font-bold text-foreground group-hover:text-primary transition-colors flex items-center justify-between">
+                            <h4 className={`font-bold text-foreground transition-colors flex items-center justify-between ${tool.highlight ? "text-accent group-hover:text-cyan-300" : "group-hover:text-primary"}`}>
                               {tool.name}
                               <ExternalLink className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100 transition-opacity" />
                             </h4>

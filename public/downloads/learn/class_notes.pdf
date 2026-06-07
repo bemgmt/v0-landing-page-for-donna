@@ -1,0 +1,53 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 250 >>
+stream
+BT
+/F1 18 Tf
+70 700 Td
+(AI Business Workshop - Class Notes) Tj
+/F1 12 Tf
+0 -40 Td
+(Core Principle:) Tj
+0 -20 Td
+("Most people think they are learning how to prompt. What they are really learning) Tj
+0 -15 Td
+(is how to train AI to understand their business.") Tj
+0 -30 Td
+(To do this, build your AI Employee Handbook with 4 files:) Tj
+0 -20 Td
+(1. me.md - Your identity and communication preferences.) Tj
+0 -15 Td
+(2. brandguidelines.md - Your brand voice pillars and tone.) Tj
+0 -15 Td
+(3. rules.md - Standard guardrails and formatting criteria.) Tj
+0 -15 Td
+(4. companyknowledge.md - Pricing, packages, processes and FAQs.) Tj
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000056 00000 n 
+0000000111 00000 n 
+0000000223 00000 n 
+0000000291 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+592
+%%EOF

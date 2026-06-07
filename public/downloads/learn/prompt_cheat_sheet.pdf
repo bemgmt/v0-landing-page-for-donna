@@ -1,0 +1,57 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 260 >>
+stream
+BT
+/F1 18 Tf
+70 700 Td
+(AI Prompt Cheat Sheet - PDF Guide) Tj
+/F1 12 Tf
+0 -40 Td
+(1. Marketing: Social Media Campaign Post) Tj
+0 -15 Td
+(  - "Act as my marketing manager. Using me.md, brandguidelines.md, and) Tj
+0 -15 Td
+(    companyknowledge.md, create a Facebook post promoting our services...") Tj
+0 -25 Td
+(2. Sales: Price Objection Handler) Tj
+0 -15 Td
+(  - "A customer said: 'It costs too much.' Using companyknowledge.md details,) Tj
+0 -15 Td
+(    provide likely concerns, three empathetic replies, and follow-up questions...") Tj
+0 -25 Td
+(3. Customer Service: FAQ Q&A Generator) Tj
+0 -15 Td
+(  - "Generate the 25 most common questions based on our knowledge base...") Tj
+0 -25 Td
+(4. Operations: Standard Operating Procedure (SOP) Writer) Tj
+0 -15 Td
+(  - "Create a Standard Operating Procedure (SOP) for [process name]...") Tj
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000056 00000 n 
+0000000111 00000 n 
+0000000223 00000 n 
+0000000291 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+750
+%%EOF
