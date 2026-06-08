@@ -39,7 +39,7 @@ export default function CTAFooter() {
         </div>
 
         <p className="text-foreground/50 text-sm mt-6">
-          14-day free trial • No credit card required • Setup in minutes
+          30-day free trial • No credit card required • Setup in minutes
         </p>
       </div>
     </section>

@@ -16,7 +16,9 @@ import {
   X,
   FileCheck,
   Cpu,
-  BrainCircuit
+  BrainCircuit,
+  Coffee,
+  Calendar
 } from "lucide-react"
 import { toast, Toaster } from "sonner"
 
@@ -388,6 +390,44 @@ export default function LearnPage() {
       >
         <div className="relative z-10 space-y-10">
           
+          {/* RSVP Banner */}
+          <div className="relative overflow-hidden rounded-2xl border border-accent/20 bg-gradient-to-br from-accent/10 via-primary/5 to-transparent p-6 md:p-8 shadow-xl hover:border-accent/40 transition-all duration-300 group">
+            {/* Background elements */}
+            <div className="absolute top-0 right-0 w-80 h-80 bg-accent/5 rounded-full blur-[100px] pointer-events-none -mr-20 -mt-20 group-hover:bg-accent/10 transition-all duration-500"></div>
+            
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="space-y-4 text-center md:text-left max-w-2xl">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/15 border border-accent/30 text-accent text-xs font-semibold uppercase tracking-wider animate-pulse">
+                  <Sparkles className="w-3.5 h-3.5" /> Upcoming Live Class
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+                  AI for Business Workshop
+                </h2>
+                <p className="text-base text-foreground/80 leading-relaxed">
+                  Join us live for an interactive session on how to train AI to run your business operations. The class is <strong className="text-accent">completely free</strong>, and we will be serving <strong className="text-primary">fresh donuts & hot coffee</strong>!
+                </p>
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm text-foreground/60">
+                  <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+                    <Coffee className="w-4 h-4 text-amber-400" /> Free Donuts & Coffee
+                  </span>
+                  <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+                    <Calendar className="w-4 h-4 text-accent" /> Live Workshop
+                  </span>
+                </div>
+              </div>
+              
+              <a
+                href="https://www.montereyparkchamber.org/events/ai-for-business"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full md:w-auto shrink-0 inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-accent to-primary text-black font-extrabold text-base rounded-xl hover:opacity-95 active:scale-[0.98] transition-all duration-300 shadow-lg glow-accent group/btn cursor-pointer"
+              >
+                RSVP Now
+                <ExternalLink className="w-5 h-5 transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
+              </a>
+            </div>
+          </div>
+
           {/* Quick Actions Panel */}
           <div className="glass-card liquid-glass-card rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden wow-card shadow-2xl">
             <div className="space-y-2 text-center md:text-left">

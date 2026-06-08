@@ -65,7 +65,7 @@ export default function SectionHero() {
             <span className="relative z-10">Deploy DONNA</span>
           </Link>
           <p className="text-xs sm:text-sm text-foreground/65 max-w-md px-2">
-            No contracts. 14-day money-back guarantee. Early adopters lock in long-term advantages.
+            No contracts. 30-day free trial. Early adopters lock in long-term advantages.
           </p>
           <button
             type="button"
