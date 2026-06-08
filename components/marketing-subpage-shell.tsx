@@ -33,7 +33,7 @@ export function MarketingSubpageShell({
                   Upgrade to Operational Autopilot
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Tired of managing fragmented AI assistants, prompts, and coding setups? Get a **DONNA**—our unified AI operational infrastructure designed to complement or completely replace these individual tools, running your business workflows on autopilot with built-in human-in-the-loop oversight.
+                  Tired of managing fragmented AI assistants, prompts, and coding setups? Get a DONNA, our unified AI operational infrastructure designed to complement or completely replace these individual tools, running your business workflows on autopilot with built-in human-in-the-loop oversight.
                 </p>
               </div>
               <Link
