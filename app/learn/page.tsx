@@ -18,154 +18,189 @@ import {
   Cpu,
   BrainCircuit,
   Coffee,
-  Calendar
+  Calendar,
+  MapPin,
+  Clock
 } from "lucide-react"
 import { toast, Toaster } from "sonner"
 
 // Templates data
 const TEMPLATES = [
   {
+    id: "executivesummary",
+    filename: "executivesummary.md",
+    title: "Executive Summary",
+    description: "Overview of the AI Employee Handbook concept, why the four files work, how to demo them in class, and five ready-to-run prompts.",
+    path: "/downloads/learn/executivesummary.md",
+    content: `# Workshop-Ready Markdown Templates
+
+## Executive summary
+
+The package below is designed as a copy-and-paste class handout for your AI workshop. It follows the same teaching logic already established in your slide deck: AI gets more useful when it has business context, and the simplest way to provide that context is through four clear files that function like an \"AI Employee Handbook.\"
+
+## Why these four files work
+
+Your current deck separates context into four roles: who the person is, how the brand sounds, what the company knows, and what rules the AI must follow. That separation is valuable because it makes the files easier to maintain, reduces contradictions, and lets business owners update one part of their context without rewriting everything else.
+
+## How to demo them in class
+
+Run a generic business prompt with no files attached, show the weak result, then upload the four Markdown files and run the exact same prompt again.
+
+Download the full file for the complete executive summary, instructor notes, and five ready-to-run prompts.`
+  },
+  {
     id: "me",
     filename: "me.md",
     title: "Me Template (Identity)",
-    description: "Teaches AI who you are, your professional role, background, goals, and communication style.",
+    description: "Teaches AI who you are, your professional role, background, goals, and communication style. Includes required and optional fields, concrete examples, copy-and-paste template, and sample entries.",
     path: "/downloads/learn/me.md",
-    content: `# About Me Template (me.md)
+    content: `# Me
 
-This template helps train AI to understand who you are, your background, your responsibilities, and your communication style.
+## Purpose
 
----
+This file tells the AI who I am.
 
-## 1. Professional Identity
-- **Name:** [Your Full Name]
-- **Company / Organization:** [Your Company Name]
-- **Job Title / Role:** [e.g., Owner, Managing Partner, CEO]
-- **Location:** [e.g., Chicago, IL]
+It gives the model enough personal and professional context to write in a way that feels more natural, more relevant, and more aligned with my real priorities.
 
-## 2. Professional Background
-- **Industry Experience:** [e.g., 15 years in commercial real estate, 5 years in retail consulting]
-- **Core Area of Expertise:** [e.g., Contract negotiation, lead generation, team leadership]
-- **Short Bio:** [Write 2-3 sentences about your professional journey and what drives you]
+This file is about the human behind the business.
 
-## 3. Goals & Focus
-- **Primary Goals (Next 6-12 Months):**
-  - [e.g., Automate administrative tasks to save 10 hours a week]
-  - [e.g., Scale outbound marketing channels]
-- **Core Responsibilities:**
-  - [e.g., Approving client proposals]
-  - [e.g., Directing operations and technology implementation]
+## Why This File Improves AI Output
 
-## 4. Communication Preferences & Style
-- **Tone:** [e.g., Direct, professional, warm, concise, authoritative]
-- **Preferred Structure:** [e.g., Bulleted lists, short paragraphs, bold key terms]
-- **Personality Quirks / Style:** [e.g., I avoid excessive exclamation marks and marketing fluff; I prefer clear, plain English]`
+Without this file, the AI usually writes in a generic voice.
+
+With this file, the AI can better understand your role, expertise, audience, priorities, working style, and preferred tone.
+
+## Required Fields
+
+- Full name
+- Business name
+- Role or title
+- Short bio
+- What you do
+- Who you help
+- Current goals
+- Key skills or expertise
+- Preferred tone
+- Availability or working hours
+- Service area, region, or market
+
+Download the full file for optional fields, concrete examples, copy-and-paste template, short and long sample entries, and prompt snippets.`
   },
   {
     id: "brandguidelines",
     filename: "brandguidelines.md",
     title: "Brand Guidelines Template",
-    description: "Trains AI to write in your company's voice and communicate consistently across all channels.",
+    description: "Trains AI to write in your company's voice and communicate consistently across all channels. Includes voice attributes, messaging pillars, channel guidance, and style guide.",
     path: "/downloads/learn/brandguidelines.md",
-    content: `# Brand Guidelines Template (brandguidelines.md)
+    content: `# Brand Guidelines
 
-This template trains AI to write in your company's voice and communicate consistently across all channels.
+## Purpose
 
----
+This file teaches AI how your business should sound.
 
-## 1. Company Overview
-- **Company Name:** [Your Company Name]
-- **Core Value Proposition (Elevator Pitch):** [A 1-2 sentence description of what you solve and for whom. e.g., "We help local restaurants automate their delivery logistics so they can focus on cooking great food."]
-- **Target Audience:** [e.g., Small business owners, local residents, busy parents]
+If me.md explains the person, brandguidelines.md explains the voice of the company.
 
-## 2. Brand Voice & Tone
-- **Voice Pillars:**
-  - **Empathetic:** We understand our customers' challenges and speak to them with respect.
-  - **Expert:** We know our industry inside and out, speaking with clarity and confidence.
-  - **Warm:** We are approachable, using friendly, conversational language.
-- **Preferred Words / Phrases:** [List expressions you love. e.g., "Simplified", "Empowered", "Partnering with you"]
-- **Words / Phrases to Avoid:** [List expressions you dislike. e.g., "Synergy", "Disruptive", "Wheelhouse", "Guru"]
+## Why This File Improves AI Output
 
-## 3. Communication Standards
-- **Email Tone:** [e.g., Courteous, direct, starting with a clear greeting and finishing with a single clear call-to-action]
-- **Social Media Tone:** [e.g., Enthusiastic, visually-descriptive, short sentence structures]
-- **Content Rules:**
-  - Prefer active voice over passive voice.
-  - Explain complex terms simply; avoid unnecessary industry jargon.
-  - Keep paragraphs to a maximum of 3 sentences.`
+Without brand guidance, AI often sounds generic, inconsistent, or too salesy.
+
+With a good brand file, AI can better understand how formal or informal the brand should sound, what promises the brand makes, what claims should be avoided, and how to stay consistent across multiple drafts.
+
+## Required Fields
+
+- Brand name
+- One-sentence company description
+- Target audience
+- Brand promise
+- Voice attributes
+- Messaging pillars
+- Dos and Don'ts
+- Approved words or phrases
+- Words or phrases to avoid
+- Sample messaging for email, social, and website copy
+- Basic style guide
+
+Download the full file for optional fields, voice attribute definitions, concrete examples, copy-and-paste template, short and long sample entries, and prompt snippets.`
   },
   {
     id: "rules",
     filename: "rules.md",
     title: "Rules & Standards Template",
-    description: "Teaches AI the strict quality standards, formatting constraints, and compliance rules it must follow.",
+    description: "Teaches AI the strict quality standards, formatting constraints, and compliance rules it must follow. Includes accuracy rules, escalation triggers, privacy safeguards, and error recovery.",
     path: "/downloads/learn/rules.md",
-    content: `# Standards & Rules Template (rules.md)
+    content: `# Rules
 
-This template teaches AI the strict rules, standards, and constraints it must follow when drafting content or performing tasks for you.
+## Purpose
 
----
+This file gives the AI its guardrails.
 
-## 1. General Guardrails
-- **Accuracy First:** Never invent facts, statistics, prices, or dates. If information is missing, ask for clarification or use a clear placeholder like \`[Insert Onboarding Date]\`.
-- **Source Verification:** Rely only on information provided in company documents rather than making assumptions.
-- **Privacy:** Do not output sensitive customer or employee personal details (such as Social Security Numbers, exact passwords, or credit card numbers).
+If the other files tell AI who you are, how you sound, and what your business knows, rules.md tells AI how it must behave.
 
-## 2. Formatting & Structural Rules
-- **No Fluff:** Do not write introductory sentences like "Here is the information you requested..." or "As an AI language model..." Start directly with the response.
-- **Readability:** Use bullet points, numbered lists, and bold headings to break up long blocks of text.
-- **Length Constraints:** 
-  - Emails: Limit to 150 words unless detail is explicitly requested.
-  - Social Posts: Limit to 280 characters for Twitter/X; 150 words for LinkedIn.
+This is the file that protects you from made-up facts, overconfident answers, sloppy formatting, privacy mistakes, and risky responses.
 
-## 3. Communication Safeguards
-- **Escalation Trigger:** If a customer expresses anger, uses words like "sue", "legal action", or "refund", immediately include a note stating that this requires direct human follow-up.
-- **Tone Alignment:** Ensure every response matches the parameters set in \`brandguidelines.md\` and the identity in \`me.md\`.`
+## Why This File Improves AI Output
+
+Without rules, AI may guess when it should ask, sound too certain when facts are missing, reveal or repeat sensitive information, use the wrong format, or skip important disclaimers.
+
+## Core Non-Negotiable AI Behaviors
+
+- Never invent facts
+- Never present guesses as confirmed truth
+- Ask questions when needed
+- Separate known facts from assumptions
+- Protect sensitive information
+- Escalate risky situations
+
+Download the full file for required and optional fields, concrete examples, copy-and-paste template, short and long sample entries, and prompt snippets.`
   },
   {
     id: "companyknowledge",
     filename: "companyknowledge.md",
     title: "Company Knowledge Template",
-    description: "Serves as the primary source of truth for products, services, FAQs, processes, and contact details.",
+    description: "Serves as the primary source of truth for products, services, FAQs, processes, team bios, and contact details. Includes searchable tag system and concrete examples.",
     path: "/downloads/learn/companyknowledge.md",
-    content: `# Company Knowledge Base Template (companyknowledge.md)
+    content: `# Company Knowledge
 
-This template serves as the primary source of truth for your business's products, services, FAQs, and procedures.
+## Purpose
 
----
+This file is the factual brain of the business.
 
-## 1. Products & Services
-- **Product/Service Name A:**
-  - **Description:** [What is it and who is it for?]
-  - **Pricing & Packages:** [Pricing model, e.g., $150/month flat fee or custom quoting]
-  - **Key Features:** [List 3-4 features]
-  - **Target Customer:** [Who is the ideal buyer?]
+If me.md explains the person and brandguidelines.md explains the voice, companyknowledge.md explains what the company actually knows.
 
-- **Product/Service Name B:**
-  - **Description:** [What is it and who is it for?]
-  - **Pricing & Packages:** [Pricing model]
-  - **Key Features:** [List 3-4 features]
-  - **Target Customer:** [Who is the ideal buyer?]
+## Why This File Improves AI Output
 
-## 2. Frequently Asked Questions (FAQs)
-- **Q: What are your operational hours?**
-  - **A:** [e.g., Monday through Friday, 9:00 AM to 5:00 PM EST.]
-- **Q: Do you offer a money-back guarantee or refund policy?**
-  - **A:** [Insert policy details.]
-- **Q: How long does onboarding typically take?**
-  - **A:** [Insert typical timeline.]
+Without this file, AI often fills gaps with generic assumptions.
 
-## 3. Operations & Team Structure
-- **Key Contacts:**
-  - **General Inquiries:** [e.g., info@company.com]
-  - **Support / Service:** [e.g., support@company.com]
-- **Key Operations Processes:**
-  - **Client Onboarding:** [Describe the basic steps of onboarding a new client, e.g., 1. Intake form, 2. Setup call, 3. Portal access]
-  - **Delivery / Execution:** [Briefly describe how work is scheduled and delivered]`
+With this file, AI can better answer: What do you sell? Who is it for? How much does it cost? What is included? What happens next? Who on the team handles what?
+
+This is usually the most powerful file for customer-facing prompts.
+
+## Required Fields
+
+- Business snapshot
+- Products and services
+- Pricing or pricing approach
+- FAQs
+- Core processes or SOPs
+- Team bios
+- Locations or service areas
+- Contact information
+
+Download the full file for optional fields, searchable tag system, concrete examples, copy-and-paste template, short and long sample entries, and prompt snippets.`
   }
 ]
 
 // Materials data
-const MATERIALS = [
+const MATERIALS: Array<{
+  filename: string
+  title: string
+  description: string
+  path?: string
+  pdfPath?: string
+  pdfFilename?: string
+  content?: string
+  isPdfOnly?: boolean
+}> = [
   {
     filename: "class_notes.md",
     title: "Class Reference Notes",
@@ -190,30 +225,31 @@ Instead of writing complex prompts every time, build an "AI Employee Handbook" c
 4. companyknowledge.md: Teaches the AI what your business knows.`
   },
   {
-    filename: "presentation_slides.md",
-    title: "Presentation Slides Outlines",
-    description: "The complete presentation deck formatted in Markdown, perfect for slide building or offline viewing.",
-    path: "/downloads/learn/presentation_slides.md",
-    pdfPath: "/downloads/learn/presentation_slides.pdf",
-    pdfFilename: "presentation_slides.pdf",
-    content: `# Presentation: Training AI for Your Business
-## Slide Deck Outline
+    filename: "Meet-the-Major-AI-Models.pdf",
+    title: "Meet the Major AI Models",
+    description: "The complete presentation deck covering the major AI models, their strengths, and how to use them for your business.",
+    pdfPath: "/downloads/learn/Meet-the-Major-AI-Models.pdf",
+    pdfFilename: "Meet-the-Major-AI-Models.pdf",
+    isPdfOnly: true
+  },
+  {
+    filename: "executivesummary.md",
+    title: "Executive Summary",
+    description: "Overview of the AI Employee Handbook concept, why the four files work, demo instructions, and five ready-to-run prompts.",
+    path: "/downloads/learn/executivesummary.md",
+    pdfPath: "/downloads/learn/executivesummary.pdf",
+    pdfFilename: "executivesummary.pdf",
+    content: `# Workshop-Ready Markdown Templates
 
----
+## Executive summary
 
-## Slide 1: Title
-# Training AI for Your Business
-### Building Your AI Employee Handbook
-**Presenter:** [Your Name / Company]
+The package below is designed as a copy-and-paste class handout for your AI workshop. AI gets more useful when it has business context, and the simplest way to provide that context is through four clear files that function like an "AI Employee Handbook."
 
----
+## Why these four files work
 
-## Slide 2: The Core Problem
-# Why AI Gives Generic Answers
-- AI doesn't know who you are
-- AI doesn't know your business or products
-- AI doesn't know your tone or customer style
-- Result: You get generic, boring copy that sounds like everyone else.`
+Your current deck separates context into four roles: who the person is, how the brand sounds, what the company knows, and what rules the AI must follow.
+
+Download the full file for the complete executive summary, instructor notes, and five ready-to-run prompts.`
   },
   {
     filename: "prompt_cheat_sheet.md",
@@ -378,7 +414,7 @@ export default function LearnPage() {
       link.click()
       document.body.removeChild(link)
     })
-    toast.success("Downloading all 4 handbook templates!")
+    toast.success("Downloading all 5 handbook templates!")
   }
 
   return (
@@ -406,12 +442,18 @@ export default function LearnPage() {
                 <p className="text-base text-foreground/80 leading-relaxed">
                   Join us live for an interactive session on how to train AI to run your business operations. The class is <strong className="text-accent">completely free</strong>, and we will be serving <strong className="text-primary">fresh donuts & hot coffee</strong>!
                 </p>
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm text-foreground/60">
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm text-foreground/60">
                   <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                    <Coffee className="w-4 h-4 text-amber-400" /> Free Donuts & Coffee
+                    <Calendar className="w-4 h-4 text-accent" /> June 11th
                   </span>
                   <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                    <Calendar className="w-4 h-4 text-accent" /> Live Workshop
+                    <Clock className="w-4 h-4 text-accent" /> 11:30 AM – 12:30 PM
+                  </span>
+                  <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+                    <MapPin className="w-4 h-4 text-emerald-400" /> Monterey Park, CA
+                  </span>
+                  <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+                    <Coffee className="w-4 h-4 text-amber-400" /> Free Donuts & Coffee
                   </span>
                 </div>
               </div>
@@ -436,7 +478,7 @@ export default function LearnPage() {
                 The AI Employee Handbook Kit
               </h2>
               <p className="text-muted-foreground text-sm max-w-xl">
-                Ready to build? Grab all four core templates (.md files) and load them into your AI tool to teach it who you are, how you communicate, and what you sell.
+                Ready to build? Grab all five handbook templates (.md files) and load them into your AI tool to teach it who you are, how you communicate, and what you sell.
               </p>
             </div>
             <button
@@ -544,7 +586,7 @@ export default function LearnPage() {
 
             {/* 2. Materials Tab */}
             {activeTab === "materials" && (
-              <div className="grid gap-6 md:grid-cols-3 animate-fade-in">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 animate-fade-in">
                 {MATERIALS.map(m => (
                   <div key={m.filename} className="glass-card rounded-xl p-5 md:p-6 flex flex-col justify-between hover:border-white/30 transition-all">
                     <div className="space-y-3">
@@ -552,13 +594,15 @@ export default function LearnPage() {
                         <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-muted-foreground">
                           {m.filename}
                         </span>
-                        <button
-                          onClick={() => handleCopy(m.content, m.filename)}
-                          className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-foreground/80 hover:text-foreground transition-all cursor-pointer"
-                          title="Copy file text"
-                        >
-                          {copiedId === m.filename ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                        </button>
+                        {!m.isPdfOnly && m.content && (
+                          <button
+                            onClick={() => handleCopy(m.content!, m.filename)}
+                            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-foreground/80 hover:text-foreground transition-all cursor-pointer"
+                            title="Copy file text"
+                          >
+                            {copiedId === m.filename ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                          </button>
+                        )}
                       </div>
                       <h3 className="text-base font-bold">
                         {m.title}
@@ -570,20 +614,36 @@ export default function LearnPage() {
                     
                     <div className="mt-5 pt-4 border-t border-white/5 flex flex-col gap-2">
                       <div className="flex items-center justify-between">
-                        <a
-                          href={m.path}
-                          download={m.filename}
-                          className="inline-flex items-center gap-1.5 text-xs text-accent hover:underline font-semibold"
-                        >
-                          <Download className="w-3.5 h-3.5" /> Download (.md)
-                        </a>
-                        <a
-                          href={m.pdfPath}
-                          download={m.pdfFilename}
-                          className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline font-semibold"
-                        >
-                          <Download className="w-3.5 h-3.5" /> Download (.pdf)
-                        </a>
+                        {m.isPdfOnly ? (
+                          <a
+                            href={m.pdfPath}
+                            download={m.pdfFilename}
+                            className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline font-semibold"
+                          >
+                            <Download className="w-3.5 h-3.5" /> Download Presentation (.pdf)
+                          </a>
+                        ) : (
+                          <>
+                            {m.path && (
+                              <a
+                                href={m.path}
+                                download={m.filename}
+                                className="inline-flex items-center gap-1.5 text-xs text-accent hover:underline font-semibold"
+                              >
+                                <Download className="w-3.5 h-3.5" /> Download (.md)
+                              </a>
+                            )}
+                            {m.pdfPath && (
+                              <a
+                                href={m.pdfPath}
+                                download={m.pdfFilename}
+                                className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline font-semibold"
+                              >
+                                <Download className="w-3.5 h-3.5" /> Download (.pdf)
+                              </a>
+                            )}
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
