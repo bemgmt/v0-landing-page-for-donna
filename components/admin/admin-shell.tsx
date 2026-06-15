@@ -57,6 +57,7 @@ export default function AdminShell({ role, children }: Props) {
     { href: "/admin", label: "Command Center" },
     { href: "/admin/members", label: "Members" },
     { href: "/admin/partners", label: "Partners" },
+    { href: "/admin/card-scanner", label: "Card Scanner" },
   ]
   const intelligence: NavItem[] = [
     { href: "/admin/flow", label: "Flow Studio" },

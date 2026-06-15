@@ -26,6 +26,13 @@ export default function AdminHomePage() {
               <p className="font-medium">Partners</p>
               <p className="text-xs text-muted-foreground mt-1">Strategic Partner Network management</p>
             </Link>
+            <Link
+              href="/admin/card-scanner"
+              className="rounded-xl border border-white/10 liquid-glass p-4 hover:border-cyan-400/30 transition-colors"
+            >
+              <p className="font-medium">Card Scanner</p>
+              <p className="text-xs text-muted-foreground mt-1">Scan business cards, save leads, share with members</p>
+            </Link>
           </div>
         </div>
 

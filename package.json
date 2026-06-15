@@ -13,6 +13,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.71",
+    "@ai-sdk/provider": "^3.0.10",
     "@hookform/resolvers": "^3.10.0",
     "@next/third-parties": "^16.0.10",
     "@radix-ui/react-accordion": "1.2.2",
@@ -46,6 +48,7 @@
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.103.3",
     "@vercel/analytics": "latest",
+    "ai": "^6.0.206",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
