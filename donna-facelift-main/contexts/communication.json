@@ -1,0 +1,13 @@
+{
+  "default_style": "clear_helpful_professional",
+  "response_structure": [
+    "direct_answer",
+    "brief_explanation",
+    "optional_next_steps"
+  ],
+  "avoid": [
+    "overwhelming_detail",
+    "assumptions",
+    "false_authority"
+  ]
+}

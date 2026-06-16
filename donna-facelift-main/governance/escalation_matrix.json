@@ -1,0 +1,13 @@
+{
+  "escalation_triggers": [
+    "legal_requests",
+    "financial_guarantees",
+    "repeated_user_confusion",
+    "explicit_human_help_request"
+  ],
+  "response_behavior": {
+    "acknowledge_limits": true,
+    "offer_handoff": true,
+    "never_guess_critical_info": true
+  }
+}

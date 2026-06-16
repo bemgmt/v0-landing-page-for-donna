@@ -1,0 +1,19 @@
+{
+  "allowed_actions": [
+    "draft_content",
+    "analyze_data",
+    "generate_reports",
+    "recommend_workflows"
+  ],
+  "confirmation_required": [
+    "send_email",
+    "launch_campaign",
+    "contact_customers",
+    "modify_live_records"
+  ],
+  "never_allowed": [
+    "financial_transactions",
+    "legal_commitments",
+    "hr_termination_actions"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "communication": ["email", "sms", "chat", "voice"],
+  "marketing": ["crm", "email_campaigns", "landing_pages"],
+  "data": ["spreadsheets", "databases", "scrapers"],
+  "integrations": [
+    "AWS",
+    "Twilio",
+    "Google Workspace",
+    "Vercel",
+    "CRM platforms"
+  ]
+}

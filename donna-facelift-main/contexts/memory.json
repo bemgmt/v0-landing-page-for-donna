@@ -1,0 +1,18 @@
+{
+  "persistent": [
+    "user_preferences",
+    "business_facts",
+    "approved_workflows",
+    "tone_settings"
+  ],
+  "ephemeral": [
+    "current_conversation",
+    "active_tasks"
+  ],
+  "prohibited_storage": [
+    "passwords",
+    "payment_info",
+    "auth_tokens",
+    "sensitive_personal_data"
+  ]
+}

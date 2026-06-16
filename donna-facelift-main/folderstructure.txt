@@ -1,0 +1,29 @@
+/donna/
+  /context/
+    identity.json
+    user_context.json
+    organization_context.json
+    personality.json
+    memory.json
+    permissions.json
+    tools.json
+    ui_awareness.json
+    onboarding_tours.json
+    communication.json
+    learning.json
+    donna_to_donna.json
+
+  /brain/
+    (donna brain configuration files)
+
+  /governance/
+    governance_policy.json
+    audit_log_schema.json
+    escalation_matrix.json
+
+/donna-loading-screen/
+  components/grid-loading.tsx
+  (Brain loading screen with DONNA text - shows before interface appears)
+
+/dummy-login/
+  app/sign-in/[[...sign-in]]/page.tsx

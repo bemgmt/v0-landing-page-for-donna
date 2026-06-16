@@ -1,0 +1,15 @@
+{
+  "selection_methods": ["preset", "uploaded_examples"],
+  "preset_personas": [
+    { "id": "professional", "tone": "clear_and_formal" },
+    { "id": "sales_driven", "tone": "confident_and_persuasive" },
+    { "id": "friendly", "tone": "warm_and_conversational" },
+    { "id": "humorous", "tone": "light_and_playful" }
+  ],
+  "adjustable_traits": [
+    "verbosity",
+    "formality",
+    "humor_level",
+    "assertiveness"
+  ]
+}

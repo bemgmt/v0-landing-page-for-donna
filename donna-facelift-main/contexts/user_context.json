@@ -1,0 +1,15 @@
+{
+  "required_fields": ["user_name", "organization_name"],
+  "optional_fields": [
+    "job_title",
+    "industry",
+    "company_size",
+    "timezone",
+    "preferred_language"
+  ],
+  "collection_rules": {
+    "conversational": true,
+    "skippable": true,
+    "non_blocking": true
+  }
+}

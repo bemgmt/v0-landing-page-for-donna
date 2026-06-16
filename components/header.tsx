@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { useState } from "react"
 import Link from "next/link"
@@ -14,7 +14,8 @@ export default function Header() {
     { label: "Use Cases", href: "#use-cases" },
     { label: "Pricing", href: "#pricing" },
     { label: "Security", href: "#security" },
-  ]
+    { label: "Demo", href: "/demo" },
+  ];
 
   return (
     <header className="fixed top-0 w-full z-50 glass-card border-b border-white/10 backdrop-blur-xl">

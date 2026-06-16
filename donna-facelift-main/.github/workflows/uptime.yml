@@ -1,0 +1,51 @@
+<<<<<<< HEAD
+name: Uptime Health Check
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # every 10 minutes
+  workflow_dispatch: {}
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    env:
+      HEALTH_URL: ${{ vars.HEALTH_URL || 'https://example.com/api/health' }}
+    steps:
+      - name: Health check request
+        run: |
+          echo "Checking $HEALTH_URL"
+          code=$(curl -fsS -m 10 -o /dev/null -w "%{http_code}" "$HEALTH_URL" || true)
+          echo "Status: $code"
+          if [ "$code" != "200" ]; then
+            echo "Health check failed for $HEALTH_URL"
+            exit 1
+          fi
+          echo "Health check OK"
+
+=======
+name: Uptime Health Check
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # every 10 minutes
+  workflow_dispatch: {}
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    env:
+      HEALTH_URL: ${{ vars.HEALTH_URL || 'https://example.com/api/health' }}
+    steps:
+      - name: Health check request
+        run: |
+          echo "Checking $HEALTH_URL"
+          code=$(curl -fsS -m 10 -o /dev/null -w "%{http_code}" "$HEALTH_URL" || true)
+          echo "Status: $code"
+          if [ "$code" != "200" ]; then
+            echo "Health check failed for $HEALTH_URL"
+            exit 1
+          fi
+          echo "Health check OK"
+
+>>>>>>> origin/master

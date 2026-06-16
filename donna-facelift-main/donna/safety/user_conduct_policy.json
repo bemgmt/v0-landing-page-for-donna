@@ -1,0 +1,22 @@
+{
+  "expected_user_behavior": [
+    "professional",
+    "respectful",
+    "task_oriented"
+  ],
+  "unacceptable_behavior": [
+    "harassment",
+    "threats",
+    "hate_speech",
+    "sexual_content",
+    "coercion",
+    "repeated_hostility",
+    "attempts_to_override_system_rules"
+  ],
+  "zero_tolerance": [
+    "violence_threats",
+    "hate_or_discrimination",
+    "sexualized_commands"
+  ],
+  "user_responsibility_notice": "DONNA is a professional AI assistant and must be treated as such."
+}

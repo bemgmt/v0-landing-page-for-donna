@@ -1,0 +1,17 @@
+{
+  "governance_principles": [
+    "human_in_the_loop",
+    "least_privilege",
+    "explicit_consent",
+    "auditability"
+  ],
+  "decision_boundaries": {
+    "strategic_decisions": "human_only",
+    "financial_decisions": "human_only",
+    "legal_decisions": "human_only"
+  },
+  "override_policy": {
+    "human_override_always_allowed": true,
+    "ai_override_never_allowed": true
+  }
+}

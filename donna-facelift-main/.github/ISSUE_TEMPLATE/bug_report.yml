@@ -1,0 +1,123 @@
+<<<<<<< HEAD
+name: Bug report
+about: Create a report to help us improve
+labels: bug
+assignees: ''
+
+title: '[Bug]: '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please include as much detail as possible.
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: Brief description of the bug
+      placeholder: Clear and concise summary
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: What steps did you take?
+      placeholder: 1) ...\n2) ...\n3) ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: What should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      placeholder: What actually happened?
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: OS, Node version, Browser, etc.
+  - type: checkboxes
+    id: security_checks
+    attributes:
+      label: Security checks (if applicable)
+      options:
+        - label: Ran `npm run test:security:smoke` (CORS + token)
+        - label: Ran `npm run test:ws2:all` (realtime)
+        - label: No secrets included in report/logs
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs (sanitize PII/secrets)
+      description: Include relevant sanitized logs and the traceId if present
+
+=======
+name: Bug report
+about: Create a report to help us improve
+labels: bug
+assignees: ''
+
+title: '[Bug]: '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please include as much detail as possible.
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: Brief description of the bug
+      placeholder: Clear and concise summary
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: What steps did you take?
+      placeholder: 1) ...\n2) ...\n3) ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: What should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      placeholder: What actually happened?
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: OS, Node version, Browser, etc.
+  - type: checkboxes
+    id: security_checks
+    attributes:
+      label: Security checks (if applicable)
+      options:
+        - label: Ran `npm run test:security:smoke` (CORS + token)
+        - label: Ran `npm run test:ws2:all` (realtime)
+        - label: No secrets included in report/logs
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs (sanitize PII/secrets)
+      description: Include relevant sanitized logs and the traceId if present
+
+>>>>>>> origin/master

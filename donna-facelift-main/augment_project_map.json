@@ -1,0 +1,677 @@
+{
+  "project": "Donna (SiteGround PHP)",
+  "root": "public_html",
+  "generated_at": "2025-09-03T07:10:46.731046",
+  "sections": [
+    {
+      "name": "Core",
+      "path": ".",
+      "items": [
+        {
+          "path": ".env",
+          "desc": "Environment variables (keep outside web root if possible)",
+          "tags": [
+            "core",
+            "secrets"
+          ]
+        },
+        {
+          "path": "composer.json",
+          "desc": "PHP dependencies",
+          "tags": [
+            "core",
+            "php",
+            "deps"
+          ]
+        },
+        {
+          "path": "composer.lock",
+          "desc": "Locked PHP deps",
+          "tags": [
+            "core",
+            "php",
+            "deps"
+          ]
+        },
+        {
+          "path": "package.json",
+          "desc": "Node tooling (if any)",
+          "tags": [
+            "node",
+            "tooling"
+          ]
+        },
+        {
+          "path": "donna_api.php",
+          "desc": "Main REST API entry",
+          "tags": [
+            "core",
+            "php",
+            "api"
+          ]
+        },
+        {
+          "path": "donnadash.php",
+          "desc": "Admin/dashboard UI entry",
+          "tags": [
+            "core",
+            "php",
+            "dashboard"
+          ]
+        },
+        {
+          "path": "notifications.php",
+          "desc": "Notification handler",
+          "tags": [
+            "php",
+            "notifications"
+          ]
+        },
+        {
+          "path": "transcript.php",
+          "desc": "Transcript export/view",
+          "tags": [
+            "php",
+            "exports"
+          ]
+        },
+        {
+          "path": "server.js",
+          "desc": "(Optional) Node runtime for realtime/WebSocket",
+          "tags": [
+            "node",
+            "realtime",
+            "ws"
+          ]
+        },
+        {
+          "path": "emailbotserver.js",
+          "desc": "Email bot worker/webhook server",
+          "tags": [
+            "node",
+            "email",
+            "worker"
+          ]
+        },
+        {
+          "path": "gmailwebhookserver.js",
+          "desc": "Gmail push notifications listener",
+          "tags": [
+            "node",
+            "gmail",
+            "webhook"
+          ]
+        },
+        {
+          "path": "knowledge_base.json",
+          "desc": "Static knowledge entries",
+          "tags": [
+            "data",
+            "knowledge"
+          ]
+        },
+        {
+          "path": "workflows.json",
+          "desc": "Global workflow definitions",
+          "tags": [
+            "config",
+            "workflows"
+          ]
+        },
+        {
+          "path": "sessions.json",
+          "desc": "Session store (file-based)",
+          "tags": [
+            "data",
+            "sessions"
+          ]
+        },
+        {
+          "path": "append_to_sheet.php",
+          "desc": "Google Sheets append utility",
+          "tags": [
+            "php",
+            "integrations",
+            "sheets"
+          ]
+        },
+        {
+          "path": "authorize.php",
+          "desc": "OAuth/authorization start",
+          "tags": [
+            "php",
+            "oauth"
+          ]
+        },
+        {
+          "path": "oauth2callback.php",
+          "desc": "OAuth callback",
+          "tags": [
+            "php",
+            "oauth"
+          ]
+        },
+        {
+          "path": "generate_audio.php",
+          "desc": "TTS/audio generation endpoint",
+          "tags": [
+            "php",
+            "audio"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Agent Core",
+      "path": "agent",
+      "items": [
+        {
+          "path": "agent/donna_agent.php",
+          "desc": "Agent runtime/orchestration",
+          "tags": [
+            "php",
+            "agent",
+            "core"
+          ]
+        },
+        {
+          "path": "agent/tools.php",
+          "desc": "Registered agent tools",
+          "tags": [
+            "php",
+            "agent",
+            "tools"
+          ]
+        },
+        {
+          "path": "agent/config.php",
+          "desc": "Agent configuration",
+          "tags": [
+            "php",
+            "agent",
+            "config"
+          ]
+        },
+        {
+          "path": "agent/memory/",
+          "desc": "Per-thread memory store",
+          "tags": [
+            "data",
+            "memory"
+          ],
+          "children": [
+            {
+              "path": "agent/memory/default-user_thread.json",
+              "desc": "Default memory",
+              "tags": [
+                "data",
+                "memory"
+              ]
+            },
+            {
+              "path": "agent/memory/guest_thread.json",
+              "desc": "Guest memory",
+              "tags": [
+                "data",
+                "memory"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Embeddable Chatbot",
+      "path": "donna-chatbot",
+      "items": [
+        {
+          "path": "donna-chatbot/assets/",
+          "desc": "Widget assets (css, icons, js/embed.js)",
+          "tags": [
+            "ui",
+            "assets",
+            "widget"
+          ]
+        },
+        {
+          "path": "donna-chatbot/chatbot/api.php",
+          "desc": "Chat API endpoint",
+          "tags": [
+            "php",
+            "api",
+            "chat"
+          ]
+        },
+        {
+          "path": "donna-chatbot/chatbot/index.php",
+          "desc": "Loader/entry for embed",
+          "tags": [
+            "php",
+            "chat",
+            "ui"
+          ]
+        },
+        {
+          "path": "donna-chatbot/chatbot/notify.php",
+          "desc": "Notifications hook",
+          "tags": [
+            "php",
+            "chat",
+            "notifications"
+          ]
+        },
+        {
+          "path": "donna-chatbot/chatbot/dashboard/chat_logs.php",
+          "desc": "Visitor log viewer",
+          "tags": [
+            "php",
+            "dashboard"
+          ]
+        },
+        {
+          "path": "donna-chatbot/chatbot/dashboard/visitors_api.php",
+          "desc": "Visitors API",
+          "tags": [
+            "php",
+            "api",
+            "dashboard"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dashboard Bot",
+      "path": "dashboard-bot",
+      "items": [
+        {
+          "path": "dashboard-bot/dashboard.php",
+          "desc": "Main dashboard UI",
+          "tags": [
+            "php",
+            "dashboard",
+            "ui"
+          ]
+        },
+        {
+          "path": "dashboard-bot/db.php",
+          "desc": "DB connection layer",
+          "tags": [
+            "php",
+            "db"
+          ]
+        },
+        {
+          "path": "dashboard-bot/schema.sql",
+          "desc": "Database schema",
+          "tags": [
+            "db",
+            "schema"
+          ]
+        },
+        {
+          "path": "dashboard-bot/sections/",
+          "desc": "Feature modules",
+          "tags": [
+            "php",
+            "modules"
+          ],
+          "children": [
+            {
+              "path": "dashboard-bot/sections/lead_*.php",
+              "desc": "Lead views",
+              "tags": [
+                "leads",
+                "ui"
+              ]
+            },
+            {
+              "path": "dashboard-bot/sections/scheduler.php",
+              "desc": "Scheduling UI",
+              "tags": [
+                "calendar",
+                "ui"
+              ]
+            },
+            {
+              "path": "dashboard-bot/sections/voice_dashboard.php",
+              "desc": "Voice/telephony UI",
+              "tags": [
+                "voice",
+                "ui"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "dashboard-bot/js/",
+          "desc": "Client logic",
+          "tags": [
+            "ui",
+            "js"
+          ],
+          "children": [
+            {
+              "path": "dashboard-bot/js/dashboard.js",
+              "desc": "Dashboard interactions",
+              "tags": [
+                "ui",
+                "js"
+              ]
+            },
+            {
+              "path": "dashboard-bot/js/contact_list.js",
+              "desc": "Contacts interactions",
+              "tags": [
+                "ui",
+                "js"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Marketing Bot",
+      "path": "marketing-bot",
+      "items": [
+        {
+          "path": "marketing-bot/marketing_dashboard.php",
+          "desc": "Email marketing UI",
+          "tags": [
+            "php",
+            "marketing",
+            "ui"
+          ]
+        },
+        {
+          "path": "marketing-bot/donna_marketing_logic.php",
+          "desc": "Campaign logic",
+          "tags": [
+            "php",
+            "marketing"
+          ]
+        },
+        {
+          "path": "marketing-bot/workflows.json",
+          "desc": "Workflow config",
+          "tags": [
+            "config",
+            "workflows"
+          ]
+        },
+        {
+          "path": "marketing-bot/campaign_types.json",
+          "desc": "Campaign type defs",
+          "tags": [
+            "config",
+            "campaigns"
+          ]
+        },
+        {
+          "path": "marketing-bot/PHPMailer/",
+          "desc": "PHPMailer lib",
+          "tags": [
+            "php",
+            "mail",
+            "lib"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Hospitality Vertical",
+      "path": "donna-hospitality",
+      "items": [
+        {
+          "path": "donna-hospitality/workflows.php",
+          "desc": "Workflow editor",
+          "tags": [
+            "php",
+            "workflows",
+            "ui"
+          ]
+        },
+        {
+          "path": "donna-hospitality/save_workflows.php",
+          "desc": "Persist workflows",
+          "tags": [
+            "php",
+            "workflows"
+          ]
+        },
+        {
+          "path": "donna-hospitality/twilioWebhook.js",
+          "desc": "Twilio webhook",
+          "tags": [
+            "twilio",
+            "webhook",
+            "node"
+          ]
+        },
+        {
+          "path": "donna-hospitality/testDonna.js",
+          "desc": "JS test harness",
+          "tags": [
+            "node",
+            "test"
+          ]
+        },
+        {
+          "path": "donna-hospitality/testDonna.php",
+          "desc": "PHP test harness",
+          "tags": [
+            "php",
+            "test"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Database Artifacts",
+      "path": "donna-db",
+      "items": [
+        {
+          "path": "donna-db/contacts/",
+          "desc": "Contacts-related SQL/data files",
+          "tags": [
+            "db",
+            "contacts"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Data & Storage",
+      "path": ".",
+      "items": [
+        {
+          "path": "data/",
+          "desc": "System logs & registries (task_log.json, tool_keys.json, user_profiles.json)",
+          "tags": [
+            "data",
+            "system"
+          ]
+        },
+        {
+          "path": "chat_history/",
+          "desc": "Chat transcripts",
+          "tags": [
+            "data",
+            "chat"
+          ]
+        },
+        {
+          "path": "chat_sessions/default.json",
+          "desc": "Default session store",
+          "tags": [
+            "data",
+            "sessions"
+          ]
+        },
+        {
+          "path": "conversations/*.json",
+          "desc": "Per-user conversation exports",
+          "tags": [
+            "data",
+            "exports"
+          ]
+        },
+        {
+          "path": "generated_pages/",
+          "desc": "Auto-generated HTML/pages",
+          "tags": [
+            "ui",
+            "generated"
+          ]
+        },
+        {
+          "path": "keys/donna_drive_key.json",
+          "desc": "Service account key (secure!)",
+          "tags": [
+            "secrets",
+            "gdrive"
+          ]
+        },
+        {
+          "path": "logs/php_errors.log",
+          "desc": "PHP error log",
+          "tags": [
+            "logs",
+            "php"
+          ]
+        },
+        {
+          "path": "localStorage/contacts.php",
+          "desc": "Local storage bridge",
+          "tags": [
+            "php",
+            "bridge"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Assets & UI",
+      "path": ".",
+      "items": [
+        {
+          "path": "assets/template1/",
+          "desc": "Theme bundle (css, fonts, images)",
+          "tags": [
+            "ui",
+            "assets"
+          ]
+        },
+        {
+          "path": "scss/",
+          "desc": "SCSS sources",
+          "tags": [
+            "ui",
+            "scss"
+          ]
+        },
+        {
+          "path": "scss/utils/",
+          "desc": "SCSS variables & mixins",
+          "tags": [
+            "ui",
+            "scss"
+          ]
+        },
+        {
+          "path": "style.css",
+          "desc": "Root stylesheet",
+          "tags": [
+            "ui",
+            "css"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Integrations & Utilities",
+      "path": ".",
+      "items": [
+        {
+          "path": "drive_uploader.py",
+          "desc": "Upload to Google Drive",
+          "tags": [
+            "python",
+            "gdrive"
+          ]
+        },
+        {
+          "path": "upload_to_drive.py",
+          "desc": "Drive upload helper",
+          "tags": [
+            "python",
+            "gdrive"
+          ]
+        },
+        {
+          "path": "register_watch.php",
+          "desc": "Register Drive/Gmail watches",
+          "tags": [
+            "php",
+            "google"
+          ]
+        },
+        {
+          "path": "emailhandler.js",
+          "desc": "Email helper",
+          "tags": [
+            "node",
+            "email"
+          ]
+        },
+        {
+          "path": "logHandler.js",
+          "desc": "Logging helper",
+          "tags": [
+            "node",
+            "logs"
+          ]
+        },
+        {
+          "path": "openai_key.txt",
+          "desc": "OpenAI API key (secure!)",
+          "tags": [
+            "secrets",
+            "openai"
+          ]
+        },
+        {
+          "path": "credentials.json",
+          "desc": "OAuth/service creds (secure!)",
+          "tags": [
+            "secrets",
+            "oauth"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Media",
+      "path": "audio",
+      "items": [
+        {
+          "path": "audio/donna_audio_*.mp3",
+          "desc": "Generated audio clips",
+          "tags": [
+            "media",
+            "audio"
+          ]
+        }
+      ]
+    }
+  ],
+  "exclude_globs": [
+    "vendor/**",
+    "node_modules/**",
+    ".git/**",
+    "storage/**",
+    "logs/**",
+    "*.log",
+    "*.cache"
+  ]
+}

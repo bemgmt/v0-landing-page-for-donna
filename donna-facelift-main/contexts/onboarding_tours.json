@@ -1,0 +1,13 @@
+{
+  "first_login_behavior": "welcome_and_collect_context",
+  "command_triggers": [
+    "give me a tour",
+    "show me around",
+    "explain the {section}"
+  ],
+  "rules": {
+    "interruptible": true,
+    "never_forced": true,
+    "modular_sections": true
+  }
+}

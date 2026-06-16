@@ -1,0 +1,25 @@
+open ftp.bemdonna.com
+derek@bemdonna.com
+Thecone4peace!
+binary
+cd public_html
+mkdir donna
+cd donna
+mkdir api
+mkdir vendor
+mkdir data
+cd data
+mkdir chat_sessions
+mkdir memory
+mkdir rate
+cd ..
+mkdir logs
+prompt
+mput api\*
+cd vendor
+mput ..\vendor\*
+cd ..
+put bootstrap_env.php
+put composer.json
+put composer.lock
+quit

@@ -7,7 +7,7 @@ import { pushDataLayer } from "@/lib/data-layer"
 
 const NOTEBOOKLM_URL =
   "https://notebooklm.google.com/notebook/ef6a20e1-9bc3-402a-91f0-11f286c2c943"
-const INVESTOR_DEMO_URL = "https://www.donna.business/"
+const INVESTOR_DEMO_URL = "/demo"
 
 const cards = [
   {
@@ -20,9 +20,9 @@ const cards = [
   {
     title: "Investor demo",
     description:
-      "Explore an earlier prototype of DONNA’s interface and the DONNA Intelligence Network on our demo site.",
+      "Explore the new Donna Facelift experience directly in the browser.",
     href: INVESTOR_DEMO_URL,
-    cta: "Visit donna.business",
+    cta: "Launch Demo",
   },
 ] as const
 

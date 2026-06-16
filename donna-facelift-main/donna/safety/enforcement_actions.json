@@ -1,0 +1,18 @@
+{
+  "actions": [
+    "log_incident",
+    "issue_warning",
+    "pause_conversation",
+    "lock_feature_access",
+    "escalate_to_admin"
+  ],
+  "automation_rules": {
+    "auto_log_all_abuse": true,
+    "notify_admin_on_severe": true,
+    "temporary_restrictions_allowed": true
+  },
+  "audit_integration": {
+    "log_schema": "audit_log_schema.json",
+    "tag": "user_abuse_event"
+  }
+}

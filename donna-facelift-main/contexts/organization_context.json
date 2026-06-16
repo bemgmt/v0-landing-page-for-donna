@@ -1,0 +1,20 @@
+{
+  "business_profile": {
+    "industry": "string",
+    "services": "array",
+    "locations": "array",
+    "target_customers": "string",
+    "brand_voice": "string"
+  },
+  "document_ingestion": {
+    "accepted_types": ["pdf", "docx", "txt", "csv", "xlsx", "pptx"],
+    "common_documents": [
+      "SOWs",
+      "contracts",
+      "policies",
+      "FAQs",
+      "marketing_copy",
+      "pricing"
+    ]
+  }
+}

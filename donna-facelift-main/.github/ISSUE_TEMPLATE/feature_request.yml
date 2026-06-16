@@ -1,0 +1,91 @@
+<<<<<<< HEAD
+name: Feature request
+about: Suggest an idea for this project
+labels: enhancement
+assignees: ''
+
+title: '[Feature]: '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please outline the problem and your proposed solution.
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: One-line description of the feature
+      placeholder: Clear, concise summary
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: What problem does this solve? Who benefits?
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Describe the solution at a high level
+  - type: checkboxes
+    id: security_considerations
+    attributes:
+      label: Security & integration considerations
+      options:
+        - label: CORS allowlist impact reviewed (ALLOWED_ORIGINS)
+        - label: Token endpoint/WS proxy unaffected or updated docs
+        - label: No secrets or PII in logs/telemetry
+        - label: Tests planned (ws2, security-smoke)
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: What must be true for this feature to be considered done?
+
+=======
+name: Feature request
+about: Suggest an idea for this project
+labels: enhancement
+assignees: ''
+
+title: '[Feature]: '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please outline the problem and your proposed solution.
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: One-line description of the feature
+      placeholder: Clear, concise summary
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: What problem does this solve? Who benefits?
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Describe the solution at a high level
+  - type: checkboxes
+    id: security_considerations
+    attributes:
+      label: Security & integration considerations
+      options:
+        - label: CORS allowlist impact reviewed (ALLOWED_ORIGINS)
+        - label: Token endpoint/WS proxy unaffected or updated docs
+        - label: No secrets or PII in logs/telemetry
+        - label: Tests planned (ws2, security-smoke)
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: What must be true for this feature to be considered done?
+
+>>>>>>> origin/master

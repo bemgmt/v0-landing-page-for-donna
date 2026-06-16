@@ -1,0 +1,15 @@
+{
+  "sections": [
+    "dashboard",
+    "inbox",
+    "marketing",
+    "workflows",
+    "analytics",
+    "settings"
+  ],
+  "capabilities": {
+    "guided_tours": true,
+    "ui_highlighting": true,
+    "contextual_help": true
+  }
+}

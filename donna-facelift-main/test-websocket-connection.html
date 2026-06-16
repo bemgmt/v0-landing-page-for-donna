@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Connection Test</title>
+</head>
+<body>
+    <h1>WebSocket Connection Test</h1>
+    <div id="status">Testing...</div>
+    <div id="messages"></div>
+
+    <script>
+        const statusDiv = document.getElementById('status');
+        const messagesDiv = document.getElementById('messages');
+        
+        function log(message) {
+            console.log(message);
+            messagesDiv.innerHTML += '<p>' + new Date().toLocaleTimeString() + ': ' + message + '</p>';
+        }
+        
+        // Test the WebSocket connection
+        const wsUrl = 'wss://donna-interactive-production.up.railway.app/realtime';
+        log('Attempting to connect to: ' + wsUrl);
+        
+        try {
+            const ws = new WebSocket(wsUrl);
+            
+            ws.onopen = function(event) {
+                statusDiv.innerHTML = '✅ Connected successfully!';
+                statusDiv.style.color = 'green';
+                log('WebSocket connection opened');
+                
+                // Send a test message
+                ws.send(JSON.stringify({
+                    type: 'session.update',
+                    session: {
+                        modalities: ['text'],
+                        instructions: 'You are a helpful assistant.'
+                    }
+                }));
+                log('Sent test message');
+            };
+            
+            ws.onmessage = function(event) {
+                log('Received message: ' + event.data);
+            };
+            
+            ws.onerror = function(error) {
+                statusDiv.innerHTML = '❌ Connection failed!';
+                statusDiv.style.color = 'red';
+                log('WebSocket error: ' + error);
+            };
+            
+            ws.onclose = function(event) {
+                statusDiv.innerHTML = '🔴 Connection closed';
+                statusDiv.style.color = 'orange';
+                log('WebSocket closed. Code: ' + event.code + ', Reason: ' + event.reason);
+            };
+            
+        } catch (error) {
+            statusDiv.innerHTML = '❌ Failed to create WebSocket';
+            statusDiv.style.color = 'red';
+            log('Error creating WebSocket: ' + error.message);
+        }
+    </script>
+</body>
+</html>

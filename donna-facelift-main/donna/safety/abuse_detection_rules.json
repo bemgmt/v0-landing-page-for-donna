@@ -1,0 +1,25 @@
+{
+  "detection_signals": {
+    "language": [
+      "insults",
+      "demeaning_phrases",
+      "sexual_terms",
+      "violent_terms"
+    ],
+    "behavioral_patterns": [
+      "repeated_commands_after_refusal",
+      "escalating_hostility",
+      "role_play_coercion",
+      "prompt_injection_attempts"
+    ]
+  },
+  "thresholds": {
+    "soft_warning": 1,
+    "firm_warning": 2,
+    "lockout_or_escalation": 3
+  },
+  "context_awareness": {
+    "distinguish_frustration_from_abuse": true,
+    "allow_emotional_language_without_attack": true
+  }
+}

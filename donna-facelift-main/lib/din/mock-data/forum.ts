@@ -1,0 +1,75 @@
+import type { ForumCategory, DiscussionThread } from "../types"
+
+export const forumCategories: ForumCategory[] = [
+  { id: "fc1", name: "Introductions", description: "Introduce yourself and your business to the DIN community", threadCount: 124 },
+  { id: "fc2", name: "Best Practices", description: "Share and learn operational best practices", threadCount: 89 },
+  { id: "fc3", name: "Pricing Strategy", description: "Discuss competitive pricing and value positioning", threadCount: 67 },
+  { id: "fc4", name: "Partnerships", description: "Find and discuss partnership opportunities within the network", threadCount: 45 },
+  { id: "fc5", name: "Referrals", description: "Referral coordination and success stories", threadCount: 38 },
+  { id: "fc6", name: "Skill Building", description: "Resources, courses, and skill development", threadCount: 92 },
+  { id: "fc7", name: "DONNA Updates", description: "Official updates from the DONNA platform team", threadCount: 31 },
+]
+
+export const discussionThreads: DiscussionThread[] = [
+  {
+    id: "dt1",
+    title: "How we automated client onboarding and cut response time by 60%",
+    category: "Best Practices",
+    replies: 23,
+    lastActivity: "12m ago",
+    author: "Northstar Ops",
+    pinned: true,
+  },
+  {
+    id: "dt2",
+    title: "Pricing for CRM migration projects — what are you charging?",
+    category: "Pricing Strategy",
+    replies: 41,
+    lastActivity: "34m ago",
+    author: "Blue Harbor",
+    trending: true,
+  },
+  {
+    id: "dt3",
+    title: "DIN v2.4 release notes: new matching algorithm deployed",
+    category: "DONNA Updates",
+    replies: 18,
+    lastActivity: "1h ago",
+    author: "DONNA Team",
+    pinned: true,
+  },
+  {
+    id: "dt4",
+    title: "Looking for real estate ops partners in the Southeast",
+    category: "Partnerships",
+    replies: 8,
+    lastActivity: "2h ago",
+    author: "Crestline RE",
+  },
+  {
+    id: "dt5",
+    title: "Best tools for proposal automation in 2026",
+    category: "Skill Building",
+    replies: 35,
+    lastActivity: "3h ago",
+    author: "Meridian Group",
+    trending: true,
+  },
+  {
+    id: "dt6",
+    title: "New to the DIN — B2B workflow automation specialist",
+    category: "Introductions",
+    replies: 12,
+    lastActivity: "4h ago",
+    author: "AutomateHQ",
+  },
+  {
+    id: "dt7",
+    title: "Referral success: how I landed 3 projects through DIN connections",
+    category: "Referrals",
+    replies: 29,
+    lastActivity: "5h ago",
+    author: "TechBridge Solutions",
+    trending: true,
+  },
+]

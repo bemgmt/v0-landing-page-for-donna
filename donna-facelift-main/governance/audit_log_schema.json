@@ -1,0 +1,20 @@
+{
+  "event_types": [
+    "command_received",
+    "action_suggested",
+    "action_confirmed",
+    "action_executed",
+    "escalation_triggered"
+  ],
+  "required_fields": [
+    "timestamp",
+    "user_id",
+    "action_type",
+    "context_snapshot",
+    "confirmation_status"
+  ],
+  "retention_policy": {
+    "default_days": 365,
+    "enterprise_override": true
+  }
+}

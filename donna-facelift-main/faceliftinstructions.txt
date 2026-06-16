@@ -1,0 +1,25 @@
+You are upgrading the Donna interface to visually match the futuristic style of the Donna landing page.
+
+Apply these system-wide changes:
+- Dark futuristic theme (#0C0F16 / #10121A)
+- Add electric purple (#A56BFF) + cyan (#31D2F2) glow accents
+- Replace all cards with glassmorphic containers (blur 20–40px, bg-white/5–10)
+- Add soft neon glow shadows on hover
+- Use Inter or Satoshi fonts globally
+- Add animated gradient background under the main layout
+- Add thin neon node lines (SVG) as a subtle background texture
+- Update buttons to glowing gradient buttons (purple → cyan)
+- Replace icons with neon-outline variants
+- Upgrade chat UI with translucent bubbles, neon borders, and smooth in/out motion
+
+Do NOT change:
+- API endpoints
+- File structure
+- Routing
+- Applify environment variables
+- TypeScript/Lambda logic
+
+Your output should automatically:
+- Create reusable components: GlassCard, NeonButton, FuturisticInput, ChatBubble
+- Update global.css or tailwind.config for new variables
+- Apply gradients, shadows, blur, and glow animations

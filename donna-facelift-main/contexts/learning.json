@@ -1,0 +1,12 @@
+{
+  "allowed": [
+    "tone_adjustment",
+    "workflow_optimization",
+    "response_refinement"
+  ],
+  "restricted": [
+    "autonomous_policy_changes",
+    "permission_overrides",
+    "strategy_redefinition"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "enabled": false,
+  "future_capabilities": [
+    "secure_context_exchange",
+    "permissioned_task_delegation",
+    "federated_learning"
+  ],
+  "requires_governance": true
+}
