@@ -106,6 +106,17 @@ export default function PortalShell({ role, subscriptionActive, seatAccess, disp
           className={`flex-col gap-4 ${mobileOpen ? "flex" : "hidden"} md:flex`}
           aria-label="Member portal"
         >
+          <div className="px-3 pb-2">
+            <a
+              href="https://app.bemdonna.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-cyan-500/10 text-cyan-400 border border-cyan-500/25 rounded-lg text-sm font-medium hover:bg-cyan-500/20 hover:border-cyan-400/40 transition-colors"
+            >
+              Go to DONNA app
+            </a>
+          </div>
+
           <NavSection title="Account" items={account} pathname={pathname} onNavigate={() => setMobileOpen(false)} />
           <NavSection title="Help & Support" items={support} pathname={pathname} onNavigate={() => setMobileOpen(false)} />
           

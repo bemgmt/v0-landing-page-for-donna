@@ -83,9 +83,7 @@ async function createCheckoutSession(params: {
       }
     }
 
-    const successUrl = user
-      ? `${baseUrl}/portal?checkout=success`
-      : `${baseUrl}/?checkout=success`
+    const successUrl = "https://app.bemdonna.com"
     const cancelUrl = user ? `${baseUrl}/portal?checkout=canceled` : `${baseUrl}/?checkout=canceled`
 
     const sessionParams: Stripe.Checkout.SessionCreateParams = {

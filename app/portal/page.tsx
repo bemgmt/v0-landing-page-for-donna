@@ -3,8 +3,11 @@ import { format } from "date-fns"
 import CheckoutStatusBanner from "@/components/checkout-status-banner"
 import { PageHeader } from "@/components/portal/dashboard/page-header"
 import { StatCard } from "@/components/portal/dashboard/stat-card"
+import { ActionList, type ActionItem } from "@/components/portal/dashboard/action-list"
+import PromoCodesView from "@/components/portal/promo-codes-view"
 import { planShortLabel } from "@/lib/billing/plan-seats"
 import { resolveActiveSeatInvitePlan, resolveSubscriptionPlan } from "@/lib/billing/resolve-subscription-plan"
+import { ensureReferralPromoCode } from "@/lib/billing/promo-codes"
 import { hasPartnerCapabilities } from "@/lib/auth/roles"
 import { getPortalSession } from "@/lib/portal/session"
 import { fetchPortalCopy } from "@/lib/sanity/client"
@@ -47,6 +50,19 @@ export default async function PortalDashboardPage() {
       .eq("status", "unclaimed"),
   ])
 
+  // Ensure member has a referral promo code
+  const promoCodes = await ensureReferralPromoCode(profile.id, user.email ?? profile.email)
+
+  const quickLinks: ActionItem[] = [
+    { title: "Open DONNA App", href: "https://app.bemdonna.com", external: true },
+    { title: "Request Desktop App", description: "Email us to request the native desktop application", href: "mailto:donna@bemdonna.com?subject=Desktop%20DONNA%20requested", external: true },
+    { title: "Adding Seats", description: "Manage your subscription and team members", href: "/portal/billing" },
+    { title: "Support Requests", description: "Get help from the DONNA team", href: "/portal/support" },
+    { title: "Can DONNA...", description: "See what DONNA is capable of", href: "/portal/can-donna" },
+    { title: "NotebookLM", description: "Upload business documents to create a personalized, private search index", href: "https://notebooklm.google.com/notebook/ef6a20e1-9bc3-402a-91f0-11f286c2c943", external: true },
+    { title: "DONNA Drive", description: "Access DONNA Drive", href: "https://www.donna.business/drive", external: true },
+  ]
+
   return (
     <div className="space-y-8">
       <CheckoutStatusBanner />
@@ -88,7 +104,11 @@ export default async function PortalDashboardPage() {
             <StatCard label="Open leads (pool)" value={String(leadsOpen ?? 0)} href="/partner/leads/round-robin" />
           </>
         ) : null}
+      </div>
 
+      <div className="grid gap-8 lg:grid-cols-2 items-start">
+        <ActionList title="Resources & Quick Links" items={quickLinks} />
+        <PromoCodesView promoCodes={promoCodes} />
       </div>
     </div>
   )
