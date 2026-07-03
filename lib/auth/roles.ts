@@ -1,15 +1,17 @@
-export type MemberRole = "free_member" | "partner" | "staff" | "admin"
+export type MemberRole = "free_member" | "intern" | "partner" | "staff" | "admin"
 
 const rank: Record<MemberRole, number> = {
   free_member: 1,
-  partner: 2,
-  staff: 3,
-  admin: 4,
+  intern: 2,
+  partner: 3,
+  staff: 4,
+  admin: 5,
 }
 
 export function isRole(value: unknown): value is MemberRole {
   return (
     value === "free_member" ||
+    value === "intern" ||
     value === "partner" ||
     value === "staff" ||
     value === "admin"
@@ -24,6 +26,7 @@ export function canAccessPortalSection(
   role: MemberRole,
   section:
     | "profile"
+    | "intern_dashboard"
     | "can_donna"
     | "content"
     | "socials"
@@ -41,6 +44,8 @@ export function canAccessPortalSection(
     case "socials":
     case "forum":
       return roleAtLeast(role, "free_member")
+    case "intern_dashboard":
+      return role === "intern" || role === "staff" || role === "admin"
     case "sales":
     case "promo":
     case "leads_claim":

@@ -71,6 +71,7 @@ export default function PortalShell({ role, subscriptionActive, seatAccess, disp
   
   const partnerLink: NavItem[] = partner ? [{ href: "/partner", label: "Staff / Partner Portal" }] : []
   const adminLink: NavItem[] = role === "admin" ? [{ href: "/admin", label: "Admin Portal" }] : []
+  const internLink: NavItem[] = role === "intern" || role === "staff" || role === "admin" ? [{ href: "/portal/intern", label: "Intern Dashboard" }] : []
 
   return (
     <div className="min-h-screen bg-black text-foreground flex flex-col md:flex-row">
@@ -122,6 +123,9 @@ export default function PortalShell({ role, subscriptionActive, seatAccess, disp
           
           {partnerLink.length ? (
             <NavSection title="Staff" items={partnerLink} pathname={pathname} onNavigate={() => setMobileOpen(false)} />
+          ) : null}
+          {internLink.length ? (
+            <NavSection title="Interns" items={internLink} pathname={pathname} onNavigate={() => setMobileOpen(false)} />
           ) : null}
           {adminLink.length ? (
             <NavSection title="Admin" items={adminLink} pathname={pathname} onNavigate={() => setMobileOpen(false)} />
