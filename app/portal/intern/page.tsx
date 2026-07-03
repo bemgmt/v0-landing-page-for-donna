@@ -15,13 +15,7 @@ export default async function InternDashboardPage() {
 
   const playbookLinks: ActionItem[] = [
     { title: "Main site", description: "Positioning, pricing logic, ecosystem framing", href: "https://aidonna.co", external: true },
-    { title: "What is DONNA", description: "Deepest plain-language explainer", href: "https://aidonna.co/what-is-donna", external: true },
-    { title: "Early Adopter Program", description: "Current GTM motion and offer", href: "https://aidonna.co/early-adopter-program", external: true },
-    { title: "Intelligence Network", description: "The scaling / network-effect story", href: "https://aidonna.co/donna-intelligence-network", external: true },
-    { title: "Tool Stack Audit", description: "Competitive / cost framing vs. incumbents", href: "https://aidonna.co/tool-audit", external: true },
-    { title: "Class Materials", description: "Curated learning material", href: "https://aidonna.co/learn", external: true },
-    { title: "NotebookLM", description: "Q&A + audio overviews on DONNA", href: "https://notebooklm.google.com/notebook/ef6a20e1-9bc3-402a-91f0-11f286c2c943", external: true },
-    { title: "Investor demo", description: "See the investor-facing experience", href: "https://aidonna.co/demo", external: true },
+    { title: "What is DONNA", description: "Deepest plain-language explainer", href: "https://notebooklm.google.com/notebook/ef6a20e1-9bc3-402a-91f0-11f286c2c943", external: true },
   ]
 
   return (
