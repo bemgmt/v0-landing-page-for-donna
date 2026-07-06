@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react"
 import { Check } from "lucide-react"
-import { saveInternTasks } from "./actions"
+import { saveInternTasks } from "@/app/portal/intern/actions"
 
 export const defaultTasks = [
   { id: "email", label: "Set up company email" },
