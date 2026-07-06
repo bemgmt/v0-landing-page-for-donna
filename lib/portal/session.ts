@@ -22,6 +22,7 @@ export type MemberProfileRow = {
   is_active: boolean
   created_at: string
   updated_at: string
+  intern_tasks: Record<string, boolean> | null
 }
 
 export type BillingRow = {

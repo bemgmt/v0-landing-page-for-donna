@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useTransition } from "react"
 import { Check } from "lucide-react"
+import { saveInternTasks } from "./actions"
 
-const defaultTasks = [
+export const defaultTasks = [
   { id: "email", label: "Set up company email" },
   { id: "drive", label: "Access Shared drive (Interns - Summer 2026)" },
   { id: "slack", label: "Join Slack #interns channel" },
@@ -15,31 +16,25 @@ const defaultTasks = [
   { id: "plan", label: "Draft week 1 research plan" },
 ]
 
-export function InternChecklist() {
-  const [completed, setCompleted] = useState<Record<string, boolean>>({})
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    const saved = localStorage.getItem("donna_intern_tasks")
-    if (saved) {
-      try {
-        setCompleted(JSON.parse(saved))
-      } catch (e) {}
-    }
-    setMounted(true)
-  }, [])
+export function InternChecklist({ initialTasks }: { initialTasks?: Record<string, boolean> | null }) {
+  const [completed, setCompleted] = useState<Record<string, boolean>>(initialTasks || {})
+  const [isPending, startTransition] = useTransition()
 
   const toggleTask = (id: string) => {
     const next = { ...completed, [id]: !completed[id] }
     setCompleted(next)
-    localStorage.setItem("donna_intern_tasks", JSON.stringify(next))
+    
+    startTransition(() => {
+      saveInternTasks(next)
+    })
   }
-
-  if (!mounted) return null
 
   return (
     <div className="rounded-xl border border-white/10 bg-black/30 p-5">
-      <h3 className="text-lg font-semibold mb-4 text-foreground">Onboarding Checklist</h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-foreground">Onboarding Checklist</h3>
+        {isPending && <span className="text-xs text-muted-foreground animate-pulse">Saving...</span>}
+      </div>
       <ul className="space-y-3">
         {defaultTasks.map((task) => {
           const isDone = !!completed[task.id]

@@ -5,7 +5,7 @@ import { requireStaffOrAdmin } from "@/lib/auth/require-staff"
 import { isRole, type MemberRole } from "@/lib/auth/roles"
 
 const patchSchema = z.object({
-  role: z.enum(["free_member", "partner", "staff", "admin"]),
+  role: z.enum(["free_member", "intern", "partner", "staff", "admin"]),
 })
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {

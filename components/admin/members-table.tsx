@@ -226,6 +226,7 @@ export default function MembersTable({ rows, canAdmin }: { rows: MemberRow[]; ca
                     className="w-full max-w-[9rem] rounded bg-black/40 border border-white/15 px-2 py-1 text-xs disabled:opacity-50"
                   >
                     <option value="free_member">free_member</option>
+                    <option value="intern">intern</option>
                     <option value="partner">partner</option>
                     <option value="staff">staff</option>
                     <option value="admin">admin</option>
