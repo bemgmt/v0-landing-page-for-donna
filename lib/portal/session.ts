@@ -22,7 +22,7 @@ export type MemberProfileRow = {
   is_active: boolean
   created_at: string
   updated_at: string
-  intern_tasks: Record<string, boolean> | null
+  intern_tasks: { tasks: { id: string; week: number; label: string; completed: boolean }[] } | null
 }
 
 export type BillingRow = {
