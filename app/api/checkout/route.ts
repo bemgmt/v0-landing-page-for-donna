@@ -3,7 +3,7 @@ import Stripe from "stripe"
 import { createClient } from "@/lib/supabase/server"
 import { STRIPE_PRICE_LOOKUP_CORE, STRIPE_PRICE_LOOKUP_FULL } from "@/lib/billing/plan-seats"
 import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { authOptions } from "@/lib/auth"
 
 async function createCheckoutSession(params: {
   tier: "core" | "full"

@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import LoginPanel from "@/components/auth/login-panel"
 import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { authOptions } from "@/lib/auth"
 
 export const metadata: Metadata = {
   title: "Sign in",
