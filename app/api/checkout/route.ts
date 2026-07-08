@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import Stripe from "stripe"
 import { createClient } from "@/lib/supabase/server"
 import { STRIPE_PRICE_LOOKUP_CORE, STRIPE_PRICE_LOOKUP_FULL } from "@/lib/billing/plan-seats"
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 
 async function createCheckoutSession(params: {
   tier: "core" | "full"
@@ -25,14 +27,19 @@ async function createCheckoutSession(params: {
       : (process.env.STRIPE_PRICE_LOOKUP_CORE?.trim() || STRIPE_PRICE_LOOKUP_CORE)
 
   try {
-    let user: { id: string; email?: string | null } | null = null
+    let user: { id: string; email?: string | null; cognito_sub?: string | null } | null = null
+    const session = await getServerSession(authOptions)
+    if (session?.user) {
+      user = {
+        id: (session as any).cognito_sub || session.user.email || "",
+        email: session.user.email,
+        cognito_sub: (session as any).cognito_sub
+      }
+    }
+
     let supabase: any = null
     if (supabaseConfigured) {
       supabase = await createClient()
-      const {
-        data: { user: authUser },
-      } = await supabase.auth.getUser()
-      if (authUser) user = { id: authUser.id, email: authUser.email }
     }
 
     const stripe = new Stripe(secretKey)
@@ -100,10 +107,16 @@ async function createCheckoutSession(params: {
     }
 
     if (user) {
-      sessionParams.client_reference_id = user.id
-      sessionParams.metadata = { supabase_user_id: user.id }
+      sessionParams.client_reference_id = user.cognito_sub || user.id
+      sessionParams.metadata = { 
+        supabase_user_id: user.id,
+        cognito_sub: user.cognito_sub || ""
+      }
       sessionParams.subscription_data = {
-        metadata: { supabase_user_id: user.id },
+        metadata: { 
+          supabase_user_id: user.id,
+          cognito_sub: user.cognito_sub || ""
+        },
       }
       if (user.email) {
         sessionParams.customer_email = user.email

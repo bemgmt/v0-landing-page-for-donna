@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import LoginPanel from "@/components/auth/login-panel"
-import { createClient } from "@/lib/supabase/server"
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -20,20 +21,9 @@ export default async function LoginPage({
     nextPath = "/partner"
   }
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (url?.trim() && anon?.trim()) {
-    try {
-      const supabase = await createClient()
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (user) {
-        redirect(nextPath)
-      }
-    } catch {
-      /* missing env or cookie edge cases — show login */
-    }
+  const session = await getServerSession(authOptions)
+  if (session?.user) {
+    redirect(nextPath)
   }
 
   return (

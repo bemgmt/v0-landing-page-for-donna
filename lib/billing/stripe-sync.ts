@@ -48,11 +48,13 @@ async function upsertBillingCustomer(
   customer: Stripe.Customer,
 ) {
   const email = (customer.email ?? "").trim()
-  if (!email) return
-  await admin.from("billing_customers").upsert(
+  const cognitoSub = customer.metadata?.cognito_sub ?? null
+  if (!email && !cognitoSub) return
+  await admin.from("billing_accounts").upsert(
     {
       stripe_customer_id: stripeCustomerId,
       email,
+      ...(cognitoSub ? { cognito_sub: cognitoSub } : {}),
     },
     { onConflict: "stripe_customer_id" },
   )
@@ -293,6 +295,7 @@ export async function resolveUserIdForCheckoutSession(
   session: Stripe.Checkout.Session,
 ): Promise<string | null> {
   const fromExplicit =
+    (typeof session.metadata?.cognito_sub === "string" && session.metadata.cognito_sub) ? session.metadata.cognito_sub :
     session.client_reference_id ??
     (typeof session.metadata?.supabase_user_id === "string" ? session.metadata.supabase_user_id : null)
   if (fromExplicit) return fromExplicit
@@ -337,7 +340,10 @@ export async function syncSubscriptionWebhook(
   sub: Stripe.Subscription,
   stripe: Stripe,
 ): Promise<void> {
-  let userId = typeof sub.metadata?.supabase_user_id === "string" ? sub.metadata.supabase_user_id : null
+  let userId = (typeof sub.metadata?.cognito_sub === "string" && sub.metadata.cognito_sub) ? sub.metadata.cognito_sub : null
+  if (!userId) {
+    userId = typeof sub.metadata?.supabase_user_id === "string" ? sub.metadata.supabase_user_id : null
+  }
 
   if (!userId) {
     const { data } = await admin
@@ -394,12 +400,14 @@ export async function syncCustomerRecord(admin: AdminClient, customer: Stripe.Cu
 
   const customerId = customer.id
   const email = (customer.email ?? "").trim()
-  if (!email) return
+  const cognitoSub = customer.metadata?.cognito_sub ?? null
+  if (!email && !cognitoSub) return
 
-  await admin.from("billing_customers").upsert(
+  await admin.from("billing_accounts").upsert(
     {
       stripe_customer_id: customerId,
       email,
+      ...(cognitoSub ? { cognito_sub: cognitoSub } : {}),
     },
     { onConflict: "stripe_customer_id" },
   )

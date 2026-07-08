@@ -68,7 +68,8 @@ export function clientIpFromRequest(req: Request): string {
 }
 
 export type BillingBody = {
-  email: string
+  email?: string
+  cognito_sub?: string
   requested_at: string
   nonce: string
 }
@@ -76,15 +77,16 @@ export type BillingBody = {
 export function parseBillingBody(json: unknown): { ok: true; body: BillingBody } | { ok: false; status: 400 } {
   if (json === null || typeof json !== "object") return { ok: false, status: 400 }
   const o = json as Record<string, unknown>
-  const email = o.email
-  if (email === undefined || email === null) return { ok: false, status: 400 }
-  if (typeof email !== "string" || email.trim().length === 0) return { ok: false, status: 400 }
+  const email = typeof o.email === "string" ? o.email.trim().toLowerCase() : undefined
+  const cognito_sub = typeof o.cognito_sub === "string" ? o.cognito_sub.trim() : undefined
+  if (!email && !cognito_sub) return { ok: false, status: 400 }
   const requested_at = typeof o.requested_at === "string" ? o.requested_at : ""
   const nonce = typeof o.nonce === "string" ? o.nonce : ""
   return {
     ok: true,
     body: {
-      email: email.trim().toLowerCase(),
+      email,
+      cognito_sub,
       requested_at,
       nonce,
     },
@@ -262,12 +264,30 @@ export async function handleBillingRequest(req: Request, env: BillingEnv): Promi
 
   const parsed = parseBillingBody(parsedJson)
   if (!parsed.ok) {
-    return new Response(JSON.stringify({ error: "Missing or invalid email" }), {
+    return new Response(JSON.stringify({ error: "Missing or invalid email or cognito_sub" }), {
       status: 400,
       headers: JSON_HEADERS,
     })
   }
-  const { email } = parsed.body
+  let { email, cognito_sub } = parsed.body
+  
+  if (cognito_sub) {
+    const { data: acc } = await supabase
+      .from("billing_accounts")
+      .select("email")
+      .eq("cognito_sub", cognito_sub)
+      .maybeSingle()
+    if (acc?.email) {
+      email = acc.email
+    }
+  }
+
+  if (!email) {
+    return new Response(JSON.stringify({ error: "Account not found" }), {
+      status: 404,
+      headers: JSON_HEADERS,
+    })
+  }
 
   if (sandbox) {
     const sand = sandboxResponseForEmail(email)
