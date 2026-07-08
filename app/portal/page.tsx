@@ -60,7 +60,7 @@ export default async function PortalDashboardPage() {
     { title: "Support Requests", description: "Get help from the DONNA team", href: "/portal/support" },
     { title: "Can DONNA...", description: "See what DONNA is capable of", href: "/portal/can-donna" },
     { title: "NotebookLM", description: "Upload business documents to create a personalized, private search index", href: "https://notebooklm.google.com/notebook/ef6a20e1-9bc3-402a-91f0-11f286c2c943", external: true },
-    { title: "DONNA Drive", description: "Access DONNA Drive", href: "https://www.donna.business/drive", external: true },
+    { title: "DONNA Drive", description: "Access DONNA Drive", href: "/portal/drive-redirect", external: true },
   ]
 
   return (
