@@ -80,6 +80,36 @@ export default function LoginForm({ nextPath }: Props) {
     window.location.assign(nextPath)
   }
 
+  async function onForgotPassword() {
+    setFeedback(null)
+    if (!email.trim()) {
+      setFeedback({ text: "Please enter your email address to reset your password.", tone: "error" })
+      return
+    }
+    
+    if (!baseOrigin) {
+      setFeedback({ text: "Set NEXT_PUBLIC_SITE_URL for this environment.", tone: "error" })
+      return
+    }
+
+    setStatus("loading")
+    // Redirect to the new reset-password page via the callback handler
+    const redirectTo = `${baseOrigin}/auth/callback?next=${encodeURIComponent("/reset-password")}`
+    
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo,
+    })
+
+    if (error) {
+      setStatus("error")
+      setFeedback({ text: error.message, tone: "error" })
+      return
+    }
+
+    setStatus("sent")
+    setFeedback({ text: "Check your email for the password reset link.", tone: "success" })
+  }
+
   async function signInWithGoogle() {
     setOauthLoading(true)
     setFeedback(null)
@@ -139,7 +169,17 @@ export default function LoginForm({ nextPath }: Props) {
           />
         </label>
         <label className="flex flex-col gap-2 text-sm">
-          <span className="text-muted-foreground">Password</span>
+          <span className="flex justify-between text-muted-foreground">
+            <span>Password</span>
+            <button
+              type="button"
+              className="text-cyan-400 hover:underline"
+              onClick={onForgotPassword}
+              disabled={authBusy}
+            >
+              Forgot?
+            </button>
+          </span>
           <input
             type="password"
             required

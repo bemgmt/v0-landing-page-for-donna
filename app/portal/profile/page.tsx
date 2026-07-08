@@ -1,5 +1,6 @@
 import { getPortalSession } from "@/lib/portal/session"
 import ProfileForm from "@/components/portal/profile-form"
+import PasswordUpdateForm from "@/components/portal/password-update-form"
 
 export default async function ProfilePage() {
   const session = await getPortalSession()
@@ -24,6 +25,11 @@ export default async function ProfilePage() {
           website_url: profile.website_url,
         }}
       />
+      
+      <div className="pt-8 mt-8 border-t border-white/10">
+        <h2 className="text-xl font-semibold mb-4 text-foreground">Security</h2>
+        <PasswordUpdateForm />
+      </div>
     </div>
   )
 }
