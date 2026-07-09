@@ -28,12 +28,12 @@ async function createCheckoutSession(params: {
 
   try {
     let user: { id: string; email?: string | null; cognito_sub?: string | null } | null = null
-    const session = await getServerSession(authOptions)
-    if (session?.user) {
+    const authSession = await getServerSession(authOptions)
+    if (authSession?.user) {
       user = {
-        id: (session as any).cognito_sub || session.user.email || "",
-        email: session.user.email,
-        cognito_sub: (session as any).cognito_sub
+        id: (authSession as any).cognito_sub || authSession.user.email || "",
+        email: authSession.user.email,
+        cognito_sub: (authSession as any).cognito_sub
       }
     }
 
