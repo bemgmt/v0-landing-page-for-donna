@@ -54,6 +54,9 @@ export type PortalLayoutState =
   | { kind: "no_member_profile"; user: { id: string; email: string | null | undefined } }
   | { kind: "ready"; session: PortalSession }
 
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/lib/auth"
+
 export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -68,50 +71,54 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
     return { kind: "missing_supabase_env" }
   }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) return { kind: "unauthenticated" }
+  const authSession = await getServerSession(authOptions)
+  if (!authSession?.user || !authSession.user.email) return { kind: "unauthenticated" }
 
-  const { data: rawProfile, error } = await supabase
+  const email = authSession.user.email
+  const cognitoSub = (authSession as any).cognito_sub
+
+  const admin = createAdminClient()
+
+  // Use email to find the member_profile since Cognito is now the identity provider.
+  const { data: rawProfile, error } = await admin
     .from("member_profiles")
     .select("*")
-    .eq("user_id", user.id)
+    .ilike("email", email.trim())
     .maybeSingle()
 
   if (error) {
     console.error("[portal] member_profiles lookup failed", error)
-    return { kind: "no_member_profile", user: { id: user.id, email: user.email } }
+    return { kind: "no_member_profile", user: { id: cognitoSub || email, email } }
   }
 
   if (!rawProfile) {
-    return { kind: "no_member_profile", user: { id: user.id, email: user.email } }
+    return { kind: "no_member_profile", user: { id: cognitoSub || email, email } }
   }
 
   const roleRaw = rawProfile.role
   const role = isRole(roleRaw) ? roleRaw : "free_member"
+  const userId = rawProfile.user_id
 
   const profile = {
     ...rawProfile,
     role,
   } as MemberProfileRow
 
-  const { data: billing } = await supabase
+  const { data: billing } = await admin
     .from("billing_subscriptions")
     .select("*")
-    .eq("user_id", user.id)
+    .eq("user_id", userId)
     .maybeSingle()
 
   let billingRow = billing as BillingRow | null
 
-  if (!billingRow && user.email) {
-    const admin = createAdminClient()
-    await autoSyncUserSubscription(admin, user.id, user.email)
+  if (!billingRow && email) {
+    await autoSyncUserSubscription(admin, userId, email)
 
-    const { data: reFetchedBilling } = await supabase
+    const { data: reFetchedBilling } = await admin
       .from("billing_subscriptions")
       .select("*")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .maybeSingle()
     billingRow = reFetchedBilling as BillingRow | null
   }
@@ -120,16 +127,30 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
   let seatAccess = false
 
   if (!subscriptionActive) {
-    const { data: invited, error: seatInviteError } = await supabase.rpc("billing_user_has_active_seat_invite")
-    if (!seatInviteError && invited === true) {
-      subscriptionActive = true
-      seatAccess = true
+    const { data: invite } = await admin
+      .from("billing_seat_invites")
+      .select("purchaser_user_id")
+      .ilike("email", email.trim())
+      .maybeSingle()
+
+    if (invite?.purchaser_user_id) {
+      const { data: purchaserSub } = await admin
+        .from("billing_subscriptions")
+        .select("status")
+        .eq("user_id", invite.purchaser_user_id)
+        .in("status", ["active", "trialing"])
+        .maybeSingle()
+
+      if (purchaserSub) {
+        subscriptionActive = true
+        seatAccess = true
+      }
     }
   }
 
   const session: PortalSession = {
     supabase,
-    user: { id: user.id, email: user.email },
+    user: { id: userId, email },
     profile,
     billing: billingRow,
     subscriptionActive,
