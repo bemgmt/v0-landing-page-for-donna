@@ -108,14 +108,31 @@ async function createCheckoutSession(params: {
 
     if (user) {
       sessionParams.client_reference_id = user.cognito_sub || user.id
+
+      let billingAccountId = ""
+      if (supabase && user.email) {
+        const { data: billingAccount } = await supabase
+          .from("billing_accounts")
+          .select("id")
+          .ilike("email", user.email.trim())
+          .maybeSingle()
+        if (billingAccount) {
+          billingAccountId = billingAccount.id
+        }
+      }
+
       sessionParams.metadata = { 
         supabase_user_id: user.id,
-        cognito_sub: user.cognito_sub || ""
+        cognito_sub: user.cognito_sub || "",
+        email: user.email || "",
+        ...(billingAccountId ? { billing_account_id: billingAccountId } : {})
       }
       sessionParams.subscription_data = {
         metadata: { 
           supabase_user_id: user.id,
-          cognito_sub: user.cognito_sub || ""
+          cognito_sub: user.cognito_sub || "",
+          email: user.email || "",
+          ...(billingAccountId ? { billing_account_id: billingAccountId } : {})
         },
       }
       if (user.email) {

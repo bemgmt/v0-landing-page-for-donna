@@ -326,6 +326,20 @@ export async function syncFromCheckoutSession(
 
   const subRef = session.subscription
   const subId = typeof subRef === "string" ? subRef : subRef?.id
+  
+  if (typeof session.customer === "string" && session.metadata?.cognito_sub) {
+    try {
+      await stripe.customers.update(session.customer, {
+        metadata: {
+          cognito_sub: session.metadata.cognito_sub,
+          email: session.metadata.email || "",
+        }
+      })
+    } catch (err) {
+      console.error("[stripe-sync] failed to update customer metadata:", err)
+    }
+  }
+
   if (!subId) return
 
   const subscription = await stripe.subscriptions.retrieve(subId, {
