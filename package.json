@@ -5,6 +5,7 @@
   "scripts": {
     "brand:assets": "node scripts/generate-brand-assets.mjs",
     "build": "next build",
+    "deploy": "supabase db push && vercel --prod",
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start",

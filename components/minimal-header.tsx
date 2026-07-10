@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import Image from "next/image"
 import Link from "next/link"
@@ -43,6 +43,12 @@ export default function MinimalHeader() {
             >
               <span className="sm:hidden">Portal</span>
               <span className="hidden sm:inline">Member Portal</span>
+            </Link>
+            <Link
+              href="/signup"
+              className="text-xs sm:text-sm text-muted-foreground hover:text-cyan-300 transition-colors shrink-0"
+            >
+              Create account
             </Link>
             <Link
               href="/#pricing"
