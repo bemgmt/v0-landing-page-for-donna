@@ -29,6 +29,10 @@ async function createCheckoutSession(params: {
   try {
     let user: { id: string; email?: string | null; cognito_sub?: string | null } | null = null
     const authSession = await getServerSession(authOptions)
+    if (!authSession?.user || !(authSession as any).cognito_sub) {
+      return { error: "Unauthorized: You must be logged in to create a checkout session.", code: "UNAUTHORIZED", status: 401 }
+    }
+
     if (authSession?.user) {
       user = {
         id: (authSession as any).cognito_sub || authSession.user.email || "",

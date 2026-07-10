@@ -60,6 +60,9 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, account, profile }) {
       if (profile) {
         token.sub = profile.sub
+        if (profile.email) {
+          token.email = profile.email
+        }
       }
       return token
     },
@@ -67,6 +70,9 @@ export const authOptions: NextAuthOptions = {
       if (session.user && token.sub) {
         // Expose cognito_sub on the session object
         (session as any).cognito_sub = token.sub
+        if (token.email) {
+          session.user.email = token.email as string
+        }
       }
       return session
     },

@@ -46,9 +46,10 @@ async function upsertBillingCustomer(
   admin: AdminClient,
   stripeCustomerId: string,
   customer: Stripe.Customer,
+  resolvedCognitoSub?: string | null,
 ) {
   const email = (customer.email ?? "").trim()
-  const cognitoSub = customer.metadata?.cognito_sub ?? null
+  const cognitoSub = resolvedCognitoSub ?? customer.metadata?.cognito_sub ?? null
   if (!email && !cognitoSub) return
   await admin.from("billing_accounts").upsert(
     {
@@ -98,7 +99,18 @@ export async function syncBillingFromSubscription(
   const customer = customerId ? await stripe.customers.retrieve(customerId) : null
 
   if (customer && !("deleted" in customer && customer.deleted)) {
-    await upsertBillingCustomer(admin, customerId!, customer as Stripe.Customer)
+    await upsertBillingCustomer(admin, customerId!, customer as Stripe.Customer, userId)
+    
+    // Write cognito_sub to Stripe customer record if missing
+    if ((customer as Stripe.Customer).metadata?.cognito_sub !== userId) {
+      try {
+        await stripe.customers.update(customerId!, {
+          metadata: { cognito_sub: userId }
+        })
+      } catch (err) {
+        console.error("[stripe-sync] failed to update customer cognito_sub metadata:", err)
+      }
+    }
   }
 
   const notificationEmails =
@@ -354,11 +366,33 @@ export async function syncSubscriptionWebhook(
   sub: Stripe.Subscription,
   stripe: Stripe,
 ): Promise<void> {
-  let userId = (typeof sub.metadata?.cognito_sub === "string" && sub.metadata.cognito_sub) ? sub.metadata.cognito_sub : null
+  const customerRef = sub.customer
+  const customerId = typeof customerRef === "string" ? customerRef : customerRef?.id ?? null
+
+  let userId: string | null = null
+
+  // 1. Resolve by stripe_customer_id first (lookup billing_accounts for cognito_sub)
+  if (customerId) {
+    const { data: acc } = await admin
+      .from("billing_accounts")
+      .select("cognito_sub")
+      .eq("stripe_customer_id", customerId)
+      .maybeSingle()
+    
+    if (acc?.cognito_sub) {
+      userId = acc.cognito_sub
+    }
+  }
+
+  // 2. Resolve by metadata on subscription
+  if (!userId) {
+    userId = (typeof sub.metadata?.cognito_sub === "string" && sub.metadata.cognito_sub) ? sub.metadata.cognito_sub : null
+  }
   if (!userId) {
     userId = typeof sub.metadata?.supabase_user_id === "string" ? sub.metadata.supabase_user_id : null
   }
 
+  // 3. Resolve by billing_subscriptions table
   if (!userId) {
     const { data } = await admin
       .from("billing_subscriptions")
@@ -368,28 +402,25 @@ export async function syncSubscriptionWebhook(
     userId = data?.user_id ?? null
   }
 
-  if (!userId) {
-    const customerRef = sub.customer
-    const customerId = typeof customerRef === "string" ? customerRef : customerRef?.id ?? null
-    if (customerId) {
-      const customer = await stripe.customers.retrieve(customerId)
-      if (!("deleted" in customer && customer.deleted)) {
-        const c = customer as Stripe.Customer
-        const email = (c.email ?? "").trim()
-        if (email) {
-          const lookedUp = await lookupMemberUserIdByEmail(admin, email, {
+  // 4. Fallback to customer email lookup (migration only)
+  if (!userId && customerId) {
+    const customer = await stripe.customers.retrieve(customerId)
+    if (!("deleted" in customer && customer.deleted)) {
+      const c = customer as Stripe.Customer
+      const email = (c.email ?? "").trim()
+      if (email) {
+        const lookedUp = await lookupMemberUserIdByEmail(admin, email, {
+          stripeSubscriptionId: sub.id,
+          stripeCustomerId: customerId,
+        })
+        if (lookedUp.kind === "found") {
+          userId = lookedUp.userId
+        } else if (lookedUp.kind === "ambiguous") {
+          console.warn("[stripe-sync] subscription webhook: ambiguous member_profiles for customer email", {
             stripeSubscriptionId: sub.id,
             stripeCustomerId: customerId,
+            count: lookedUp.count,
           })
-          if (lookedUp.kind === "found") {
-            userId = lookedUp.userId
-          } else if (lookedUp.kind === "ambiguous") {
-            console.warn("[stripe-sync] subscription webhook: ambiguous member_profiles for customer email", {
-              stripeSubscriptionId: sub.id,
-              stripeCustomerId: customerId,
-              count: lookedUp.count,
-            })
-          }
         }
       }
     }

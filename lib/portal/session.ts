@@ -104,47 +104,49 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
     role,
   } as MemberProfileRow
 
-  const { data: billing } = await admin
-    .from("billing_subscriptions")
-    .select("*")
-    .eq("user_id", userId)
-    .maybeSingle()
-
-  let billingRow = billing as BillingRow | null
-
-  if (!billingRow && email) {
-    await autoSyncUserSubscription(admin, userId, email)
-
-    const { data: reFetchedBilling } = await admin
-      .from("billing_subscriptions")
-      .select("*")
-      .eq("user_id", userId)
-      .maybeSingle()
-    billingRow = reFetchedBilling as BillingRow | null
-  }
-
-  let subscriptionActive = billingRow?.status === "active" || billingRow?.status === "trialing"
+  let billingRow: BillingRow | null = null
+  let subscriptionActive = false
   let seatAccess = false
 
-  if (!subscriptionActive) {
-    const { data: invite } = await admin
-      .from("billing_seat_invites")
-      .select("purchaser_user_id")
-      .ilike("email", email.trim())
-      .maybeSingle()
-
-    if (invite?.purchaser_user_id) {
-      const { data: purchaserSub } = await admin
-        .from("billing_subscriptions")
-        .select("status")
-        .eq("user_id", invite.purchaser_user_id)
-        .in("status", ["active", "trialing"])
-        .maybeSingle()
-
-      if (purchaserSub) {
-        subscriptionActive = true
-        seatAccess = true
+  if (email || cognitoSub) {
+    try {
+      const resp = await fetch("https://bjeqnokehrjviowntlng.supabase.co/functions/v1/billing-status", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${process.env.DONNA_BILLING_TOKEN || ""}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          cognito_sub: cognitoSub || undefined,
+          email: email?.trim(),
+          requested_at: new Date().toISOString(),
+          contract_version: "2026-07-08"
+        }),
+        cache: "no-store"
+      })
+      if (resp.ok) {
+        const data = await resp.json()
+        if (data.account_status === "active" || data.account_status === "trialing") {
+          subscriptionActive = true
+          seatAccess = data.seat_type === "invite"
+        }
+        billingRow = {
+          id: "",
+          user_id: userId,
+          stripe_customer_id: data.stripe_customer_id,
+          stripe_subscription_id: null,
+          status: data.account_status,
+          current_period_end: data.current_period_end,
+          updated_at: data.source_of_truth_at,
+          price_lookup_key: data.plan,
+        }
+      } else {
+        console.error("[portal] billing status fetch returned", resp.status)
+        // Auto sync if not found/failed? 
+        if (email) await autoSyncUserSubscription(admin, userId, email)
       }
+    } catch (err) {
+      console.error("[portal] billing status fetch failed", err)
     }
   }
 

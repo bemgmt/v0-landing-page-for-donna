@@ -1,0 +1,2 @@
+minimumReleaseAgeExclude:
+  - '@aws-sdk/client-cognito-identity-provider@3.1084.0'

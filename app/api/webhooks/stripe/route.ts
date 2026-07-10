@@ -33,6 +33,25 @@ export async function POST(request: Request) {
 
   const admin = createAdminClient()
 
+  // Deduplicate by Stripe event ID
+  const { error: dedupeError } = await admin
+    .from("stripe_webhook_events")
+    .insert({
+      stripe_event_id: event.id,
+      event_type: event.type,
+    })
+
+  if (dedupeError) {
+    if (dedupeError.code === "23505") { // Postgres unique_violation
+      console.log(`[stripe webhook] Ignored duplicate event: ${event.id}`)
+      return NextResponse.json({ received: true })
+    }
+    console.error("[stripe webhook] Failed to deduplicate event:", dedupeError)
+    // Continue processing if it's not a unique violation, to allow Stripe to retry if there's an actual failure down the line,
+    // or fail here. Let's fail to be safe and let Stripe retry.
+    return NextResponse.json({ error: "Failed to process event." }, { status: 500 })
+  }
+
   try {
     switch (event.type) {
       case "checkout.session.completed":
