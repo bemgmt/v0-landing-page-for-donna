@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import LoginPanel from "@/components/auth/login-panel"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
+import { logAuthEvent } from "@/lib/auth/diagnostics"
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string; error?: string; reason?: string; mode?: string }>
+  searchParams: Promise<{ next?: string; error?: string; reason?: string; mode?: string; correlationId?: string }>
 }) {
   const params = await searchParams
   let nextPath = typeof params.next === "string" && params.next.startsWith("/") ? params.next : "/portal"
@@ -24,6 +25,39 @@ export default async function LoginPage({
   const session = await getServerSession(authOptions)
   if (session?.user) {
     redirect(nextPath)
+  }
+
+  // Handle OAuth errors and correlation ID generation
+  if (params.error && !params.correlationId && params.error !== "oauth") {
+    const correlationId = `err-${Date.now()}`
+    let decodedReason = ""
+    try {
+      if (params.reason) decodedReason = decodeURIComponent(params.reason)
+    } catch {
+      // ignore
+    }
+
+    // Treat CONFIRMED as success and redirect cleanly
+    if (decodedReason.includes("Current status is CONFIRMED")) {
+      redirect(`/login?error=oauth&reason=${encodeURIComponent(decodedReason)}`)
+    }
+
+    if (decodedReason.includes("UserNotConfirmedException")) {
+      redirect(`/login?error=oauth&reason=${encodeURIComponent(decodedReason)}`)
+    }
+
+    await logAuthEvent({
+      event_name: "redirect_callback_error",
+      correlation_id: correlationId,
+      environment: process.env.NODE_ENV || "development",
+      is_success: false,
+      error_message: `${params.error} - ${decodedReason}`,
+      endpoint: "/login",
+      has_session: false,
+    })
+
+    // Redirect to a clean login URL with the correlation ID
+    redirect(`/login?correlationId=${correlationId}`)
   }
 
   let decodedReason = ""
@@ -42,21 +76,24 @@ export default async function LoginPage({
     <main className="min-h-screen bg-black text-foreground flex flex-col items-center justify-center px-4">
       <div className="liquid-glass w-full max-w-lg rounded-2xl border border-white/10 p-8 shadow-xl">
         <p className="text-xs text-muted-foreground text-center mb-4">
-          Sign in with your email and password.
+          Sign in securely with your email and password.
         </p>
+        
+        {params.correlationId && (
+          <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-4 text-center">
+            <p className="text-sm text-red-400 font-semibold">Sign-in failed.</p>
+            <p className="text-xs text-red-400/80 mt-1">If this persists, please contact support with code: <span className="font-mono text-red-300">{params.correlationId}</span></p>
+          </div>
+        )}
+
         {isConfirmedSuccess ? (
           <p className="text-sm text-emerald-400 text-center mb-4">You&apos;re all set - please sign in.</p>
         ) : isNotConfirmed ? (
           <p className="text-sm text-amber-400 text-center mb-4">
-            Your account was not confirmed. Please check your email for the confirmation code, or click &quot;Create account&quot; to sign up again and resend the code.
-          </p>
-        ) : params.error === "auth" ? (
-          <p className="text-sm text-red-400 text-center mb-4">Sign-in failed. Try again.</p>
-        ) : params.error === "oauth" ? (
-          <p className="text-sm text-red-400 text-center mb-4">
-            OAuth sign-in failed{decodedReason ? `: ${decodedReason.slice(0, 200)}` : "."}
+            Your account was not confirmed. Please <a href="/signup/confirm" className="underline hover:text-amber-300">confirm your account</a>.
           </p>
         ) : null}
+
         <LoginPanel nextFromUrl={nextPath} />
         
         <div className="mt-6 pt-6 border-t border-white/10 flex flex-col items-center gap-3">
