@@ -19,6 +19,14 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account, profile }) {
       // Record login start or success/failure
       const isSuccess = !!user
+
+      if (isSuccess) {
+        console.log("=== AUTH TEST: COGNITO CALLBACK ===")
+        console.log("Cognito Subject Hash:", profile?.sub || user?.id)
+        console.log("Cognito Email:", profile?.email || user?.email)
+        console.log("===================================")
+      }
+
       await logAuthEvent({
         event_name: isSuccess ? "cognito_callback_success" : "cognito_callback_failure",
         correlation_id: `cb-${Date.now()}`,
@@ -74,6 +82,12 @@ export const authOptions: NextAuthOptions = {
           session.user.email = token.email as string
         }
       }
+
+      console.log("=== AUTH TEST: NEXTAUTH SESSION ===")
+      console.log("NextAuth Subject Hash:", (session as any).cognito_sub || session.user?.id)
+      console.log("NextAuth Email:", session.user?.email)
+      console.log("===================================")
+
       return session
     },
   },
