@@ -31,32 +31,28 @@ export const authOptions: NextAuthOptions = {
       return true
     },
     async redirect({ url, baseUrl }) {
-      let finalUrl = baseUrl
+      const cleanBaseUrl = (process.env.NEXT_PUBLIC_SITE_URL || baseUrl).replace(/\/$/, "")
 
-      // Prevent staging/localhost/www leakage into production callback/redirects
-      const isProd = process.env.NODE_ENV === "production"
-      if (isProd) {
-        // Enforce the clean production base URL, replacing www or staging if present
-        const cleanBaseUrl = process.env.NEXT_PUBLIC_SITE_URL || baseUrl
-        if (url.startsWith("/")) {
-          finalUrl = `${cleanBaseUrl}${url}`
-        } else if (new URL(url).origin === cleanBaseUrl) {
-          finalUrl = url
-        } else {
-          finalUrl = cleanBaseUrl
+      // Relative path — just prepend the base
+      if (url.startsWith("/")) {
+        return `${cleanBaseUrl}${url}`
+      }
+
+      // Absolute URL — preserve the pathname but enforce our domain
+      try {
+        const parsed = new URL(url)
+        if (parsed.origin === cleanBaseUrl) {
+          // Same origin, pass through
+          return url
         }
-      } else {
-        // Dev behavior
-        if (url.startsWith("/")) finalUrl = `${baseUrl}${url}`
-        else if (new URL(url).origin === baseUrl) finalUrl = url
+        // Different origin (e.g. Vercel deployment URL) — keep the path, fix the origin
+        const corrected = `${cleanBaseUrl}${parsed.pathname}${parsed.search}`
+        console.log("[auth] redirect origin corrected:", { from: parsed.origin, to: cleanBaseUrl, path: parsed.pathname })
+        return corrected
+      } catch {
+        // Invalid URL — fall back to base
+        return cleanBaseUrl
       }
-
-      // strip trailing slash if it exists and isn't just the root
-      if (finalUrl.length > 1 && finalUrl.endsWith("/")) {
-        finalUrl = finalUrl.slice(0, -1)
-      }
-
-      return finalUrl
     },
     async jwt({ token, user, account, profile }) {
       if (profile) {
