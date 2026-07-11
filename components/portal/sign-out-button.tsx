@@ -1,20 +1,14 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-import { useMemo, useState } from "react"
-import { createClient } from "@/lib/supabase/client"
+import { signOut as nextAuthSignOut } from "next-auth/react"
+import { useState } from "react"
 
 export default function SignOutButton() {
-  const router = useRouter()
-  const supabase = useMemo(() => createClient(), [])
   const [pending, setPending] = useState(false)
 
   async function signOut() {
     setPending(true)
-    await supabase.auth.signOut()
-    router.push("/")
-    router.refresh()
-    setPending(false)
+    await nextAuthSignOut({ callbackUrl: "/" })
   }
 
   return (

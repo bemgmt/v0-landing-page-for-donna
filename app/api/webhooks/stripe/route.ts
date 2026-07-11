@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import {
   syncCustomerRecord,
   syncFromCheckoutSession,
+  syncInvoiceSubscription,
   syncSubscriptionWebhook,
 } from "@/lib/billing/stripe-sync"
 
@@ -65,6 +66,11 @@ export async function POST(request: Request) {
       case "customer.updated":
       case "customer.created":
         await syncCustomerRecord(admin, event.data.object as Stripe.Customer)
+        break
+      case "invoice.paid":
+      case "invoice.payment_succeeded":
+      case "invoice.payment_failed":
+        await syncInvoiceSubscription(admin, event.data.object as Stripe.Invoice, stripe)
         break
       default:
         break

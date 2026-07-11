@@ -92,6 +92,11 @@
     "vitest": "^3.0.5"
   },
   "pnpm": {
-    "nodeLinker": "hoisted"
+    "nodeLinker": "hoisted",
+    "onlyBuiltDependencies": [
+      "@tailwindcss/oxide",
+      "esbuild",
+      "sharp"
+    ]
   }
 }

@@ -65,13 +65,9 @@ export async function syncSubscriptionItems(
   admin: AdminClient,
   subscription: Stripe.Subscription,
 ) {
-  const subId = subscription.id
-  await admin.from("billing_subscription_items").delete().eq("stripe_subscription_id", subId)
-
   const rows = subscription.items.data.map((item) => {
     const { stripe_price_id, price_lookup_key } = priceFieldsFromItem(item)
     return {
-      stripe_subscription_id: subId,
       stripe_subscription_item_id: item.id,
       quantity: item.quantity ?? 1,
       stripe_price_id,
@@ -79,10 +75,11 @@ export async function syncSubscriptionItems(
     }
   })
 
-  if (rows.length > 0) {
-    const { error } = await admin.from("billing_subscription_items").insert(rows)
-    if (error) throw error
-  }
+  const { error } = await admin.rpc("project_stripe_subscription_items", {
+    p_stripe_subscription_id: subscription.id,
+    p_items: rows,
+  })
+  if (error) throw error
 }
 
 export async function syncBillingFromSubscription(
@@ -440,6 +437,19 @@ export async function syncSubscriptionWebhook(
   await syncBillingFromSubscription(admin, subscription, userId, stripe)
 }
 
+export async function syncInvoiceSubscription(
+  admin: AdminClient,
+  invoice: Stripe.Invoice,
+  stripe: Stripe,
+): Promise<void> {
+  const subscriptionRef = invoice.subscription
+  const subscriptionId = typeof subscriptionRef === "string" ? subscriptionRef : subscriptionRef?.id
+  if (!subscriptionId) return
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+    expand: ["items.data.price", "discount.promotion_code"],
+  })
+  await syncSubscriptionWebhook(admin, subscription, stripe)
+}
 export async function syncCustomerRecord(admin: AdminClient, customer: Stripe.Customer) {
   if ("deleted" in customer && customer.deleted) return
 

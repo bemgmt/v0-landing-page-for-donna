@@ -31,11 +31,13 @@ export async function ensureReferralPromoCode(memberProfileId: string, email: st
 
   try {
     // 3. Create Coupon in Stripe for 25% off for 1 month
+    const fullCouponName = `${codeClean} - Member Referral (25% off 1 month)`
     const couponParams: Stripe.CouponCreateParams = {
       duration: "repeating",
       duration_in_months: 1,
       percent_off: 25,
-      name: `${codeClean} - Member Referral (25% off 1 month)`,
+      name: fullCouponName.slice(0, 40),
+      metadata: { donna_description: fullCouponName },
     }
 
     const coupon = await stripe.coupons.create(couponParams)
