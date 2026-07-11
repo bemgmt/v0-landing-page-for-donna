@@ -80,11 +80,13 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
   const admin = createAdminClient()
 
   // Use email to find the member_profile since Cognito is now the identity provider.
-  const { data: rawProfile, error } = await admin
+  const { data: rawProfileResult, error } = await admin
     .from("member_profiles")
     .select("*")
     .ilike("email", email.trim())
     .maybeSingle()
+
+  let rawProfile = rawProfileResult
 
   if (error) {
     console.error("[portal] member_profiles lookup failed", error)
@@ -92,7 +94,30 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
   }
 
   if (!rawProfile) {
-    return { kind: "no_member_profile", user: { id: cognitoSub || email, email } }
+    // Auto-provision member_profiles for Cognito users.
+    // The old Supabase Auth trigger (handle_new_user) only fires on auth.users inserts,
+    // which never happens for Cognito/NextAuth users.
+    const newUserId = cognitoSub || crypto.randomUUID()
+    const displayName = email.split("@")[0]
+    const { data: newProfile, error: insertError } = await admin
+      .from("member_profiles")
+      .insert({
+        user_id: newUserId,
+        email: email.trim(),
+        display_name: displayName,
+        role: "free_member",
+        is_active: true,
+      })
+      .select("*")
+      .single()
+
+    if (insertError || !newProfile) {
+      console.error("[portal] auto-provision member_profiles failed", insertError)
+      return { kind: "no_member_profile", user: { id: newUserId, email } }
+    }
+
+    console.log("[portal] auto-provisioned member_profiles for", email)
+    rawProfile = newProfile
   }
 
   const roleRaw = rawProfile.role
