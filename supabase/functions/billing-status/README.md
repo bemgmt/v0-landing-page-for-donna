@@ -13,17 +13,18 @@ Read-only billing snapshot for Donna’s backend. Stripe webhooks continue to be
 
 ```json
 {
-  "email": "string (required)",
+  "cognito_sub": "verified Cognito subject",
+  "email": "legacy fallback email",
   "requested_at": "ISO8601",
-  "nonce": "string"
+  "contract_version": "2026-07-08"
 }
 ```
 
-Missing or empty `email` → **400**.
+Both `cognito_sub` and `email` missing or empty → **400**.
 
 ## Responses
 
-- **200**: Full billing object (`plan` is Stripe price `lookup_key` or price id; `seats_purchased` is Stripe subscription item quantity; `account_status` maps from Stripe subscription status). Includes `seat_type`:
+- **200**: Full billing object (`plan` is Stripe price `lookup_key` or price id; `stripe_subscription_id` identifies the synced subscription; `seats_purchased` is Stripe subscription item quantity; `account_status` maps from Stripe subscription status). Includes `seat_type`:
   - `"purchaser"` — the email is a direct subscription owner.
   - `"invite"` — the email is a team member invited via `billing_seat_invites`. In this case `stripe_customer_id` is `null` (the purchaser's Stripe ID is not exposed).
 - **404** (unknown billing email / no subscription row / no active seat invite): `{ "email": "...", "account_status": "none" }`.
@@ -34,17 +35,17 @@ Other Stripe statuses (`incomplete`, `paused`, `inactive`, etc.) map to **`cance
 
 ## Resolution order
 
-The endpoint calls `billing_s2s_resolve_access(email)` which:
+The endpoint calls `billing_s2s_resolve_access(cognito_sub, email)` which:
 
-1. Normalizes the email (`lower(trim())`).
-2. Looks up the email as a **direct purchaser** in `billing_status_view`.
+1. Resolves the Cognito subject against `billing_accounts` first.
+2. Falls back to a normalized email (`lower(trim())`) for legacy purchaser accounts.
 3. If not found, checks `billing_seat_invites` for any invite matching this email where the **purchaser's subscription is active/trialing**.
 4. If a seat invite resolves, returns `seat_type: "invite"` with the purchaser's plan data but `stripe_customer_id: null`.
 5. If neither resolves, returns 404.
 
 ## Entitlements (out of scope here)
 
-Commercial caps (e.g. Core vs Full Toolkit seat limits) and feature gating are **not** enforced by this function. Donna should treat `plan`, `seats_purchased`, and `account_status` as inputs to its own entitlement layer.
+The billing projection returns the total included seats: Core = 3 and Full Access = 6. The purchaser consumes one included seat, so the portal permits 2 and 5 teammate invites respectively. The transactional `billing_replace_seat_invites` RPC enforces that capacity server-side.
 
 ## Supabase secrets
 

@@ -9,9 +9,14 @@ export type BillingPlanLookupKey =
 /** Included seats per product (not Stripe line-item quantity). */
 export function seatsAllowanceForPlanKey(planKey: string | null | undefined): number {
   const k = (planKey ?? "").trim()
-  if (k === STRIPE_PRICE_LOOKUP_CORE) return 2
+  if (k === STRIPE_PRICE_LOOKUP_CORE) return 3
   if (k === STRIPE_PRICE_LOOKUP_FULL) return 6
   return 1
+}
+
+/** Invite slots remaining after the subscription owner consumes one included seat. */
+export function seatInviteCapacityForPlanKey(planKey: string | null | undefined): number {
+  return Math.max(seatsAllowanceForPlanKey(planKey) - 1, 0)
 }
 
 /** Human-readable plan for portal UI (lookup_key is the stable identifier). */

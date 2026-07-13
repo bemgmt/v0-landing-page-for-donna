@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
-import { planDisplayLabel, primaryPlanKey, seatsAllowanceForPlanKey } from "@/lib/billing/plan-seats"
+import {
+  planDisplayLabel,
+  primaryPlanKey,
+  seatInviteCapacityForPlanKey,
+  seatsAllowanceForPlanKey,
+} from "@/lib/billing/plan-seats"
 import { resolveActiveSeatInvitePlan } from "@/lib/billing/resolve-subscription-plan"
 import { getPortalSession } from "@/lib/portal/session"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { sendTeamSeatInvitation } from "@/lib/email/resend"
 
 const putSchema = z.object({
@@ -29,7 +35,8 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const { supabase, billing, user, seatAccess, profile } = session
+  const { billing, user, seatAccess, profile } = session
+  const admin = createAdminClient()
 
   if (seatAccess) {
     const invited = await resolveActiveSeatInvitePlan(user.email ?? profile.email)
@@ -37,23 +44,38 @@ export async function GET() {
       mode: "team_member" as const,
       invites: [],
       seatsAllowance: invited?.seatsAllowance ?? 0,
+      inviteCapacity: 0,
       planKey: invited?.planKey ?? "",
       planLabel: invited?.planLabel ?? "Team invitation",
     })
   }
 
   const active = billing?.status === "active" || billing?.status === "trialing"
-  if (!billing?.stripe_subscription_id || !active) {
+  if (!billing?.stripe_subscription_id || !billing.stripe_customer_id || !active) {
     return NextResponse.json({
       mode: "none" as const,
       invites: [],
       seatsAllowance: 0,
+      inviteCapacity: 0,
       planKey: "",
       planLabel: "",
     })
   }
 
-  const { data: items } = await supabase
+  const { data: billingAccount, error: accountError } = await admin
+    .from("billing_accounts")
+    .select("id")
+    .eq("stripe_customer_id", billing.stripe_customer_id)
+    .maybeSingle()
+
+  if (accountError) {
+    return NextResponse.json({ error: accountError.message }, { status: 500 })
+  }
+  if (!billingAccount?.id) {
+    return NextResponse.json({ error: "Billing account is not linked to this subscription." }, { status: 409 })
+  }
+
+  const { data: items } = await admin
     .from("billing_subscription_items")
     .select("price_lookup_key, stripe_price_id")
     .eq("stripe_subscription_id", billing.stripe_subscription_id)
@@ -66,11 +88,12 @@ export async function GET() {
     items: items ?? [],
   })
   const seatsAllowance = seatsAllowanceForPlanKey(planKey)
+  const inviteCapacity = seatInviteCapacityForPlanKey(planKey)
 
-  const { data: invites, error } = await supabase
+  const { data: invites, error } = await admin
     .from("billing_seat_invites")
     .select("email, created_at")
-    .eq("purchaser_user_id", user.id)
+    .eq("billing_account_id", billingAccount.id)
     .order("created_at", { ascending: true })
 
   if (error) {
@@ -81,6 +104,7 @@ export async function GET() {
     mode: "purchaser" as const,
     invites: invites ?? [],
     seatsAllowance,
+    inviteCapacity,
     planKey,
     planLabel: planDisplayLabel(planKey),
   })
@@ -96,9 +120,10 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Only the subscription owner can edit seats." }, { status: 403 })
   }
 
-  const { supabase, billing, user } = session
+  const { billing, user } = session
+  const admin = createAdminClient()
   const active = billing?.status === "active" || billing?.status === "trialing"
-  if (!billing?.stripe_subscription_id || !active) {
+  if (!billing?.stripe_subscription_id || !billing.stripe_customer_id || !active) {
     return NextResponse.json({ error: "No active subscription." }, { status: 403 })
   }
 
@@ -115,7 +140,20 @@ export async function PUT(request: Request) {
     }
   }
 
-  const { data: items } = await supabase
+  const { data: billingAccount, error: accountError } = await admin
+    .from("billing_accounts")
+    .select("id")
+    .eq("stripe_customer_id", billing.stripe_customer_id)
+    .maybeSingle()
+
+  if (accountError) {
+    return NextResponse.json({ error: accountError.message }, { status: 500 })
+  }
+  if (!billingAccount?.id) {
+    return NextResponse.json({ error: "Billing account is not linked to this subscription." }, { status: 409 })
+  }
+
+  const { data: items } = await admin
     .from("billing_subscription_items")
     .select("price_lookup_key, stripe_price_id")
     .eq("stripe_subscription_id", billing.stripe_subscription_id)
@@ -128,35 +166,31 @@ export async function PUT(request: Request) {
     items: items ?? [],
   })
   const seatsAllowance = seatsAllowanceForPlanKey(planKey)
+  const inviteCapacity = seatInviteCapacityForPlanKey(planKey)
 
-  if (emails.length > seatsAllowance) {
+  if (emails.length > inviteCapacity) {
     return NextResponse.json(
       {
-        error: `You can add at most ${seatsAllowance} email(s) on your plan (${planKey || "current"}).`,
+        error: `You can invite at most ${inviteCapacity} teammate(s) on your plan (${planKey || "current"}); your own account uses one of the ${seatsAllowance} seats.`,
       },
       { status: 400 },
     )
   }
 
   // Retrieve existing invites before deletion to identify newly added teammates
-  const { data: oldInvites } = await supabase
+  const { data: oldInvites } = await admin
     .from("billing_seat_invites")
     .select("email")
-    .eq("purchaser_user_id", user.id)
+    .eq("billing_account_id", billingAccount.id)
 
   const oldInviteSet = new Set((oldInvites ?? []).map((row) => row.email.trim().toLowerCase()))
 
-  const { error: delErr } = await supabase.from("billing_seat_invites").delete().eq("purchaser_user_id", user.id)
-  if (delErr) {
-    return NextResponse.json({ error: delErr.message }, { status: 400 })
-  }
-
-  if (emails.length > 0) {
-    const rows = emails.map((email) => ({ purchaser_user_id: user.id, email }))
-    const { error: insErr } = await supabase.from("billing_seat_invites").insert(rows)
-    if (insErr) {
-      return NextResponse.json({ error: insErr.message }, { status: 400 })
-    }
+  const { data: savedInvites, error: saveError } = await admin.rpc("billing_replace_seat_invites", {
+    p_billing_account_id: billingAccount.id,
+    p_emails: emails,
+  })
+  if (saveError) {
+    return NextResponse.json({ error: saveError.message }, { status: 400 })
   }
 
   // Identify emails that were newly added in this request
@@ -182,8 +216,9 @@ export async function PUT(request: Request) {
 
   return NextResponse.json({
     ok: true,
-    invites: emails.map((email) => ({ email, created_at: null })),
+    invites: savedInvites ?? emails.map((email) => ({ email, created_at: null })),
     seatsAllowance,
+    inviteCapacity,
     planKey,
     planLabel,
   })

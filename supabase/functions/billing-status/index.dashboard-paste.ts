@@ -114,6 +114,7 @@ function sandboxResponseForEmail(email: string): Response | null {
       cancel_at_period_end: false,
       seats_purchased: seatsPurchased,
       seats_allowance: seatsAllowance,
+      stripe_subscription_id: `sub_sandbox_${e.replace(/[^a-z0-9]/gi, "_").slice(0, 40)}`,
       stripe_customer_id: seatType === "invite" ? null : `cus_sandbox_${e.replace(/[^a-z0-9]/gi, "_").slice(0, 40)}`,
       notification_emails: [] as string[],
       source_of_truth_at: new Date().toISOString(),
@@ -123,10 +124,10 @@ function sandboxResponseForEmail(email: string): Response | null {
   }
 
   const d = 86400000
-  if (e === "active@test.com") return base("active", "core_cloud_workspace_500", isoAddMs(30 * d), 1, 2)
-  if (e === "trial@test.com") return base("trialing", "core_cloud_workspace_500", isoAddMs(7 * d), 1, 2)
-  if (e === "pastdue@test.com") return base("past_due", "core_cloud_workspace_500", isoAddMs(-2 * d), 1, 2)
-  if (e === "canceled@test.com") return base("canceled", "core_cloud_workspace_500", isoAddMs(-60 * d), 1, 2)
+  if (e === "active@test.com") return base("active", "core_cloud_workspace_500", isoAddMs(30 * d), 1, 3)
+  if (e === "trial@test.com") return base("trialing", "core_cloud_workspace_500", isoAddMs(7 * d), 1, 3)
+  if (e === "pastdue@test.com") return base("past_due", "core_cloud_workspace_500", isoAddMs(-2 * d), 1, 3)
+  if (e === "canceled@test.com") return base("canceled", "core_cloud_workspace_500", isoAddMs(-60 * d), 1, 3)
   if (e === "team@test.com") return base("active", "full_toolkit_1000", isoAddMs(300 * d), 1, 6)
   if (e === "seatinvite@test.com") return base("active", "full_toolkit_1000", isoAddMs(300 * d), 1, 6, "invite")
   if (e === "unknown@test.com") {
@@ -176,6 +177,7 @@ function rowToSuccessResponse(row: BillingViewRow, email: string): Response {
     cancel_at_period_end: Boolean(row.cancel_at_period_end),
     seats_purchased: Number(row.seats_purchased) || 1,
     seats_allowance: Number(row.seats_allowance) || 1,
+    stripe_subscription_id: row.stripe_subscription_id ?? null,
     stripe_customer_id: isInvite ? null : (row.stripe_customer_id ?? ""),
     notification_emails: normalizeNotificationEmails(row.notification_emails),
     source_of_truth_at: new Date(row.source_of_truth_at).toISOString(),
