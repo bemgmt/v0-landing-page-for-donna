@@ -1,30 +1,48 @@
 "use client"
 
-import { createElement, useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase/client"
-
-const pricingTableId = process.env.NEXT_PUBLIC_STRIPE_PRICING_TABLE_ID ?? ""
-const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
+import { useState } from "react"
+import { signIn } from "next-auth/react"
+import { startStripeCheckout, type CheckoutTier } from "@/lib/start-checkout"
 
 export default function StripePricingTableEmbed() {
-  const [clientReferenceId, setClientReferenceId] = useState("")
+  const [pendingTier, setPendingTier] = useState<CheckoutTier | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const supabase = createClient()
-    void supabase.auth.getUser().then(({ data }) => {
-      setClientReferenceId(data.user?.id ?? "")
-    })
-  }, [])
+  async function beginCheckout(tier: CheckoutTier) {
+    setPendingTier(tier)
+    setError(null)
+    const result = await startStripeCheckout(tier)
+    if (result.ok) return
 
-  if (!pricingTableId || !publishableKey) return null
+    if (result.error?.toLowerCase().includes("unauthorized")) {
+      await signIn("cognito", { callbackUrl: `/api/checkout?tier=${tier}` })
+      return
+    }
 
-  const props: Record<string, string> = {
-    "pricing-table-id": pricingTableId,
-    "publishable-key": publishableKey,
+    setError(result.error ?? "Checkout could not be started.")
+    setPendingTier(null)
   }
-  if (clientReferenceId) {
-    props["client-reference-id"] = clientReferenceId
-  }
 
-  return <div key={clientReferenceId || "anon"}>{createElement("stripe-pricing-table", props)}</div>
+  return (
+    <div className="grid gap-5 md:grid-cols-2">
+      {([
+        { tier: "core" as const, title: "Core", description: "Cloud workspace and foundational DONNA access." },
+        { tier: "full" as const, title: "Full Toolkit", description: "Expanded toolkit, workflows, and team capacity." },
+      ]).map((plan) => (
+        <div key={plan.tier} className="rounded-2xl border border-white/10 bg-white/5 p-6 text-left">
+          <h3 className="text-xl font-semibold">{plan.title}</h3>
+          <p className="mt-2 text-sm text-foreground/70">{plan.description}</p>
+          <button
+            type="button"
+            onClick={() => void beginCheckout(plan.tier)}
+            disabled={pendingTier !== null}
+            className="mt-6 inline-flex w-full items-center justify-center rounded-lg bg-cyan-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:opacity-60"
+          >
+            {pendingTier === plan.tier ? "Opening checkout…" : "Continue to secure checkout"}
+          </button>
+        </div>
+      ))}
+      {error ? <p className="md:col-span-2 text-center text-sm text-red-300">{error}</p> : null}
+    </div>
+  )
 }
