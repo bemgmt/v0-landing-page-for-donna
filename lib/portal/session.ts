@@ -159,7 +159,7 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
           id: "",
           user_id: userId,
           stripe_customer_id: data.stripe_customer_id,
-          stripe_subscription_id: null,
+          stripe_subscription_id: data.stripe_subscription_id ?? null,
           status: data.account_status,
           current_period_end: data.current_period_end,
           updated_at: data.source_of_truth_at,

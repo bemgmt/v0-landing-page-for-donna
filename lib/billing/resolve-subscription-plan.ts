@@ -60,18 +60,23 @@ export async function resolveActiveSeatInvitePlan(
     const admin = createAdminClient()
     const { data: invites, error: invErr } = await admin
       .from("billing_seat_invites")
-      .select("purchaser_user_id")
+      .select("billing_account_id, purchaser_user_id")
       .eq("email", email)
 
     if (invErr || !invites?.length) return null
 
     for (const row of invites) {
-      const uid = row.purchaser_user_id as string
-      const { data: bs, error: subErr } = await admin
+      const billingAccountId = row.billing_account_id as string | null
+      const purchaserUserId = row.purchaser_user_id as string | null
+      let query = admin
         .from("billing_subscriptions")
         .select("stripe_subscription_id, price_lookup_key, stripe_price_id, status")
-        .eq("user_id", uid)
-        .maybeSingle()
+
+      query = billingAccountId
+        ? query.eq("billing_account_id", billingAccountId)
+        : query.eq("user_id", purchaserUserId)
+
+      const { data: bs, error: subErr } = await query.maybeSingle()
 
       if (subErr || !bs) continue
       if (bs.status !== "active" && bs.status !== "trialing") continue

@@ -7,6 +7,7 @@ type GetResponse =
       mode: "team_member"
       invites: []
       seatsAllowance: number
+      inviteCapacity: number
       planKey: string
       planLabel: string
     }
@@ -14,6 +15,7 @@ type GetResponse =
       mode: "none"
       invites: []
       seatsAllowance: number
+      inviteCapacity: number
       planKey: string
       planLabel: string
     }
@@ -21,6 +23,7 @@ type GetResponse =
       mode: "purchaser"
       invites: { email: string; created_at: string | null }[]
       seatsAllowance: number
+      inviteCapacity: number
       planKey: string
       planLabel: string
     }
@@ -118,9 +121,9 @@ export default function SeatInvitesForm() {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Add up to <span className="text-foreground font-medium">{data.seatsAllowance}</span> email
-        {data.seatsAllowance === 1 ? "" : "s"} (one per line). Each address gets partner portal access when they sign
-        in with that email.
+        Your plan includes <span className="text-foreground font-medium">{data.seatsAllowance}</span> total seats,
+        including yours. Invite up to <span className="text-foreground font-medium">{data.inviteCapacity}</span>{" "}
+        teammate{data.inviteCapacity === 1 ? "" : "s"} (one email per line).
       </p>
       <label className="block text-sm font-medium text-foreground/90" htmlFor="seat-emails">
         Team emails
