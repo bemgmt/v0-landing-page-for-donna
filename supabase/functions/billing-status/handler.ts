@@ -71,6 +71,7 @@ export type BillingBody = {
   email?: string
   cognito_sub?: string
   requested_at: string
+  contract_version: string
   nonce: string
 }
 
@@ -81,6 +82,9 @@ export function parseBillingBody(json: unknown): { ok: true; body: BillingBody }
   const cognito_sub = typeof o.cognito_sub === "string" ? o.cognito_sub.trim() : undefined
   if (!email && !cognito_sub) return { ok: false, status: 400 }
   const requested_at = typeof o.requested_at === "string" ? o.requested_at : ""
+  const contract_version = typeof o.contract_version === "string" ? o.contract_version : ""
+  if (!requested_at || Number.isNaN(Date.parse(requested_at))) return { ok: false, status: 400 }
+  if (contract_version && contract_version !== "2026-07-08") return { ok: false, status: 400 }
   const nonce = typeof o.nonce === "string" ? o.nonce : ""
   return {
     ok: true,
@@ -88,6 +92,7 @@ export function parseBillingBody(json: unknown): { ok: true; body: BillingBody }
       email,
       cognito_sub,
       requested_at,
+      contract_version,
       nonce,
     },
   }
@@ -222,6 +227,38 @@ async function consumeRateLimit(
   return { ok: true }
 }
 
+async function linkCognitoForUniqueLegacyAccount(
+  supabase: SupabaseClient,
+  cognitoSub: string,
+  email: string,
+  stripeCustomerId: string | null,
+): Promise<void> {
+  if (!stripeCustomerId) return
+  const normalizedEmail = email.trim().toLowerCase()
+  const { data: candidates, error: lookupError } = await supabase
+    .from("billing_accounts")
+    .select("id, stripe_customer_id, cognito_sub, email")
+    .ilike("email", normalizedEmail)
+
+  if (lookupError || !candidates) return
+  const exact = candidates.filter(
+    (candidate) =>
+      String(candidate.email ?? "").trim().toLowerCase() === normalizedEmail &&
+      candidate.stripe_customer_id === stripeCustomerId,
+  )
+  if (exact.length !== 1 || exact[0].cognito_sub) return
+
+  const { error: linkError } = await supabase
+    .from("billing_accounts")
+    .update({ cognito_sub: cognitoSub })
+    .eq("id", exact[0].id)
+    .is("cognito_sub", null)
+
+  if (linkError) {
+    console.error("[billing-status] Cognito link failed", { code: linkError.code })
+  }
+}
+
 export async function handleBillingRequest(req: Request, env: BillingEnv): Promise<Response> {
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204 })
@@ -269,30 +306,13 @@ export async function handleBillingRequest(req: Request, env: BillingEnv): Promi
       headers: JSON_HEADERS,
     })
   }
-  let { email, cognito_sub } = parsed.body
-  
-  if (cognito_sub) {
-    const { data: acc } = await supabase
-      .from("billing_accounts")
-      .select("email")
-      .eq("cognito_sub", cognito_sub)
-      .maybeSingle()
-    if (acc?.email) {
-      email = acc.email
-    }
-  }
+  const { email, cognito_sub } = parsed.body
 
-  if (!email) {
-    return new Response(JSON.stringify({ error: "Account not found" }), {
-      status: 404,
-      headers: JSON_HEADERS,
-    })
-  }
 
-  if (sandbox) {
+  if (sandbox && email) {
     const sand = sandboxResponseForEmail(email)
     if (sand) return sand
-    return new Response(JSON.stringify({ email, account_status: "none" }), {
+    return new Response(JSON.stringify({ email: email ?? null, account_status: "none" }), {
       status: 404,
       headers: JSON_HEADERS,
     })
@@ -312,7 +332,8 @@ export async function handleBillingRequest(req: Request, env: BillingEnv): Promi
 
   // Single RPC resolves direct purchaser first, then seat-invite fallback
   const { data, error } = await supabase.rpc("billing_s2s_resolve_access", {
-    p_email: email,
+    p_cognito_sub: cognito_sub ?? null,
+    p_email: email ?? null,
   })
 
   if (error) {
@@ -326,11 +347,15 @@ export async function handleBillingRequest(req: Request, env: BillingEnv): Promi
   const row = Array.isArray(data) ? data[0] : data
 
   if (!row) {
-    return new Response(JSON.stringify({ email, account_status: "none" }), {
+    return new Response(JSON.stringify({ email: email ?? null, account_status: "none" }), {
       status: 404,
       headers: JSON_HEADERS,
     })
   }
 
-  return rowToSuccessResponse(row as BillingViewRow, email)
+  const resolved = row as BillingViewRow
+  if (cognito_sub && email) {
+    await linkCognitoForUniqueLegacyAccount(supabase, cognito_sub, email, resolved.stripe_customer_id)
+  }
+  return rowToSuccessResponse(resolved, String(resolved.billing_email ?? email ?? ""))
 }

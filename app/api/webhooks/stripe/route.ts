@@ -33,24 +33,18 @@ export async function POST(request: Request) {
   }
 
   const admin = createAdminClient()
+  const { data: claim, error: claimError } = await admin.rpc("claim_stripe_webhook_event", {
+    p_stripe_event_id: event.id,
+    p_event_type: event.type,
+    p_stale_after_seconds: 300,
+  })
 
-  // Deduplicate by Stripe event ID
-  const { error: dedupeError } = await admin
-    .from("stripe_webhook_events")
-    .insert({
-      stripe_event_id: event.id,
-      event_type: event.type,
-    })
-
-  if (dedupeError) {
-    if (dedupeError.code === "23505") { // Postgres unique_violation
-      console.log(`[stripe webhook] Ignored duplicate event: ${event.id}`)
-      return NextResponse.json({ received: true })
-    }
-    console.error("[stripe webhook] Failed to deduplicate event:", dedupeError)
-    // Continue processing if it's not a unique violation, to allow Stripe to retry if there's an actual failure down the line,
-    // or fail here. Let's fail to be safe and let Stripe retry.
-    return NextResponse.json({ error: "Failed to process event." }, { status: 500 })
+  if (claimError) {
+    console.error("[stripe webhook] Failed to claim event:", claimError)
+    return NextResponse.json({ error: "Failed to claim event." }, { status: 500 })
+  }
+  if (claim === "completed" || claim === "processing") {
+    return NextResponse.json({ received: true, duplicate: true })
   }
 
   try {
@@ -75,9 +69,27 @@ export async function POST(request: Request) {
       default:
         break
     }
-  } catch (e) {
-    console.error("[stripe webhook]", e)
+  } catch (error) {
+    console.error("[stripe webhook]", error)
+    await admin.from("stripe_webhook_events").update({
+      status: "failed",
+      last_error: error instanceof Error ? error.message.slice(0, 2000) : "Unknown webhook error",
+      updated_at: new Date().toISOString(),
+    }).eq("stripe_event_id", event.id)
     return NextResponse.json({ error: "Webhook handler failed." }, { status: 500 })
+  }
+
+  const completedAt = new Date().toISOString()
+  const { error: completionError } = await admin.from("stripe_webhook_events").update({
+    status: "completed",
+    completed_at: completedAt,
+    last_error: null,
+    updated_at: completedAt,
+  }).eq("stripe_event_id", event.id)
+
+  if (completionError) {
+    console.error("[stripe webhook] Failed to mark event completed:", completionError)
+    return NextResponse.json({ error: "Failed to complete event." }, { status: 500 })
   }
 
   return NextResponse.json({ received: true })

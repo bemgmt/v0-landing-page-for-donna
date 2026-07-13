@@ -50,15 +50,17 @@ async function upsertBillingCustomer(
 ) {
   const email = (customer.email ?? "").trim()
   const cognitoSub = resolvedCognitoSub ?? customer.metadata?.cognito_sub ?? null
-  if (!email && !cognitoSub) return
-  await admin.from("billing_accounts").upsert(
+  if (!email && !cognitoSub) return null
+  const { data, error } = await admin.from("billing_accounts").upsert(
     {
       stripe_customer_id: stripeCustomerId,
       email,
       ...(cognitoSub ? { cognito_sub: cognitoSub } : {}),
     },
     { onConflict: "stripe_customer_id" },
-  )
+  ).select("id").single()
+  if (error) throw error
+  return data.id as string
 }
 
 export async function syncSubscriptionItems(
@@ -95,8 +97,9 @@ export async function syncBillingFromSubscription(
 
   const customer = customerId ? await stripe.customers.retrieve(customerId) : null
 
+  let billingAccountId: string | null = null
   if (customer && !("deleted" in customer && customer.deleted)) {
-    await upsertBillingCustomer(admin, customerId!, customer as Stripe.Customer, userId)
+    billingAccountId = await upsertBillingCustomer(admin, customerId!, customer as Stripe.Customer, userId)
     
     // Write cognito_sub to Stripe customer record if missing
     if ((customer as Stripe.Customer).metadata?.cognito_sub !== userId) {
@@ -122,6 +125,7 @@ export async function syncBillingFromSubscription(
     {
       user_id: userId,
       stripe_customer_id: customerId,
+      billing_account_id: billingAccountId,
       stripe_subscription_id: subscription.id,
       status: subscription.status,
       current_period_end: subscription.current_period_end
@@ -297,7 +301,7 @@ export async function lookupMemberUserIdByEmail(
 }
 
 /**
- * Resolve Supabase auth user id for a Checkout session: explicit ids first, then checkout email → member_profiles.
+ * Resolve Supabase auth user id for a Checkout session: explicit ids first, then checkout email â†’ member_profiles.
  */
 export async function resolveUserIdForCheckoutSession(
   admin: AdminClient,

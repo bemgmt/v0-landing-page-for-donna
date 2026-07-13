@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import Stripe from "stripe"
-import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { STRIPE_PRICE_LOOKUP_CORE, STRIPE_PRICE_LOOKUP_FULL } from "@/lib/billing/plan-seats"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
@@ -41,10 +41,7 @@ async function createCheckoutSession(params: {
       }
     }
 
-    let supabase: any = null
-    if (supabaseConfigured) {
-      supabase = await createClient()
-    }
+    const supabase = supabaseConfigured ? createAdminClient() : null
 
     const stripe = new Stripe(secretKey)
 
@@ -63,7 +60,7 @@ async function createCheckoutSession(params: {
     if (!priceId) {
       console.error("[checkout] No Stripe price for lookup_key:", lookupKey)
       return {
-        error: `No active Stripe price found for lookup_key "${lookupKey}". Set lookup_key on the Price in Stripe Dashboard (Products → Price → Lookup key) and/or set STRIPE_PRICE_LOOKUP_CORE / STRIPE_PRICE_LOOKUP_FULL.`,
+        error: `No active Stripe price found for lookup_key "${lookupKey}". Set lookup_key on the Price in Stripe Dashboard (Products â†’ Price â†’ Lookup key) and/or set STRIPE_PRICE_LOOKUP_CORE / STRIPE_PRICE_LOOKUP_FULL.`,
         code: "STRIPE_PRICE_LOOKUP",
         status: 503,
       }
@@ -114,15 +111,22 @@ async function createCheckoutSession(params: {
       sessionParams.client_reference_id = user.cognito_sub || user.id
 
       let billingAccountId = ""
-      if (supabase && user.email) {
-        const { data: billingAccount } = await supabase
+      let stripeCustomerId = ""
+      if (supabase && user.cognito_sub) {
+        let { data: billingAccount } = await supabase
           .from("billing_accounts")
-          .select("id")
-          .ilike("email", user.email.trim())
+          .select("id, stripe_customer_id")
+          .eq("cognito_sub", user.cognito_sub)
           .maybeSingle()
-        if (billingAccount) {
-          billingAccountId = billingAccount.id
+        if (!billingAccount && user.email) {
+          billingAccount = (await supabase
+            .from("billing_accounts")
+            .select("id, stripe_customer_id")
+            .ilike("email", user.email.trim())
+            .maybeSingle()).data
         }
+        billingAccountId = billingAccount?.id ?? ""
+        stripeCustomerId = billingAccount?.stripe_customer_id ?? ""
       }
 
       sessionParams.metadata = { 
@@ -139,7 +143,9 @@ async function createCheckoutSession(params: {
           ...(billingAccountId ? { billing_account_id: billingAccountId } : {})
         },
       }
-      if (user.email) {
+      if (stripeCustomerId) {
+        sessionParams.customer = stripeCustomerId
+      } else if (user.email) {
         sessionParams.customer_email = user.email
       }
     }

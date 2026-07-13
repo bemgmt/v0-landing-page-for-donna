@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect } from "react"
-import Script from "next/script"
 import { useInView } from "react-intersection-observer"
 import { track } from "@vercel/analytics"
 import { pushDataLayer } from "@/lib/data-layer"
@@ -9,11 +8,8 @@ import PricingComparisonChart from "@/components/pricing-comparison-chart"
 import StripePricingTableEmbed from "@/components/stripe-pricing-table-embed"
 import Link from "next/link"
 
-const pricingTableId = process.env.NEXT_PUBLIC_STRIPE_PRICING_TABLE_ID ?? ""
-const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
-
 export default function Pricing() {
-  const { ref, inView } = useInView({ threshold: 0.2, once: true })
+  const { ref, inView } = useInView({ threshold: 0.2, triggerOnce: true })
 
   useEffect(() => {
     if (inView) {
@@ -26,8 +22,6 @@ export default function Pricing() {
     const form = document.getElementById("demo-form")
     form?.scrollIntoView({ behavior: "smooth" })
   }
-
-  const hasStripeEmbed = pricingTableId.length > 0 && publishableKey.length > 0
 
   return (
     <section id="pricing" ref={ref} className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
@@ -45,19 +39,7 @@ export default function Pricing() {
         </div>
 
         <div className="w-full max-w-6xl mx-auto min-h-[200px]">
-          {hasStripeEmbed ? (
-            <>
-              <Script src="https://js.stripe.com/v3/pricing-table.js" strategy="afterInteractive" />
-              <StripePricingTableEmbed />
-            </>
-          ) : process.env.NODE_ENV === "development" ? (
-            <p className="rounded-xl border border-white/10 bg-white/5 p-6 text-center text-sm text-foreground/70">
-              Set{" "}
-              <code className="text-foreground/90">NEXT_PUBLIC_STRIPE_PRICING_TABLE_ID</code> and{" "}
-              <code className="text-foreground/90">NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</code> in{" "}
-              <code className="text-foreground/90">.env.local</code> to render the Stripe pricing table.
-            </p>
-          ) : null}
+          <StripePricingTableEmbed />
         </div>
 
         <div className="mt-10 text-center">
@@ -78,7 +60,7 @@ export default function Pricing() {
         <div className="mt-10 text-center">
           <p className="text-base sm:text-lg text-foreground/80 mt-6">
             A single fragmented tool such as ZoomInfo can be $1,500 / month, and a tool stack like GHL plus email
-            workflows adds more cost while still delivering only a portion of what DONNA offers — at early access
+            workflows adds more cost while still delivering only a portion of what DONNA offers â€” at early access
             pricing.
           </p>
           <div className="mt-8 flex justify-center">
