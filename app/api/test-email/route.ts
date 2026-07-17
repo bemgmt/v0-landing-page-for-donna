@@ -1,7 +1,30 @@
+import { timingSafeEqual } from "node:crypto"
 import { NextResponse } from "next/server"
 import { sendEmail, getGlassmorphicLayout } from "@/lib/email/resend"
 
+export const runtime = "nodejs"
+export const dynamic = "force-dynamic"
+
+function isAuthorized(request: Request): boolean {
+  const expected = process.env.EMAIL_DIAGNOSTIC_TOKEN || process.env.DONNA_BILLING_TOKEN
+  const authorization = request.headers.get("authorization") ?? ""
+  const supplied = authorization.startsWith("Bearer ") ? authorization.slice(7).trim() : ""
+  if (!expected || !supplied) return false
+
+  const expectedBytes = Buffer.from(expected)
+  const suppliedBytes = Buffer.from(supplied)
+  return expectedBytes.length === suppliedBytes.length && timingSafeEqual(expectedBytes, suppliedBytes)
+}
+
 export async function GET() {
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405, headers: { Allow: "POST" } })
+}
+
+export async function POST(request: Request) {
+  if (!isAuthorized(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
   try {
     const hasApiKey = !!process.env.RESEND_API_KEY
     const sender = process.env.RESEND_FROM_EMAIL || "DONNA <derek@aidonna.co>"
@@ -65,11 +88,6 @@ export async function GET() {
       success: true,
       message: "Resend integration verified and diagnostic email sent successfully!",
       result,
-      config: {
-        hasApiKey: true,
-        sender,
-        recipient,
-      },
     })
   } catch (error) {
     console.error("[test-email] Diagnostic error:", error)
