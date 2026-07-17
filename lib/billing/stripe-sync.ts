@@ -4,6 +4,7 @@ import Stripe from "stripe"
 import { sendOpsSubscriptionAlert } from "@/lib/email/send-ops-subscription-alert"
 import { sendUserSubscriptionWelcome } from "@/lib/email/resend"
 import { planDisplayLabel, primaryPlanKey } from "@/lib/billing/plan-seats"
+import { shouldProjectIncomingSubscription } from "@/lib/billing/subscription-selection"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 export type AdminClient = ReturnType<typeof createAdminClient>
@@ -51,16 +52,14 @@ async function upsertBillingCustomer(
   const email = (customer.email ?? "").trim()
   const cognitoSub = resolvedCognitoSub ?? customer.metadata?.cognito_sub ?? null
   if (!email && !cognitoSub) return null
-  const { data, error } = await admin.from("billing_accounts").upsert(
-    {
-      stripe_customer_id: stripeCustomerId,
-      email,
-      ...(cognitoSub ? { cognito_sub: cognitoSub } : {}),
-    },
-    { onConflict: "stripe_customer_id" },
-  ).select("id").single()
+  const { data, error } = await admin.rpc("link_billing_account_identity", {
+    p_stripe_customer_id: stripeCustomerId,
+    p_email: email,
+    p_cognito_sub: cognitoSub,
+    p_reassign_identity: true,
+  })
   if (error) throw error
-  return data.id as string
+  return data as string
 }
 
 export async function syncSubscriptionItems(
@@ -438,6 +437,42 @@ export async function syncSubscriptionWebhook(
     expand: ["items.data.price", "discount.promotion_code"],
   })
 
+  const { data: projected, error: projectedError } = await admin
+    .from("billing_subscriptions")
+    .select("stripe_subscription_id, status")
+    .eq("user_id", userId)
+    .maybeSingle()
+
+  if (projectedError) throw projectedError
+
+  let current = projected?.stripe_subscription_id
+    ? { id: projected.stripe_subscription_id as string, status: String(projected.status ?? "") }
+    : null
+
+  if (current && current.id !== subscription.id) {
+    try {
+      const currentStripeSubscription = await stripe.subscriptions.retrieve(current.id)
+      current = { id: current.id, status: currentStripeSubscription.status }
+    } catch (error) {
+      console.warn("[stripe-sync] could not refresh currently projected subscription", {
+        currentSubscriptionId: current.id,
+        incomingSubscriptionId: subscription.id,
+        error: error instanceof Error ? error.message : String(error),
+      })
+    }
+  }
+
+  if (!shouldProjectIncomingSubscription(current, { id: subscription.id, status: subscription.status })) {
+    console.info("[stripe-sync] ignored non-authoritative overlapping subscription", {
+      userId,
+      currentSubscriptionId: current?.id ?? null,
+      currentStatus: current?.status ?? null,
+      incomingSubscriptionId: subscription.id,
+      incomingStatus: subscription.status,
+    })
+    return
+  }
+
   await syncBillingFromSubscription(admin, subscription, userId, stripe)
 }
 
@@ -462,14 +497,13 @@ export async function syncCustomerRecord(admin: AdminClient, customer: Stripe.Cu
   const cognitoSub = customer.metadata?.cognito_sub ?? null
   if (!email && !cognitoSub) return
 
-  await admin.from("billing_accounts").upsert(
-    {
-      stripe_customer_id: customerId,
-      email,
-      ...(cognitoSub ? { cognito_sub: cognitoSub } : {}),
-    },
-    { onConflict: "stripe_customer_id" },
-  )
+  const { error: accountError } = await admin.rpc("link_billing_account_identity", {
+    p_stripe_customer_id: customerId,
+    p_email: email,
+    p_cognito_sub: cognitoSub,
+    p_reassign_identity: false,
+  })
+  if (accountError) throw accountError
 
   const notificationEmails = parseNotificationEmails(customer)
   const { error } = await admin
