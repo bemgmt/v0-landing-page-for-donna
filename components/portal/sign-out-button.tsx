@@ -8,9 +8,13 @@ export default function SignOutButton() {
 
   async function signOut() {
     setPending(true)
-    await nextAuthSignOut({ redirect: false })
-    // Route through the Cognito hosted-UI logout so the shared session dies too.
-    window.location.href = "/api/auth/logout"
+    try {
+      await nextAuthSignOut({ redirect: false })
+      // Route through the Cognito hosted-UI logout so the shared session dies too.
+      window.location.href = "/api/auth/logout"
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
