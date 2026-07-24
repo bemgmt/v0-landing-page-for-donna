@@ -10,6 +10,7 @@ import { resolveActiveSeatInvitePlan, resolveSubscriptionPlan } from "@/lib/bill
 import { ensureReferralPromoCode } from "@/lib/billing/promo-codes"
 import { hasPartnerCapabilities } from "@/lib/auth/roles"
 import { getPortalSession } from "@/lib/portal/session"
+import { DONNA_APP_HANDOFF_URL } from "@/lib/donna-app"
 import { fetchPortalCopy } from "@/lib/sanity/client"
 
 export default async function PortalDashboardPage() {
@@ -54,7 +55,7 @@ export default async function PortalDashboardPage() {
   const promoCodes = await ensureReferralPromoCode(profile.id, user.email ?? profile.email)
 
   const quickLinks: ActionItem[] = [
-    { title: "Open DONNA App", href: "https://app.bemdonna.com", external: true },
+    { title: "Open DONNA App", href: DONNA_APP_HANDOFF_URL },
     { title: "Request Desktop App", description: "Email us to request the native desktop application", href: "mailto:donna@bemdonna.com?subject=Desktop%20DONNA%20requested", external: true },
     { title: "Adding Seats", description: "Manage your subscription and team members", href: "/portal/billing" },
     { title: "Support Requests", description: "Get help from the DONNA team", href: "/portal/support" },

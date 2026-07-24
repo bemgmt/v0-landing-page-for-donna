@@ -6,6 +6,7 @@ import { useState } from "react"
 import type { MemberRole } from "@/lib/auth/roles"
 import { hasPartnerCapabilities } from "@/lib/auth/roles"
 import SignOutButton from "@/components/portal/sign-out-button"
+import { DONNA_APP_HANDOFF_URL } from "@/lib/donna-app"
 
 type NavItem = { href: string; label: string }
 
@@ -109,9 +110,7 @@ export default function PortalShell({ role, subscriptionActive, seatAccess, disp
         >
           <div className="px-3 pb-2">
             <a
-              href="https://app.bemdonna.com"
-              target="_blank"
-              rel="noopener noreferrer"
+              href={DONNA_APP_HANDOFF_URL}
               className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-cyan-500/10 text-cyan-400 border border-cyan-500/25 rounded-lg text-sm font-medium hover:bg-cyan-500/20 hover:border-cyan-400/40 transition-colors"
             >
               Go to DONNA app

@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server"
 import Stripe from "stripe"
 import { getPortalSession } from "@/lib/portal/session"
+import { getSiteUrl } from "@/lib/site-url"
 
 export async function POST() {
   const secretKey = process.env.STRIPE_SECRET_KEY
-  const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://bemdonna.com").replace(/\/$/, "")
+  const baseUrl = getSiteUrl()
 
   if (!secretKey?.trim()) {
     return NextResponse.json(

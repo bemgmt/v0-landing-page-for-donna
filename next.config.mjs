@@ -10,7 +10,7 @@ const nextConfig = {
     return [
       {
         source: '/demo/:path*',
-        destination: process.env.NEXT_PUBLIC_DEMO_URL || 'https://donna-facelift.vercel.app/:path*',
+        destination: process.env.NEXT_PUBLIC_DEMO_URL || 'https://donna-facelift.vercel.app/demo/:path*',
       },
     ]
   },
