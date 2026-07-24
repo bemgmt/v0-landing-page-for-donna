@@ -10,6 +10,12 @@ export async function GET() {
   const clientId = process.env.COGNITO_CLIENT_ID?.trim() ?? ""
   const logoutUri = getSiteUrl()
 
+  // Without the client id the Cognito logout URL lands on an error page.
+  // Fall back to the portal home; the NextAuth cookie is already cleared.
+  if (!clientId) {
+    return NextResponse.redirect(logoutUri)
+  }
+
   const url = `${domain}/logout?client_id=${encodeURIComponent(clientId)}&logout_uri=${encodeURIComponent(logoutUri)}`
   return NextResponse.redirect(url)
 }
