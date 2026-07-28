@@ -55,6 +55,18 @@ Do not change Cognito configuration as part of this handoff without separate, ex
 - Make first-login provisioning transactional and idempotent under retries.
 - Include a rollback-safe migration for existing Supabase-auth, Cognito, purchaser, and invited-seat identities.
 
+## 4. Remaining legacy auth and role RPC exposure
+
+The post-migration Supabase security advisor no longer reports the privileged billing RPCs. It still reports anonymous and authenticated execution on these legacy `SECURITY DEFINER` functions:
+
+- `public.auth_profile_id()`
+- `public.handle_new_user()`
+- `public.is_staff_or_admin()`
+- `public.member_can_access_doc(min_role text)`
+- `public.sync_member_to_drive_member()`
+
+Do not blindly revoke these grants. Inventory trigger, RLS-policy, and application dependencies first, then move each function to `SECURITY INVOKER` or explicit least-privilege execution as its real callers allow. This work belongs with the identity-mapping redesign because these helpers assume Supabase JWT identity semantics.
+
 ## Regression contract
 
 - `/portal/profile?tab=security` returns to that exact destination after sign-in.
