@@ -1,7 +1,7 @@
 # Auth team handoff: Cognito recovery and identity mapping
 
-Date: 2026-07-27  
-Production app: `https://aidonna.co`  
+Date: 2026-07-27
+Production app: `https://aidonna.co`
 Verified app build: `dbaf45e53ec0ec69887e874fac4d8c5d662727a9`
 
 ## Guardrail
