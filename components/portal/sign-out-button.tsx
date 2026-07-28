@@ -8,7 +8,11 @@ export default function SignOutButton() {
 
   async function signOut() {
     setPending(true)
-    await nextAuthSignOut({ callbackUrl: "/" })
+    try {
+      await nextAuthSignOut({ redirect: false })
+    } finally {
+      window.location.assign("/api/auth/logout")
+    }
   }
 
   return (

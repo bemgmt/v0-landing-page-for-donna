@@ -4,6 +4,7 @@ import LoginPanel from "@/components/auth/login-panel"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { logAuthEvent } from "@/lib/auth/diagnostics"
+import { safeReturnPath } from "@/lib/auth/return-path"
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -17,7 +18,7 @@ export default async function LoginPage({
   searchParams: Promise<{ next?: string; error?: string; reason?: string; mode?: string; correlationId?: string }>
 }) {
   const params = await searchParams
-  let nextPath = typeof params.next === "string" && params.next.startsWith("/") ? params.next : "/portal"
+  let nextPath = safeReturnPath(params.next)
   if (params.mode === "partner" && nextPath === "/portal") {
     nextPath = "/partner"
   }

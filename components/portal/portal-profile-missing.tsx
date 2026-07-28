@@ -16,6 +16,11 @@ export default function PortalProfileMissing({ email }: Props) {
           Something went wrong on our end - please try again in a few minutes.
         </p>
         <div className="flex flex-col items-center gap-2 mb-8">
+          {email ? (
+            <p className="text-sm text-foreground">
+              Signed in as <span className="font-medium">{email}</span>
+            </p>
+          ) : null}
           <p className="text-sm text-muted-foreground">
             If the issue persists, please contact{" "}
             <a href="mailto:info@bemdonna.com" className="text-cyan-300 hover:underline">

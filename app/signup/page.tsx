@@ -49,16 +49,21 @@ export default function SignupPage() {
         </p>
         
         {error && (
-          <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-6 text-center text-sm text-red-400">
+          <div role="alert" className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-6 text-center text-sm text-red-400">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSignup} className="flex flex-col gap-4">
           <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-1">Email address</label>
+            <label htmlFor="signup-email" className="block text-sm font-medium text-muted-foreground mb-1">
+              Email address
+            </label>
             <input
+              id="signup-email"
+              name="email"
               type="email"
+              autoComplete="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -67,9 +72,14 @@ export default function SignupPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-1">Password</label>
+            <label htmlFor="signup-password" className="block text-sm font-medium text-muted-foreground mb-1">
+              Password
+            </label>
             <input
+              id="signup-password"
+              name="password"
               type="password"
+              autoComplete="new-password"
               required
               minLength={8}
               value={password}

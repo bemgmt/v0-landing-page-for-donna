@@ -1,5 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
+import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
 import PortalConfigError from "@/components/portal/portal-config-error"
 import PortalProfileMissing from "@/components/portal/portal-profile-missing"
 import PortalShell from "@/components/portal/portal-shell"
+import { portalReturnPath } from "@/lib/auth/return-path"
 import { resolvePortalLayoutState } from "@/lib/portal/session"
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
@@ -18,7 +20,9 @@ export default async function PortalLayout({ children }: { children: React.React
   }
 
   if (state.kind === "unauthenticated") {
-    redirect("/login?next=/portal")
+    const requestHeaders = await headers()
+    const nextPath = portalReturnPath(requestHeaders.get("x-donna-request-path"))
+    redirect(`/login?next=${encodeURIComponent(nextPath)}`)
   }
 
   if (state.kind === "no_member_profile") {

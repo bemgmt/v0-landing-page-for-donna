@@ -1,7 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function middleware(request: NextRequest) {
-  const response = NextResponse.next()
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set("x-donna-request-path", `${request.nextUrl.pathname}${request.nextUrl.search}`)
+
+  const response = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  })
   if (process.env.VERCEL_ENV === "preview") {
     response.headers.set("X-Robots-Tag", "noindex, nofollow")
   }
