@@ -42,7 +42,40 @@ async function createCheckoutSession(params: {
     }
 
     const supabase = supabaseConfigured ? createAdminClient() : null
+    if (!supabase) {
+      return { error: "The portal profile store is not configured.", code: "PROFILE_STORE", status: 503 }
+    }
 
+    let memberProfile: { id: string; user_id: string | null; cognito_sub: string | null } | null = null
+
+    if (supabase && user?.cognito_sub) {
+      const { data, error } = await supabase
+        .from("member_profiles")
+        .select("id, user_id, cognito_sub")
+        .eq("cognito_sub", user.cognito_sub)
+        .maybeSingle()
+
+      if (error) {
+        console.error("[checkout] Cognito profile lookup failed", error)
+        return { error: "Your portal profile could not be loaded.", code: "PROFILE_LOOKUP", status: 500 }
+      }
+      if (!data) {
+        return {
+          error: "Your portal profile is still being prepared. Open the portal and try checkout again.",
+          code: "PROFILE_NOT_READY",
+          status: 409,
+        }
+      }
+      memberProfile = data
+    }
+
+    if (!memberProfile) {
+      return {
+        error: "Your portal profile is still being prepared. Open the portal and try checkout again.",
+        code: "PROFILE_NOT_READY",
+        status: 409,
+      }
+    }
     const stripe = new Stripe(secretKey)
 
     const prices = await stripe.prices.list({
@@ -108,41 +141,33 @@ async function createCheckoutSession(params: {
     }
 
     if (user) {
-      sessionParams.client_reference_id = user.cognito_sub || user.id
+      sessionParams.client_reference_id = memberProfile.id
 
       let billingAccountId = ""
       let stripeCustomerId = ""
-      if (supabase && user.cognito_sub) {
-        let { data: billingAccount } = await supabase
+      if (supabase && user?.cognito_sub) {
+        const { data: billingAccount } = await supabase
           .from("billing_accounts")
           .select("id, stripe_customer_id")
-          .eq("cognito_sub", user.cognito_sub)
+          .eq("member_profile_id", memberProfile.id)
           .maybeSingle()
-        if (!billingAccount && user.email) {
-          billingAccount = (await supabase
-            .from("billing_accounts")
-            .select("id, stripe_customer_id")
-            .ilike("email", user.email.trim())
-            .maybeSingle()).data
-        }
         billingAccountId = billingAccount?.id ?? ""
         stripeCustomerId = billingAccount?.stripe_customer_id ?? ""
       }
 
-      sessionParams.metadata = { 
-        supabase_user_id: user.id,
+      const identityMetadata: Record<string, string> = {
+        member_profile_id: memberProfile.id,
         cognito_sub: user.cognito_sub || "",
         email: user.email || "",
-        ...(billingAccountId ? { billing_account_id: billingAccountId } : {})
+        ...(billingAccountId ? { billing_account_id: billingAccountId } : {}),
       }
-      sessionParams.subscription_data = {
-        metadata: { 
-          supabase_user_id: user.id,
-          cognito_sub: user.cognito_sub || "",
-          email: user.email || "",
-          ...(billingAccountId ? { billing_account_id: billingAccountId } : {})
-        },
+      if (memberProfile.user_id) {
+        identityMetadata.supabase_user_id = memberProfile.user_id
       }
+
+      sessionParams.metadata = identityMetadata
+      sessionParams.subscription_data = { metadata: identityMetadata }
+
       if (stripeCustomerId) {
         sessionParams.customer = stripeCustomerId
       } else if (user.email) {
