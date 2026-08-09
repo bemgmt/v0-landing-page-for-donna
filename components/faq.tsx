@@ -26,12 +26,16 @@ export default function FAQ({ id, hideHeading = false }: { id?: string; hideHead
               style={{ animationDelay: `${index * 50}ms` }}
             >
               <button
+                id={`faq-question-${index}`}
                 type="button"
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                aria-expanded={openIndex === index}
+                aria-controls={`faq-answer-${index}`}
                 className="w-full p-4 flex items-center justify-between hover:bg-white/5 transition-colors text-left"
               >
                 <span className="font-semibold">{faq.question}</span>
                 <ChevronDown
+                  aria-hidden="true"
                   size={20}
                   className={`flex-shrink-0 text-accent transition-transform duration-300 ${
                     openIndex === index ? "rotate-180" : ""
@@ -39,9 +43,15 @@ export default function FAQ({ id, hideHeading = false }: { id?: string; hideHead
                 />
               </button>
 
-              {openIndex === index ? (
-                <div className="px-4 pb-4 border-t border-white/10 text-foreground/70">{faq.answer}</div>
-              ) : null}
+              <div
+                id={`faq-answer-${index}`}
+                role="region"
+                aria-labelledby={`faq-question-${index}`}
+                hidden={openIndex !== index}
+                className="px-4 pb-4 border-t border-white/10 text-foreground/70"
+              >
+                {faq.answer}
+              </div>
             </div>
           ))}
         </div>

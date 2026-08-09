@@ -9,7 +9,8 @@ import { autoSyncUserSubscription } from "@/lib/billing/stripe-sync"
 
 export type MemberProfileRow = {
   id: string
-  user_id: string
+  user_id: string | null
+  cognito_sub: string | null
   role: MemberRole
   display_name: string | null
   email: string | null
@@ -39,7 +40,7 @@ export type BillingRow = {
 
 export type PortalSession = {
   supabase: SupabaseClient
-  user: { id: string; email?: string | null }
+  user: { id: string; cognitoSub: string | null; email?: string | null }
   profile: MemberProfileRow
   billing: BillingRow | null
   subscriptionActive: boolean
@@ -79,31 +80,65 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
 
   const admin = createAdminClient()
 
-  // Use email to find the member_profile since Cognito is now the identity provider.
-  const { data: rawProfileResult, error } = await admin
+  if (!cognitoSub || typeof cognitoSub !== "string") {
+    return { kind: "no_member_profile", user: { id: email, email } }
+  }
+
+  const normalizedEmail = email.trim().toLowerCase()
+  const { data: profileBySubject, error: subjectLookupError } = await admin
     .from("member_profiles")
     .select("*")
-    .ilike("email", email.trim())
+    .eq("cognito_sub", cognitoSub)
     .maybeSingle()
 
-  let rawProfile = rawProfileResult
+  if (subjectLookupError) {
+    console.error("[portal] member_profiles Cognito lookup failed", subjectLookupError)
+    return { kind: "no_member_profile", user: { id: cognitoSub, email } }
+  }
 
-  if (error) {
-    console.error("[portal] member_profiles lookup failed", error)
-    return { kind: "no_member_profile", user: { id: cognitoSub || email, email } }
+  let rawProfile = profileBySubject
+
+  if (!rawProfile) {
+    const { data: emailCandidates, error: emailLookupError } = await admin
+      .from("member_profiles")
+      .select("*")
+      .ilike("email", normalizedEmail)
+      .limit(2)
+
+    if (emailLookupError) {
+      console.error("[portal] legacy member profile lookup failed", emailLookupError)
+      return { kind: "no_member_profile", user: { id: cognitoSub, email } }
+    }
+
+    const exactCandidates = (emailCandidates ?? []).filter(
+      (candidate) => candidate.email?.trim().toLowerCase() === normalizedEmail,
+    )
+    const legacyProfile = exactCandidates.length === 1 ? exactCandidates[0] : null
+
+    if (legacyProfile && !legacyProfile.cognito_sub) {
+      const { data: claimedProfile, error: claimError } = await admin
+        .from("member_profiles")
+        .update({ cognito_sub: cognitoSub, email: normalizedEmail })
+        .eq("id", legacyProfile.id)
+        .is("cognito_sub", null)
+        .select("*")
+        .maybeSingle()
+
+      if (claimError) {
+        console.error("[portal] legacy profile Cognito claim failed", claimError)
+      }
+      rawProfile = claimedProfile
+    }
   }
 
   if (!rawProfile) {
-    // Auto-provision member_profiles for Cognito users.
-    // The old Supabase Auth trigger (handle_new_user) only fires on auth.users inserts,
-    // which never happens for Cognito/NextAuth users.
-    const newUserId = cognitoSub || crypto.randomUUID()
-    const displayName = email.split("@")[0]
+    const displayName = normalizedEmail.split("@")[0]
     const { data: newProfile, error: insertError } = await admin
       .from("member_profiles")
       .insert({
-        user_id: newUserId,
-        email: email.trim(),
+        user_id: null,
+        cognito_sub: cognitoSub,
+        email: normalizedEmail,
         display_name: displayName,
         role: "free_member",
         is_active: true,
@@ -112,17 +147,24 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
       .single()
 
     if (insertError || !newProfile) {
-      console.error("[portal] auto-provision member_profiles failed", insertError)
-      return { kind: "no_member_profile", user: { id: newUserId, email } }
+      const { data: concurrentlyCreated } = await admin
+        .from("member_profiles")
+        .select("*")
+        .eq("cognito_sub", cognitoSub)
+        .maybeSingle()
+
+      if (!concurrentlyCreated) {
+        console.error("[portal] auto-provision member_profiles failed", insertError)
+        return { kind: "no_member_profile", user: { id: cognitoSub, email } }
+      }
+      rawProfile = concurrentlyCreated
+    } else {
+      rawProfile = newProfile
     }
-
-    console.log("[portal] auto-provisioned member_profiles for", email)
-    rawProfile = newProfile
   }
-
   const roleRaw = rawProfile.role
   const role = isRole(roleRaw) ? roleRaw : "free_member"
-  const userId = rawProfile.user_id
+  const billingIdentityId = cognitoSub || rawProfile.user_id || rawProfile.id
 
   const profile = {
     ...rawProfile,
@@ -157,7 +199,7 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
         }
         billingRow = {
           id: "",
-          user_id: userId,
+          user_id: billingIdentityId,
           stripe_customer_id: data.stripe_customer_id,
           stripe_subscription_id: data.stripe_subscription_id ?? null,
           status: data.account_status,
@@ -168,7 +210,7 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
       } else {
         console.error("[portal] billing status fetch returned", resp.status)
         // Auto sync if not found/failed? 
-        if (email) await autoSyncUserSubscription(admin, userId, email)
+        if (email) await autoSyncUserSubscription(admin, billingIdentityId, email)
       }
     } catch (err) {
       console.error("[portal] billing status fetch failed", err)
@@ -177,7 +219,7 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
 
   const session: PortalSession = {
     supabase,
-    user: { id: userId, email },
+    user: { id: rawProfile.id, cognitoSub, email },
     profile,
     billing: billingRow,
     subscriptionActive,

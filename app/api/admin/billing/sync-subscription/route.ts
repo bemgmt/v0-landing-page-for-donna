@@ -157,19 +157,8 @@ export async function POST(request: Request) {
     )
   }
 
-  await syncBillingFromSubscription(admin, subscription, userId, stripe)
-
-  const shouldBackfillStripeMetadata = resolutionSource === "body" || resolutionSource === "email"
-  let stripe_metadata_updated = false
-  if (shouldBackfillStripeMetadata && subscription.metadata?.supabase_user_id !== userId) {
-    const nextMeta: Record<string, string> = {}
-    for (const [k, v] of Object.entries(subscription.metadata ?? {})) {
-      if (typeof v === "string") nextMeta[k] = v
-    }
-    nextMeta.supabase_user_id = userId
-    await stripe.subscriptions.update(subscription.id, { metadata: nextMeta })
-    stripe_metadata_updated = true
-  }
+  const { stripeMetadataUpdated } = await syncBillingFromSubscription(admin, subscription, userId, stripe)
+  const stripe_metadata_updated = stripeMetadataUpdated
 
   await admin.from("audit_events").insert({
     actor_profile_id: session.profile.id,

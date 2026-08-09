@@ -13,42 +13,42 @@ export default function Footer() {
           AI operational infrastructure for SMBs
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-foreground/60">
-          <Link href="/what-is-donna" className="hover:text-foreground transition-colors">
+          <Link href="/what-is-donna" className="inline-flex min-h-11 items-center px-1 hover:text-foreground transition-colors">
             What is DONNA
           </Link>
-          <Link href="/early-adopter-program" className="hover:text-foreground transition-colors">
+          <Link href="/early-adopter-program" className="inline-flex min-h-11 items-center px-1 hover:text-foreground transition-colors">
             Early Adopter Program
           </Link>
-          <Link href="/donna-intelligence-network" className="hover:text-foreground transition-colors">
+          <Link href="/donna-intelligence-network" className="inline-flex min-h-11 items-center px-1 hover:text-foreground transition-colors">
             Intelligence Network
           </Link>
-          <Link href="/tool-audit" className="hover:text-foreground transition-colors">
+          <Link href="/tool-audit" className="inline-flex min-h-11 items-center px-1 hover:text-foreground transition-colors">
             Tool Stack Audit
           </Link>
-          <Link href="/faq" className="hover:text-foreground transition-colors">
+          <Link href="/faq" className="inline-flex min-h-11 items-center px-1 hover:text-foreground transition-colors">
             FAQ
           </Link>
-          <Link href="/learn" className="hover:text-foreground transition-colors">
+          <Link href="/learn" className="inline-flex min-h-11 items-center px-1 hover:text-foreground transition-colors">
             Class Materials
           </Link>
-          <Link href="/industries/real-estate" className="hover:text-foreground transition-colors">
+          <Link href="/industries/real-estate" className="inline-flex min-h-11 items-center px-1 hover:text-foreground transition-colors">
             Real estate
           </Link>
-          <Link href="/contact" className="hover:text-foreground transition-colors">
+          <Link href="/contact" className="inline-flex min-h-11 items-center px-1 hover:text-foreground transition-colors">
             Contact
           </Link>
-          <Link href="/return-policy" className="hover:text-foreground transition-colors">
+          <Link href="/return-policy" className="inline-flex min-h-11 items-center px-1 hover:text-foreground transition-colors">
             Return Policy
           </Link>
-          <Link href="/privacy" className="hover:text-foreground transition-colors">
+          <Link href="/privacy" className="inline-flex min-h-11 items-center px-1 hover:text-foreground transition-colors">
             Privacy
           </Link>
-          <Link href="/security" className="hover:text-foreground transition-colors">
+          <Link href="/security" className="inline-flex min-h-11 items-center px-1 hover:text-foreground transition-colors">
             Security
           </Link>
           <a
             href="mailto:info@bemdonna.com"
-            className="hover:text-foreground transition-colors"
+            className="inline-flex min-h-11 items-center px-1 hover:text-foreground transition-colors"
             onClick={() =>
               pushDataLayer({ event: "outbound_click", link_url: "mailto:info@bemdonna.com", link_text: "email" })
             }

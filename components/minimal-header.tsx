@@ -25,7 +25,7 @@ export default function MinimalHeader() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex min-h-11 items-center gap-2" aria-label="DONNA home">
             <Image
               src="/brand/full/donna-logo-512.png"
               alt="DONNA Logo"
@@ -35,29 +35,29 @@ export default function MinimalHeader() {
               priority
             />
             <span className="text-lg font-bold gradient-text">DONNA</span>
-          </div>
-          <div className="flex items-center gap-3">
+          </Link>
+          <nav aria-label="Primary" className="flex items-center gap-2 sm:gap-3">
             <Link
               href="/portal"
-              className="text-xs sm:text-sm text-muted-foreground hover:text-cyan-300 transition-colors shrink-0"
+              className="inline-flex min-h-11 items-center text-xs sm:text-sm text-muted-foreground hover:text-cyan-300 transition-colors shrink-0"
             >
               <span className="sm:hidden">Portal</span>
               <span className="hidden sm:inline">Member Portal</span>
             </Link>
             <Link
               href="/signup"
-              className="text-xs sm:text-sm text-muted-foreground hover:text-cyan-300 transition-colors shrink-0"
+              className="inline-flex min-h-11 items-center text-xs sm:text-sm text-muted-foreground hover:text-cyan-300 transition-colors shrink-0"
             >
               Create account
             </Link>
             <Link
               href="/#pricing"
               onClick={(e) => onPricingCtaNavClick("header", e)}
-              className="px-4 py-2 rounded-lg animated-edge-button text-sm font-medium hover:bg-white/20 transition-all relative inline-flex items-center justify-center"
+              className="min-h-11 px-3 sm:px-4 py-2 rounded-lg animated-edge-button text-sm font-medium hover:bg-white/20 transition-all relative inline-flex items-center justify-center"
             >
               <span className="relative z-10">Get DONNA</span>
             </Link>
-          </div>
+          </nav>
         </div>
       </div>
     </header>

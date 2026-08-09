@@ -43,19 +43,57 @@ function priceFieldsFromItem(item: Stripe.SubscriptionItem): {
   }
 }
 
+async function resolveMemberProfileIdentity(admin: AdminClient, identityId: string) {
+  const { data: byCognito, error: cognitoError } = await admin
+    .from("member_profiles")
+    .select("id, user_id, cognito_sub, email")
+    .eq("cognito_sub", identityId)
+    .maybeSingle()
+  if (cognitoError) throw cognitoError
+  if (byCognito) return byCognito
+
+  const { data: byLegacyUser, error: legacyError } = await admin
+    .from("member_profiles")
+    .select("id, user_id, cognito_sub, email")
+    .eq("user_id", identityId)
+    .maybeSingle()
+  if (legacyError) throw legacyError
+  if (byLegacyUser) return byLegacyUser
+
+  const { data: byProfileId, error: profileError } = await admin
+    .from("member_profiles")
+    .select("id, user_id, cognito_sub, email")
+    .eq("id", identityId)
+    .maybeSingle()
+  if (profileError) throw profileError
+  return byProfileId
+}
+
+async function resolveMemberProfileById(admin: AdminClient, memberProfileId: string) {
+  const { data, error } = await admin
+    .from("member_profiles")
+    .select("id, user_id, cognito_sub, email")
+    .eq("id", memberProfileId)
+    .maybeSingle()
+  if (error) throw error
+  return data
+}
 async function upsertBillingCustomer(
   admin: AdminClient,
   stripeCustomerId: string,
   customer: Stripe.Customer,
   resolvedCognitoSub?: string | null,
+  resolvedMemberProfileId?: string | null,
 ) {
   const email = (customer.email ?? "").trim()
   const cognitoSub = resolvedCognitoSub ?? customer.metadata?.cognito_sub ?? null
-  if (!email && !cognitoSub) return null
+  const memberProfileId = resolvedMemberProfileId ?? customer.metadata?.member_profile_id ?? null
+  if (!email && !cognitoSub && !memberProfileId) return null
   const { data, error } = await admin.rpc("link_billing_account_identity", {
     p_stripe_customer_id: stripeCustomerId,
     p_email: email,
     p_cognito_sub: cognitoSub,
+    p_member_profile_id: memberProfileId,
     p_reassign_identity: true,
   })
   if (error) throw error
@@ -96,18 +134,59 @@ export async function syncBillingFromSubscription(
 
   const customer = customerId ? await stripe.customers.retrieve(customerId) : null
 
+  let memberProfile = await resolveMemberProfileIdentity(admin, userId)
+  const metadataMemberProfileId = subscription.metadata?.member_profile_id || null
+  if (!memberProfile && metadataMemberProfileId) {
+    memberProfile = await resolveMemberProfileById(admin, metadataMemberProfileId)
+  }
+  const memberProfileId = memberProfile?.id ?? metadataMemberProfileId
+  const cognitoSub = subscription.metadata?.cognito_sub || memberProfile?.cognito_sub || null
+
+  const nextSubscriptionMetadata: Record<string, string> = { ...subscription.metadata }
+  let stripeMetadataUpdated = false
+  if (cognitoSub) nextSubscriptionMetadata.cognito_sub = cognitoSub
+  if (memberProfileId) nextSubscriptionMetadata.member_profile_id = memberProfileId
+  if (memberProfile?.user_id) nextSubscriptionMetadata.supabase_user_id = memberProfile.user_id
+  if (
+    subscription.metadata?.cognito_sub !== nextSubscriptionMetadata.cognito_sub
+    || subscription.metadata?.member_profile_id !== nextSubscriptionMetadata.member_profile_id
+    || subscription.metadata?.supabase_user_id !== nextSubscriptionMetadata.supabase_user_id
+  ) {
+    try {
+      await stripe.subscriptions.update(subscription.id, { metadata: nextSubscriptionMetadata })
+      stripeMetadataUpdated = true
+    } catch (error) {
+      console.error("[stripe-sync] failed to update subscription identity metadata:", error)
+    }
+  }
+
   let billingAccountId: string | null = null
   if (customer && !("deleted" in customer && customer.deleted)) {
-    billingAccountId = await upsertBillingCustomer(admin, customerId!, customer as Stripe.Customer, userId)
+    billingAccountId = await upsertBillingCustomer(
+      admin,
+      customerId!,
+      customer as Stripe.Customer,
+      cognitoSub,
+      memberProfileId,
+    )
     
-    // Write cognito_sub to Stripe customer record if missing
-    if ((customer as Stripe.Customer).metadata?.cognito_sub !== userId) {
+    const nextCustomerMetadata: Record<string, string> = {
+      ...(customer as Stripe.Customer).metadata,
+    }
+    if (cognitoSub) nextCustomerMetadata.cognito_sub = cognitoSub
+    if (memberProfileId) nextCustomerMetadata.member_profile_id = memberProfileId
+    if (memberProfile?.user_id) nextCustomerMetadata.supabase_user_id = memberProfile.user_id
+
+    const currentMetadata = (customer as Stripe.Customer).metadata ?? {}
+    if (
+      currentMetadata.cognito_sub !== nextCustomerMetadata.cognito_sub
+      || currentMetadata.member_profile_id !== nextCustomerMetadata.member_profile_id
+      || currentMetadata.supabase_user_id !== nextCustomerMetadata.supabase_user_id
+    ) {
       try {
-        await stripe.customers.update(customerId!, {
-          metadata: { cognito_sub: userId }
-        })
+        await stripe.customers.update(customerId!, { metadata: nextCustomerMetadata })
       } catch (err) {
-        console.error("[stripe-sync] failed to update customer cognito_sub metadata:", err)
+        console.error("[stripe-sync] failed to update customer identity metadata:", err)
       }
     }
   }
@@ -123,6 +202,7 @@ export async function syncBillingFromSubscription(
   await admin.from("billing_subscriptions").upsert(
     {
       user_id: userId,
+      member_profile_id: memberProfileId,
       stripe_customer_id: customerId,
       billing_account_id: billingAccountId,
       stripe_subscription_id: subscription.id,
@@ -156,7 +236,8 @@ export async function syncBillingFromSubscription(
 
   await attributeSaleIfPromoCode(admin, subscription, customer as Stripe.Customer | null, amount)
 
-  await maybeSendOpsSubscriptionNotify(admin, subscription, userId)
+  await maybeSendOpsSubscriptionNotify(admin, subscription, userId, memberProfileId)
+  return { stripeMetadataUpdated }
 }
 
 function planKeyFromStripeSubscription(subscription: Stripe.Subscription): string {
@@ -178,6 +259,7 @@ async function maybeSendOpsSubscriptionNotify(
   admin: AdminClient,
   subscription: Stripe.Subscription,
   userId: string,
+  memberProfileId: string | null,
 ): Promise<void> {
   const status = subscription.status
   if (status !== "active" && status !== "trialing") return
@@ -202,14 +284,16 @@ async function maybeSendOpsSubscriptionNotify(
   }
   if (!claimed) return
 
-  const { data: profile, error: profileError } = await admin
-    .from("member_profiles")
-    .select("email")
-    .eq("user_id", userId)
-    .maybeSingle()
-
-  if (profileError) {
-    console.error("[stripe-sync] member_profiles read for ops notify failed", profileError.message)
+  let profile: { id: string; user_id: string | null; cognito_sub: string | null; email: string | null } | null = null
+  try {
+    profile = memberProfileId
+      ? await resolveMemberProfileById(admin, memberProfileId)
+      : await resolveMemberProfileIdentity(admin, userId)
+  } catch (error) {
+    console.error(
+      "[stripe-sync] member_profiles read for ops notify failed",
+      error instanceof Error ? error.message : String(error),
+    )
   }
 
   const planKey = planKeyFromStripeSubscription(subscription)
@@ -278,7 +362,7 @@ export async function lookupMemberUserIdByEmail(
 
   const { data: profiles, error } = await admin
     .from("member_profiles")
-    .select("id, user_id, email")
+    .select("id, user_id, cognito_sub, email")
     .ilike("email", normalized)
 
   if (error) {
@@ -288,7 +372,7 @@ export async function lookupMemberUserIdByEmail(
   if (!profiles?.length) return { kind: "none" }
   if (profiles.length > 1) {
     const exact = profiles.filter((p) => (p.email ?? "").trim().toLowerCase() === normalized)
-    if (exact.length === 1) return { kind: "found", userId: exact[0].user_id }
+    if (exact.length === 1) return { kind: "found", userId: exact[0].cognito_sub ?? exact[0].user_id ?? exact[0].id }
     console.warn("[stripe-sync] ambiguous member_profiles for email", {
       ...logContext,
       email: normalized,
@@ -296,21 +380,35 @@ export async function lookupMemberUserIdByEmail(
     })
     return { kind: "ambiguous", count: profiles.length }
   }
-  return { kind: "found", userId: profiles[0].user_id }
+  return { kind: "found", userId: profiles[0].cognito_sub ?? profiles[0].user_id ?? profiles[0].id }
 }
 
 /**
- * Resolve Supabase auth user id for a Checkout session: explicit ids first, then checkout email â†’ member_profiles.
+ * Resolve the application's billing identity for a Checkout session.
+ * Prefer Cognito and profile identifiers; email is a guarded legacy fallback.
  */
 export async function resolveUserIdForCheckoutSession(
   admin: AdminClient,
   session: Stripe.Checkout.Session,
 ): Promise<string | null> {
-  const fromExplicit =
-    (typeof session.metadata?.cognito_sub === "string" && session.metadata.cognito_sub) ? session.metadata.cognito_sub :
-    session.client_reference_id ??
-    (typeof session.metadata?.supabase_user_id === "string" ? session.metadata.supabase_user_id : null)
-  if (fromExplicit) return fromExplicit
+  const cognitoSub =
+    typeof session.metadata?.cognito_sub === "string" ? session.metadata.cognito_sub.trim() : ""
+  if (cognitoSub) return cognitoSub
+
+  const profileId =
+    (typeof session.metadata?.member_profile_id === "string" && session.metadata.member_profile_id.trim()) ||
+    session.client_reference_id?.trim() ||
+    ""
+  if (profileId) {
+    const profile = await resolveMemberProfileById(admin, profileId)
+    if (profile) return profile.cognito_sub ?? profile.user_id ?? profile.id
+  }
+
+  const legacyUserId =
+    typeof session.metadata?.supabase_user_id === "string"
+      ? session.metadata.supabase_user_id.trim()
+      : ""
+  if (legacyUserId) return legacyUserId
 
   const rawEmail =
     session.customer_details?.email ??
@@ -339,16 +437,18 @@ export async function syncFromCheckoutSession(
   const subRef = session.subscription
   const subId = typeof subRef === "string" ? subRef : subRef?.id
   
-  if (typeof session.customer === "string" && session.metadata?.cognito_sub) {
-    try {
-      await stripe.customers.update(session.customer, {
-        metadata: {
-          cognito_sub: session.metadata.cognito_sub,
-          email: session.metadata.email || "",
-        }
-      })
-    } catch (err) {
-      console.error("[stripe-sync] failed to update customer metadata:", err)
+  if (typeof session.customer === "string") {
+    const checkoutMetadata: Record<string, string> = {}
+    if (session.metadata?.cognito_sub) checkoutMetadata.cognito_sub = session.metadata.cognito_sub
+    if (session.metadata?.member_profile_id) checkoutMetadata.member_profile_id = session.metadata.member_profile_id
+    if (session.metadata?.supabase_user_id) checkoutMetadata.supabase_user_id = session.metadata.supabase_user_id
+
+    if (Object.keys(checkoutMetadata).length > 0) {
+      try {
+        await stripe.customers.update(session.customer, { metadata: checkoutMetadata })
+      } catch (err) {
+        console.error("[stripe-sync] failed to update customer metadata:", err)
+      }
     }
   }
 
@@ -375,12 +475,15 @@ export async function syncSubscriptionWebhook(
   if (customerId) {
     const { data: acc } = await admin
       .from("billing_accounts")
-      .select("cognito_sub")
+      .select("cognito_sub, member_profile_id")
       .eq("stripe_customer_id", customerId)
       .maybeSingle()
     
     if (acc?.cognito_sub) {
       userId = acc.cognito_sub
+    } else if (acc?.member_profile_id) {
+      const profile = await resolveMemberProfileById(admin, acc.member_profile_id)
+      userId = profile?.cognito_sub ?? profile?.user_id ?? profile?.id ?? null
     }
   }
 
@@ -392,6 +495,10 @@ export async function syncSubscriptionWebhook(
     userId = typeof sub.metadata?.supabase_user_id === "string" ? sub.metadata.supabase_user_id : null
   }
 
+  if (!userId && sub.metadata?.member_profile_id) {
+    const profile = await resolveMemberProfileById(admin, sub.metadata.member_profile_id)
+    userId = profile?.cognito_sub ?? profile?.user_id ?? profile?.id ?? null
+  }
   // 3. Resolve by billing_subscriptions table
   if (!userId) {
     const { data } = await admin
@@ -495,12 +602,14 @@ export async function syncCustomerRecord(admin: AdminClient, customer: Stripe.Cu
   const customerId = customer.id
   const email = (customer.email ?? "").trim()
   const cognitoSub = customer.metadata?.cognito_sub ?? null
-  if (!email && !cognitoSub) return
+  const memberProfileId = customer.metadata?.member_profile_id ?? null
+  if (!email && !cognitoSub && !memberProfileId) return
 
   const { error: accountError } = await admin.rpc("link_billing_account_identity", {
     p_stripe_customer_id: customerId,
     p_email: email,
     p_cognito_sub: cognitoSub,
+    p_member_profile_id: memberProfileId,
     p_reassign_identity: false,
   })
   if (accountError) throw accountError
@@ -570,15 +679,6 @@ export async function autoSyncUserSubscription(
         const subscription = subList[0]
         await syncBillingFromSubscription(admin, subscription, userId, stripe)
 
-        // Also update Stripe subscription metadata with the supabase user id
-        if (subscription.metadata?.supabase_user_id !== userId) {
-          const nextMeta: Record<string, string> = {}
-          for (const [k, v] of Object.entries(subscription.metadata ?? {})) {
-            if (typeof v === "string") nextMeta[k] = v
-          }
-          nextMeta.supabase_user_id = userId
-          await stripe.subscriptions.update(subscription.id, { metadata: nextMeta })
-        }
         return true
       }
     }
