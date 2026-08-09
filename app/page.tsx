@@ -23,6 +23,7 @@ import StandaloneHomePortalCta from "@/components/standalone-home-portal-cta"
 import FAQ from "@/components/faq"
 import { generatePageMetadata } from "@/lib/metadata"
 import { marketingFaqs } from "@/lib/faq-content"
+import { SkipLink } from "@/components/skip-link"
 import {
   faqSchema,
   organizationSchema,
@@ -64,6 +65,7 @@ export default function Home() {
 
   return (
     <>
+      <SkipLink />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
