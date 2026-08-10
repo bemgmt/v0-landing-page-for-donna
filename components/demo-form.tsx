@@ -92,20 +92,26 @@ export default function DemoForm() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label htmlFor="demo-name" className="sr-only">Full name</label>
               <input
+                id="demo-name"
                 type="text"
                 name="name"
+                autoComplete="name"
                 placeholder="Full Name"
                 value={formData.name}
                 onChange={handleChange}
                 required
                 className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:border-accent/50 focus:outline-none transition-colors"
               />
+              <label htmlFor="demo-email" className="sr-only">Email address</label>
               <input
+                id="demo-email"
                 type="email"
                 name="email"
+                autoComplete="email"
                 placeholder="Email Address"
                 value={formData.email}
                 onChange={handleChange}
@@ -115,17 +121,23 @@ export default function DemoForm() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label htmlFor="demo-company" className="sr-only">Company name</label>
               <input
+                id="demo-company"
                 type="text"
                 name="company"
+                autoComplete="organization"
                 placeholder="Company Name"
                 value={formData.company}
                 onChange={handleChange}
                 required
                 className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:border-accent/50 focus:outline-none transition-colors"
               />
+              <label htmlFor="demo-role" className="sr-only">Role</label>
               <select
+                id="demo-role"
                 name="role"
+                autoComplete="organization-title"
                 value={formData.role}
                 onChange={handleChange}
                 required
@@ -140,7 +152,11 @@ export default function DemoForm() {
               </select>
             </div>
 
+            <label htmlFor="demo-use-case" className="sr-only">
+              What would you like to explore on the call?
+            </label>
             <textarea
+              id="demo-use-case"
               name="useCase"
               placeholder="What would you like to explore on the call? (optional)"
               value={formData.useCase}

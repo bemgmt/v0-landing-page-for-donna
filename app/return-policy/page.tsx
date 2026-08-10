@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Breadcrumb } from '@/components/breadcrumb'
+import { SkipLink } from '@/components/skip-link'
 import { generatePageMetadata } from '@/lib/metadata'
 
 export const metadata: Metadata = generatePageMetadata({
@@ -11,7 +12,8 @@ export const metadata: Metadata = generatePageMetadata({
 export default function ReturnPolicyPage() {
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-10">
+      <SkipLink />
+      <main id="main-content" className="container mx-auto px-4 py-10">
         <Breadcrumb />
 
         <header className="text-center max-w-3xl mx-auto">
@@ -68,7 +70,7 @@ export default function ReturnPolicyPage() {
             Last updated: June 8, 2026
           </p>
         </section>
-      </div>
+      </main>
     </div>
   )
 }

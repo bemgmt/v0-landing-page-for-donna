@@ -73,6 +73,8 @@ export default function ToolStackAudit() {
         {Object.keys(INDUSTRY_TOOLS).map((ind) => (
           <button
             key={ind}
+            type="button"
+            aria-pressed={industry === ind}
             onClick={() => {
               setIndustry(ind as any)
               setCustomCosts({}) // Reset overrides on industry change
@@ -103,13 +105,17 @@ export default function ToolStackAudit() {
               {currentTools.map((tool) => (
                 <div key={tool.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <label className="text-sm font-medium text-foreground">{tool.name}</label>
-                    <p className="text-xs text-muted-foreground">{tool.description}</p>
+                    <label htmlFor={`tool-cost-${tool.id}`} className="text-sm font-medium text-foreground">{tool.name}</label>
+                    <p id={`tool-description-${tool.id}`} className="text-xs text-muted-foreground">{tool.description}</p>
                   </div>
                   <div className="relative w-full sm:w-32">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
                     <input
+                      id={`tool-cost-${tool.id}`}
+                      name={`tool-cost-${tool.id}`}
                       type="number"
+                      min="0"
+                      aria-describedby={`tool-description-${tool.id}`}
                       value={getCost(tool.id, tool.defaultCost)}
                       onChange={(e) => handleCostChange(tool.id, e.target.value)}
                       className="w-full bg-background/50 border border-white/10 rounded-lg pl-8 pr-4 py-2 text-foreground focus:outline-none focus:border-accent/50 transition-colors"
@@ -134,10 +140,12 @@ export default function ToolStackAudit() {
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-sm mb-2">
-                    <label className="text-foreground">Hours lost per week to manual tasks & data entry</label>
+                    <label htmlFor="hours-lost" className="text-foreground">Hours lost per week to manual tasks & data entry</label>
                     <span className="text-orange-400 font-medium">{hoursLost} hrs</span>
                   </div>
                   <input 
+                    id="hours-lost"
+                    name="hoursLost"
                     type="range" 
                     min="1" max="40" 
                     value={hoursLost} 
@@ -147,10 +155,12 @@ export default function ToolStackAudit() {
                 </div>
                 <div>
                   <div className="flex justify-between text-sm mb-2">
-                    <label className="text-foreground">Average hourly value of staff/operators</label>
+                    <label htmlFor="hourly-rate" className="text-foreground">Average hourly value of staff/operators</label>
                     <span className="text-orange-400 font-medium">${hourlyRate}/hr</span>
                   </div>
                   <input 
+                    id="hourly-rate"
+                    name="hourlyRate"
                     type="range" 
                     min="15" max="150" step="5"
                     value={hourlyRate} 
