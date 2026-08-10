@@ -7,6 +7,8 @@ import { isRole } from "@/lib/auth/roles"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { autoSyncUserSubscription } from "@/lib/billing/stripe-sync"
 
+const PORTAL_OWNER_EMAIL = "derek@aidonna.co"
+
 export type MemberProfileRow = {
   id: string
   user_id: string | null
@@ -140,7 +142,7 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
         cognito_sub: cognitoSub,
         email: normalizedEmail,
         display_name: displayName,
-        role: "free_member",
+        role: email.trim().toLowerCase() === PORTAL_OWNER_EMAIL ? "admin" : "free_member",
         is_active: true,
       })
       .select("*")
@@ -162,6 +164,28 @@ export async function resolvePortalLayoutState(): Promise<PortalLayoutState> {
       rawProfile = newProfile
     }
   }
+
+  // Keep the portal owner's access recoverable if their profile was removed or
+  // accidentally demoted. This runs with the server-only service-role client.
+  if (
+    email.trim().toLowerCase() === PORTAL_OWNER_EMAIL &&
+    (rawProfile.role !== "admin" || !rawProfile.is_active)
+  ) {
+    const { data: ownerProfile, error: ownerUpdateError } = await admin
+      .from("member_profiles")
+      .update({ role: "admin", is_active: true })
+      .eq("id", rawProfile.id)
+      .select("*")
+      .single()
+
+    if (ownerUpdateError || !ownerProfile) {
+      console.error("[portal] failed to restore portal owner access", ownerUpdateError)
+      return { kind: "no_member_profile", user: { id: rawProfile.user_id, email } }
+    }
+
+    rawProfile = ownerProfile
+  }
+
   const roleRaw = rawProfile.role
   const role = isRole(roleRaw) ? roleRaw : "free_member"
   const billingIdentityId = cognitoSub || rawProfile.user_id || rawProfile.id
