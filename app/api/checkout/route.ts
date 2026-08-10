@@ -4,13 +4,15 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { STRIPE_PRICE_LOOKUP_CORE, STRIPE_PRICE_LOOKUP_FULL } from "@/lib/billing/plan-seats"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
+import { DONNA_APP_HANDOFF_URL } from "@/lib/donna-app"
+import { getSiteUrl } from "@/lib/site-url"
 
 async function createCheckoutSession(params: {
   tier: "core" | "full"
   promoCode?: string
 }) {
   const secretKey = process.env.STRIPE_SECRET_KEY
-  const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://bemdonna.com").replace(/\/$/, "")
+  const baseUrl = getSiteUrl()
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
   const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
@@ -124,7 +126,7 @@ async function createCheckoutSession(params: {
       }
     }
 
-    const successUrl = "https://app.bemdonna.com"
+    const successUrl = DONNA_APP_HANDOFF_URL
     const cancelUrl = user ? `${baseUrl}/portal?checkout=canceled` : `${baseUrl}/?checkout=canceled`
 
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
@@ -217,7 +219,7 @@ export async function GET(request: Request) {
 
   const result = await createCheckoutSession({ tier, promoCode: promo })
   if ("error" in result) {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://bemdonna.com"
+    const baseUrl = getSiteUrl()
     return NextResponse.redirect(`${baseUrl}/?checkout=error&msg=${encodeURIComponent(result.error || "Checkout failed")}`)
   }
   return NextResponse.redirect(result.url)

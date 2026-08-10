@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { CognitoIdentityProviderClient, SignUpCommand } from "@aws-sdk/client-cognito-identity-provider"
 import crypto from "crypto"
 import { z } from "zod"
+import { sendTrialStartedAlert } from "@/lib/email/send-trial-started-alert"
 
 const signupSchema = z.object({
   email: z.string().email(),
@@ -40,6 +41,17 @@ export async function POST(request: Request) {
     })
 
     const response = await client.send(command)
+
+    const alertSent = await sendTrialStartedAlert({
+      email,
+      cognitoUserSub: response.UserSub ?? null,
+      userConfirmed: response.UserConfirmed === true,
+      startedAt: new Date().toISOString(),
+    })
+
+    if (!alertSent) {
+      console.error("[signup] Trial workflow email was not sent")
+    }
 
     return NextResponse.json({ 
       success: true, 

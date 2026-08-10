@@ -6,28 +6,20 @@ import { Mail, Loader2, Check } from "lucide-react"
 
 type Props = {
   leadId: string
-  defaultEmail?: string
 }
 
-export function EmailLeadButton({
-  leadId,
-  defaultEmail = "derek@aidonna.co",
-}: Props) {
-  const [email, setEmail] = useState(defaultEmail)
+export function EmailLeadButton({ leadId }: Props) {
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
 
   const onSend = async () => {
-    if (!email.trim()) {
-      toast.error("Please enter a recipient email")
-      return
-    }
     setSending(true)
     try {
       const res = await fetch(`/api/card-scanner/leads/${leadId}/email`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ recipient_email: email.trim() }),
+        body: JSON.stringify({}),
+        signal: AbortSignal.timeout(15_000),
       })
       const json = await res.json().catch(() => ({}))
       if (!res.ok) {
@@ -36,10 +28,14 @@ export function EmailLeadButton({
         )
         return
       }
-      toast.success("Lead emailed — DONNA will add to your CRM")
+      toast.success("Lead emailed — DONNA will add it to your workflow")
       setSent(true)
-    } catch {
-      toast.error("Network error")
+    } catch (error) {
+      toast.error(
+        error instanceof DOMException && error.name === "TimeoutError"
+          ? "Email request timed out. Please try again."
+          : "Network error",
+      )
     } finally {
       setSending(false)
     }
@@ -49,21 +45,13 @@ export function EmailLeadButton({
     return (
       <div className="flex items-center gap-2 text-sm text-emerald-400">
         <Check className="size-4" />
-        Sent to {email}
+        Sent to derek@aidonna.co
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col sm:flex-row gap-2">
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="derek@aidonna.co"
-        disabled={sending}
-        className="flex-1 rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-cyan-500/50 focus:outline-none focus:ring-1 focus:ring-cyan-500/30 transition-colors"
-      />
+    <div className="flex">
       <button
         type="button"
         onClick={onSend}
@@ -78,7 +66,7 @@ export function EmailLeadButton({
         ) : (
           <>
             <Mail className="size-4" />
-            Email to CRM
+            Email to Derek
           </>
         )}
       </button>

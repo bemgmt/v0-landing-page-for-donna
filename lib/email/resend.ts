@@ -6,6 +6,8 @@ type SendEmailParams = {
   html: string
   from?: string
   reply_to?: string
+  idempotencyKey?: string
+  signal?: AbortSignal
 }
 
 /**
@@ -17,6 +19,8 @@ export async function sendEmail({
   html,
   from,
   reply_to,
+  idempotencyKey,
+  signal,
 }: SendEmailParams) {
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
@@ -32,6 +36,7 @@ export async function sendEmail({
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,
+      ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
     },
     body: JSON.stringify({
       from: sender,
@@ -40,6 +45,7 @@ export async function sendEmail({
       html,
       reply_to,
     }),
+    signal,
   })
 
   if (!response.ok) {

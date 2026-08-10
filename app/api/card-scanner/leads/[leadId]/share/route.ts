@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
-import { createClient } from "@/lib/supabase/server"
+import { requirePortalRole } from "@/lib/auth/require-admin"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 const postBodySchema = z.object({
@@ -16,27 +16,14 @@ export async function POST(request: Request, context: RouteContext) {
     return NextResponse.json({ error: "Invalid lead id" }, { status: 400 })
   }
 
-  // Authenticate
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { data: profile } = await supabase
-    .from("member_profiles")
-    .select("id, role")
-    .eq("user_id", user.id)
-    .single()
-
-  if (!profile || !["admin", "staff", "partner"].includes(profile.role)) {
+  const session = await requirePortalRole(["admin", "staff", "partner"])
+  if (!session) {
     return NextResponse.json(
       { error: "Partner, staff, or admin access required" },
       { status: 403 }
     )
   }
+  const profile = session.profile
 
   // Parse body
   let body: z.infer<typeof postBodySchema>
