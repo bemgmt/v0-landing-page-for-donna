@@ -19,9 +19,11 @@ export default function CardScannerPage() {
   const [scan, setScan] = useState<ScanApiResult | null>(null)
   const [lead, setLead] = useState<BusinessCardExtraction | null>(null)
   const [eventTag, setEventTag] = useState("")
+  const [notes, setNotes] = useState("")
   const [saving, setSaving] = useState(false)
   const [savedLeadId, setSavedLeadId] = useState<string | null>(null)
   const [showShare, setShowShare] = useState(false)
+  const [emailSent, setEmailSent] = useState(false)
 
   const onScanned = useCallback(
     (result: ScanApiResult, dataUrl: string) => {
@@ -30,6 +32,7 @@ export default function CardScannerPage() {
       setLead(cloneLead(result.extracted))
       setSavedLeadId(null)
       setShowShare(false)
+      setEmailSent(false)
       toast.success("Card scanned — review and save")
     },
     []
@@ -40,8 +43,10 @@ export default function CardScannerPage() {
     setLead(null)
     setImageDataUrl(null)
     setEventTag("")
+    setNotes("")
     setSavedLeadId(null)
     setShowShare(false)
+    setEmailSent(false)
   }, [])
 
   const onSave = async () => {
@@ -54,6 +59,7 @@ export default function CardScannerPage() {
         body: JSON.stringify({
           lead,
           event_tag: eventTag || null,
+          notes: notes || null,
           image: imageDataUrl,
         }),
       })
@@ -64,7 +70,13 @@ export default function CardScannerPage() {
         )
         return
       }
-      toast.success("Lead saved successfully")
+      const sent = json.email_sent === true
+      setEmailSent(sent)
+      if (sent) {
+        toast.success("Lead saved and emailed to derek@aidonna.co")
+      } else {
+        toast.warning("Lead saved, but the workflow email needs to be retried")
+      }
       const id = typeof json.id === "string" ? json.id : null
       if (id) {
         setSavedLeadId(id)
@@ -141,6 +153,8 @@ export default function CardScannerPage() {
                   onChange={setLead}
                   eventTag={eventTag}
                   onEventTagChange={setEventTag}
+                  notes={notes}
+                  onNotesChange={setNotes}
                   onSave={onSave}
                   saving={saving}
                 />
@@ -157,7 +171,13 @@ export default function CardScannerPage() {
                     <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2">
                       Email to CRM
                     </p>
-                    <EmailLeadButton leadId={savedLeadId} />
+                    {emailSent ? (
+                      <p className="text-sm text-emerald-400">
+                        Sent to derek@aidonna.co
+                      </p>
+                    ) : (
+                      <EmailLeadButton leadId={savedLeadId} />
+                    )}
                   </div>
 
                   {/* Scan another */}

@@ -9,11 +9,13 @@ import {
 import { CARD_SCAN_MODEL } from "@/lib/card-scanner/extract-card"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { sendCardScanAlert } from "@/lib/email/send-card-scan-alert"
 
 const saveBodySchema = z.object({
   lead: businessCardExtractionSchema,
   ocr_markdown: z.string().optional().nullable(),
   event_tag: z.string().optional().nullable(),
+  notes: z.string().optional().nullable(),
   image: z.string().optional().nullable(),
 })
 
@@ -56,7 +58,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const { lead, ocr_markdown, event_tag, image } = parsed.data
+    const { lead, ocr_markdown, event_tag, notes, image } = parsed.data
 
     // Authenticate and get the admin user's profile
     const authClient = await createClient()
@@ -85,6 +87,7 @@ export async function POST(request: Request) {
       ...rowFromLead(lead),
       ocr_markdown: ocr_markdown ?? null,
       event_tag: event_tag ?? null,
+      notes: notes?.trim() || null,
       extraction_model: CARD_SCAN_MODEL,
       image_storage_path: null as string | null,
       scanned_by,
@@ -125,11 +128,24 @@ export async function POST(request: Request) {
       }
     }
 
+    const emailSent = await sendCardScanAlert({
+      leadId,
+      fullName: lead.full_name || null,
+      company: lead.company || null,
+      jobTitle: lead.job_title || null,
+      email: lead.email?.trim() || null,
+      phone: lead.phone?.trim() || null,
+      website: lead.website || null,
+      eventOrLocation: event_tag?.trim() || null,
+      notes: notes?.trim() || null,
+    })
+
     return NextResponse.json({
       success: true,
       id: leadId,
       image_storage_path: imagePath,
       can_share: true,
+      email_sent: emailSent,
     })
   } catch (e) {
     console.error("[card-scanner save]", e)
