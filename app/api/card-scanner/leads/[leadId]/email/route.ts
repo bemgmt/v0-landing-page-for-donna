@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
-import { createClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/auth/require-admin"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { sendCardScanAlert } from "@/lib/email/send-card-scan-alert"
 import { WORKFLOW_NOTIFICATION_RECIPIENT } from "@/lib/email/workflow-alert-content"
@@ -13,21 +13,8 @@ export async function POST(_request: Request, context: RouteContext) {
     return NextResponse.json({ error: "Invalid lead id" }, { status: 400 })
   }
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { data: profile } = await supabase
-    .from("member_profiles")
-    .select("id, role")
-    .eq("user_id", user.id)
-    .single()
-
-  if (!profile || profile.role !== "admin") {
+  const session = await requireAdmin()
+  if (!session) {
     return NextResponse.json({ error: "Admin access required" }, { status: 403 })
   }
 

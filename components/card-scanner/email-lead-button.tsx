@@ -19,6 +19,7 @@ export function EmailLeadButton({ leadId }: Props) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
+        signal: AbortSignal.timeout(15_000),
       })
       const json = await res.json().catch(() => ({}))
       if (!res.ok) {
@@ -29,8 +30,12 @@ export function EmailLeadButton({ leadId }: Props) {
       }
       toast.success("Lead emailed — DONNA will add it to your workflow")
       setSent(true)
-    } catch {
-      toast.error("Network error")
+    } catch (error) {
+      toast.error(
+        error instanceof DOMException && error.name === "TimeoutError"
+          ? "Email request timed out. Please try again."
+          : "Network error",
+      )
     } finally {
       setSending(false)
     }

@@ -7,6 +7,7 @@ type SendEmailParams = {
   from?: string
   reply_to?: string
   idempotencyKey?: string
+  signal?: AbortSignal
 }
 
 /**
@@ -19,6 +20,7 @@ export async function sendEmail({
   from,
   reply_to,
   idempotencyKey,
+  signal,
 }: SendEmailParams) {
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
@@ -43,6 +45,7 @@ export async function sendEmail({
       html,
       reply_to,
     }),
+    signal,
   })
 
   if (!response.ok) {

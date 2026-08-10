@@ -7,7 +7,7 @@ import {
   type BusinessCardExtraction,
 } from "@/lib/card-scanner/card-scan-schema"
 import { CARD_SCAN_MODEL } from "@/lib/card-scanner/extract-card"
-import { createClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/auth/require-admin"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { sendCardScanAlert } from "@/lib/email/send-card-scan-alert"
 
@@ -23,7 +23,7 @@ function parseImageForUpload(
   image: string | null | undefined
 ): { buffer: Buffer; contentType: string } | null {
   if (!image || !image.trim()) return null
-  const m = image.match(/^data:([^;]+);base64,(.+)$/s)
+  const m = image.match(/^data:([^;]+);base64,([\s\S]+)$/)
   if (m) {
     return {
       buffer: Buffer.from(m[2].replace(/\s/g, ""), "base64"),
@@ -48,6 +48,14 @@ function rowFromLead(lead: BusinessCardExtraction) {
 }
 
 export async function POST(request: Request) {
+  const startedAt = Date.now()
+  const requestId = request.headers.get("x-vercel-id") ?? randomUUID()
+
+  console.info(
+    "[card-scanner save]",
+    JSON.stringify({ requestId, phase: "start" }),
+  )
+
   try {
     const json = await request.json()
     const parsed = saveBodySchema.safeParse(json)
@@ -60,27 +68,12 @@ export async function POST(request: Request) {
 
     const { lead, ocr_markdown, event_tag, notes, image } = parsed.data
 
-    // Authenticate and get the admin user's profile
-    const authClient = await createClient()
-    const {
-      data: { user },
-    } = await authClient.auth.getUser()
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const { data: profile } = await authClient
-      .from("member_profiles")
-      .select("id, role")
-      .eq("user_id", user.id)
-      .single()
-
-    if (!profile || profile.role !== "admin") {
+    const session = await requireAdmin()
+    if (!session) {
       return NextResponse.json({ error: "Admin access required" }, { status: 403 })
     }
 
-    const scanned_by = profile.id
+    const scanned_by = session.profile.id
     const supabase = createAdminClient()
 
     const insertRow = {
@@ -140,6 +133,17 @@ export async function POST(request: Request) {
       notes: notes?.trim() || null,
     })
 
+    console.info(
+      "[card-scanner save]",
+      JSON.stringify({
+        requestId,
+        phase: "success",
+        leadId,
+        emailSent,
+        durationMs: Date.now() - startedAt,
+      }),
+    )
+
     return NextResponse.json({
       success: true,
       id: leadId,
@@ -148,7 +152,15 @@ export async function POST(request: Request) {
       email_sent: emailSent,
     })
   } catch (e) {
-    console.error("[card-scanner save]", e)
+    console.error(
+      "[card-scanner save]",
+      JSON.stringify({
+        requestId,
+        phase: "error",
+        message: e instanceof Error ? e.message : String(e),
+        durationMs: Date.now() - startedAt,
+      }),
+    )
     return NextResponse.json({ error: "Failed to save lead" }, { status: 500 })
   }
 }

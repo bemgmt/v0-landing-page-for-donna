@@ -62,6 +62,7 @@ export default function CardScannerPage() {
           notes: notes || null,
           image: imageDataUrl,
         }),
+        signal: AbortSignal.timeout(30_000),
       })
       const json = await res.json().catch(() => ({}))
       if (!res.ok) {
@@ -82,8 +83,12 @@ export default function CardScannerPage() {
         setSavedLeadId(id)
         setShowShare(true)
       }
-    } catch {
-      toast.error("Network error")
+    } catch (error) {
+      toast.error(
+        error instanceof DOMException && error.name === "TimeoutError"
+          ? "Save timed out. Please try again."
+          : "Network error",
+      )
     } finally {
       setSaving(false)
     }

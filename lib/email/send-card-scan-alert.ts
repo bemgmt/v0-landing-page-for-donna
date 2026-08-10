@@ -26,6 +26,7 @@ export async function sendCardScanAlert(
         bodyHtml: buildCardScanWorkflowBody(payload),
       }),
       idempotencyKey: `card-scan-${payload.leadId}`,
+      signal: AbortSignal.timeout(10_000),
     })
     return true
   } catch (error) {
