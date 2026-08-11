@@ -17,7 +17,6 @@ import {
   FileCheck,
   Cpu,
   BrainCircuit,
-  Coffee,
   Calendar,
   MapPin,
   Clock
@@ -202,6 +201,37 @@ const MATERIALS: Array<{
   isPdfOnly?: boolean
 }> = [
   {
+    filename: "wsgvr-ai-for-real-estate-2.md",
+    title: "WSGVR 8/19 Class Guide",
+    description: "The AI for Real Estate 2.0 quick-start guide: class roadmap, preparation checklist, real estate workflows, and responsible-use guardrails.",
+    path: "/downloads/learn/wsgvr-ai-for-real-estate-2.md",
+    content: `# AI for Real Estate 2.0
+
+## WSGVR class guide
+
+Wednesday, August 19, 2026
+11:00 AM - 12:00 PM PDT
+
+This returning-session workshop moves beyond one-off prompts. You will use stronger business context and repeatable AI workflows for real estate marketing, client communication, and daily operations.
+
+## Before class
+
+- Bring a laptop and sign in to the AI assistant you plan to use.
+- Download the AI Employee Handbook templates from this page.
+- Choose one real task you would like to improve.
+- Remove private client information before putting examples into an AI tool.
+
+## Core workflow
+
+1. Give the AI accurate context.
+2. Assign a clear role and task.
+3. Specify the audience, source facts, format, and constraints.
+4. Ask the AI to flag missing information instead of guessing.
+5. Review every fact, fair housing concern, and client-facing claim before use.
+
+Download the full guide for the one-hour roadmap, class exercises, ready-to-use real estate prompts, and an after-class action plan.`
+  },
+  {
     filename: "class_notes.md",
     title: "Class Reference Notes",
     description: "Complete summary of core workshop concepts, why AI fails without context, and handbook construction details.",
@@ -321,6 +351,31 @@ const RECOMMENDED_TOOLS = [
 // Example Prompts Directory
 const PROMPT_DIRECTORY = [
   {
+    category: "Real Estate",
+    prompts: [
+      {
+        title: "Fact-Safe Listing Description",
+        desc: "Drafts property marketing copy using only verified listing details.",
+        promptText: "Act as my real estate marketing assistant. Using only the verified property facts below, draft a clear listing description for [TARGET AUDIENCE]. Do not invent features, upgrades, neighborhood claims, school claims, or measurements. Avoid language that could create a fair housing concern. After the draft, list any missing facts I should confirm.\n\n[PASTE VERIFIED PROPERTY FACTS]"
+      },
+      {
+        title: "Personalized Lead Follow-Up",
+        desc: "Turns conversation notes into a concise, human follow-up without exposing private data.",
+        promptText: "Using the non-sensitive notes below, write a warm follow-up message to a real estate lead. Match the voice in my brandguidelines.md, reference the lead's stated priorities, and end with one easy next step. Keep it under 140 words. Do not add facts, urgency, or promises that are not in the notes.\n\n[PASTE NON-SENSITIVE NOTES]"
+      },
+      {
+        title: "Seller Update Draft",
+        desc: "Organizes activity and next steps into a calm, client-ready update.",
+        promptText: "Turn the verified activity notes below into a seller update with these headings: Activity, Feedback Themes, What the Data Suggests, and Recommended Next Steps. Separate facts from interpretation, avoid guarantees, and identify any missing information I should confirm before sending.\n\n[PASTE VERIFIED ACTIVITY NOTES]"
+      },
+      {
+        title: "Market Data Explainer",
+        desc: "Translates market statistics into plain language while preserving uncertainty.",
+        promptText: "Explain the market data below to a client in plain language. State the reporting period and geography, distinguish the data from your interpretation, avoid predicting future prices, and end with three questions the client may want to discuss with their agent.\n\n[PASTE SOURCE AND MARKET DATA]"
+      }
+    ]
+  },
+  {
     category: "Marketing",
     prompts: [
       {
@@ -421,8 +476,8 @@ export default function LearnPage() {
     <>
       <Toaster theme="dark" position="bottom-right" />
       <MarketingSubpageShell
-        title="AI Business Workshop Resources"
-        lead="Build your AI Employee Handbook. Download structural templates, slides, and cheat sheets to train ChatGPT, Claude, and Gemini to understand your business."
+        title="AI Workshop Resources"
+        lead="Build your AI Employee Handbook, use stronger prompts, and download practical class resources for real estate marketing, client communication, and business operations."
       >
         <div className="relative z-10 space-y-10">
           
@@ -434,39 +489,45 @@ export default function LearnPage() {
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="space-y-4 text-center md:text-left max-w-2xl">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/15 border border-accent/30 text-accent text-xs font-semibold uppercase tracking-wider animate-pulse">
-                  <Sparkles className="w-3.5 h-3.5" /> Upcoming Live Class
+                  <Sparkles className="w-3.5 h-3.5" /> Upcoming WSGVR Class
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                  AI for Business Workshop
+                  AI for Real Estate 2.0
                 </h2>
                 <p className="text-base text-foreground/80 leading-relaxed">
-                  Join us live for an interactive session on how to train AI to run your business operations. The class is <strong className="text-accent">completely free</strong>, and we will be serving <strong className="text-primary">fresh donuts & hot coffee</strong>!
+                  Back by popular demand for WSGVR members: a fast, practical follow-up class on turning AI into a more useful real estate assistant. We will move beyond one-off prompts and build repeatable workflows for <strong className="text-accent">marketing, client communication, and daily operations</strong>. Bring a laptop and one real task you want to improve.
                 </p>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm text-foreground/60">
                   <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                    <Calendar className="w-4 h-4 text-accent" /> June 11th
+                    <Calendar className="w-4 h-4 text-accent" /> Wednesday, August 19, 2026
                   </span>
                   <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                    <Clock className="w-4 h-4 text-accent" /> 11:30 AM – 12:30 PM
+                    <Clock className="w-4 h-4 text-accent" /> 11:00 AM - 12:00 PM PDT
                   </span>
                   <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                    <MapPin className="w-4 h-4 text-emerald-400" /> Monterey Park, CA
-                  </span>
-                  <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                    <Coffee className="w-4 h-4 text-amber-400" /> Free Donuts & Coffee
+                    <MapPin className="w-4 h-4 text-emerald-400" /> WSGVR, 1039 E. Valley Blvd. #205B
                   </span>
                 </div>
               </div>
               
-              <a
-                href="https://www.montereyparkchamber.org/events/ai-for-business"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full md:w-auto shrink-0 inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-accent to-primary text-black font-extrabold text-base rounded-xl hover:opacity-95 active:scale-[0.98] transition-all duration-300 shadow-lg glow-accent group/btn cursor-pointer"
-              >
-                RSVP Now
-                <ExternalLink className="w-5 h-5 transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
-              </a>
+              <div className="w-full md:w-auto shrink-0 flex flex-col gap-3">
+                <a
+                  href="https://members.wsgvr.org/ap/Events/Register/wZFkj8jIeCxCw"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-accent to-primary text-black font-extrabold text-base rounded-xl hover:opacity-95 active:scale-[0.98] transition-all duration-300 shadow-lg glow-accent group/btn cursor-pointer"
+                >
+                  Register with WSGVR
+                  <ExternalLink className="w-5 h-5 transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
+                </a>
+                <a
+                  href="/downloads/learn/wsgvr-ai-for-real-estate-2.md"
+                  download="wsgvr-ai-for-real-estate-2.md"
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-white/15 bg-white/5 text-sm font-semibold text-foreground hover:bg-white/10 hover:border-white/25 transition-all"
+                >
+                  <Download className="w-4 h-4" /> Download Class Guide
+                </a>
+              </div>
             </div>
           </div>
 
