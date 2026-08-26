@@ -37,6 +37,24 @@ const allocation = [
   { label: "Operations + security + legal", amount: "$200K", share: "10%" },
 ]
 
+const marketMetrics = [
+  {
+    value: "$1.88B",
+    label: "U.S. TAM",
+    detail: "209,120 employer firms across five real-estate operating segments",
+  },
+  {
+    value: "$1.36B",
+    label: "Brokerage SAM",
+    detail: "150,892 employer brokerage firms at the planning midpoint",
+  },
+  {
+    value: "$900K",
+    label: "100-account SOM",
+    detail: "100 customer accounts at a $9,000 blended annual subscription value",
+  },
+]
+
 const whyRealEstate = [
   {
     title: "Multi-business workflows",
@@ -174,6 +192,30 @@ export default function InvestorsPage() {
             </div>
           </section>
 
+          <section className="rounded-3xl border border-white/10 bg-white/[0.02] p-7 md:p-10">
+            <div className="grid gap-9 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+              <div>
+                <p className="mb-4 text-xs uppercase tracking-[0.25em] text-foreground/50">Bottom-up market model</p>
+                <h2 className="text-3xl font-semibold md:text-4xl">A focused entry market with room to expand.</h2>
+              </div>
+              <p className="max-w-2xl text-sm leading-relaxed text-foreground/55">
+                The management model uses U.S. Census employer-firm counts and the confirmed $500 and $1,000 monthly account subscriptions. It excludes nonemployer firms, future industries, international expansion, added seats, usage expansion, and potential DIN monetization.
+              </p>
+            </div>
+            <div className="mt-9 grid gap-5 md:grid-cols-3">
+              {marketMetrics.map((metric) => (
+                <div key={metric.label} className="border-t border-white/15 pt-5">
+                  <p className="text-3xl font-semibold text-accent">{metric.value}</p>
+                  <h3 className="mt-2 font-semibold">{metric.label}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-foreground/55">{metric.detail}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-7 text-xs leading-relaxed text-foreground/40">
+              These figures are planning estimates, not achieved revenue or market share. The detailed methodology appears in the investor diligence materials.
+            </p>
+          </section>
+
           <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-7 md:p-9">
               <p className="mb-4 text-xs uppercase tracking-[0.25em] text-foreground/50">Early-adopter business model</p>
@@ -241,10 +283,10 @@ export default function InvestorsPage() {
                 <p className="mb-4 text-xs uppercase tracking-[0.25em] text-foreground/50">Current stage</p>
                 <h2 className="text-3xl font-semibold md:text-4xl">Pre-revenue, with a 24-month commercialization plan.</h2>
               </div>
-              <p className="max-w-sm text-sm leading-relaxed text-foreground/55">No customer traction, conversion, revenue, retention, or network-effect claims are presented as achieved.</p>
+              <p className="max-w-sm text-sm leading-relaxed text-foreground/55">DONNA has raised $0 in outside investor capital. No customer traction, conversion, revenue, retention, or network-effect claims are presented as achieved.</p>
             </div>
             <div className="grid gap-5 md:grid-cols-4">
-              {["Verify product-market fit", "Onboard the first 100 accounts", "Produce customer evidence", "Pilot repeatable network entry"].map((item, index) => (
+              {["Verify product-market fit", "Onboard the first 100 accounts", "Produce customer evidence", "Repeat the entry model in a second industry during months 18 to 24"].map((item, index) => (
                 <div key={item} className="border-t border-white/10 pt-5">
                   <p className="text-xs tabular-nums text-accent">0{index + 1}</p>
                   <p className="mt-3 font-medium">{item}</p>
