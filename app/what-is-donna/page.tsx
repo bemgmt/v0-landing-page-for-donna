@@ -6,7 +6,7 @@ import { generatePageMetadata } from "@/lib/metadata"
 export const metadata: Metadata = generatePageMetadata({
   title: "What is DONNA",
   description:
-    "DONNA is AI operational infrastructure for SMBs — one layer for communication, coordination, and execution. Not a chatbot; infrastructure you run the business on.",
+    "DONNA is operational intelligence for real estate, connecting communication, coordination, knowledge, and governed action inside a business.",
   path: "/what-is-donna",
 })
 
@@ -14,17 +14,18 @@ export default function WhatIsDonnaPage() {
   return (
     <MarketingSubpageShell
       title="What is DONNA?"
-      lead="Operational intelligence — not software you log into occasionally, but infrastructure your business runs on."
+      lead="Operational intelligence inside the business, and the foundation for an operating network across real estate."
     >
       <div className="glass-card p-6 rounded-xl space-y-4">
         <p>
-          DONNA unifies messages, tasks, handoffs, and follow-ups so deals and operations keep moving. It is built
-          for high-communication industries where dropped balls are expensive: real estate, mortgage, title, home
-          services, contractors, and similar SMB operators.
+          DONNA connects business context to governed action. Depending on workspace configuration, it can work
+          across email, calendars, contacts, leads, SMS, voice, Slack, knowledge sources, files, and productivity
+          artifacts.
         </p>
         <p>
-          Unlike a generic chatbot, DONNA is designed around workflows and accountability across people and systems —
-          calm, infrastructure-grade automation with human oversight where it matters.
+          Live capabilities are available in the product today; integrations and actions vary by permissions, data,
+          connector health, and deployment setup. Broader transaction orchestration and cross-business DIN workflows
+          remain roadmap and vision capabilities unless separately confirmed.
         </p>
         <p>
           Read more in the{" "}

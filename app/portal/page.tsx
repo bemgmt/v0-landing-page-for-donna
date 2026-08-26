@@ -56,7 +56,7 @@ export default async function PortalDashboardPage() {
 
   const quickLinks: ActionItem[] = [
     { title: "Open DONNA App", href: DONNA_APP_HANDOFF_URL },
-    { title: "Request Desktop App", description: "Email us to request the native desktop application", href: "mailto:donna@bemdonna.com?subject=Desktop%20DONNA%20requested", external: true },
+    { title: "Request Desktop App", description: "Email us to request the native desktop application", href: "mailto:derek@aidonna.co?subject=Desktop%20DONNA%20requested", external: true },
     { title: "Adding Seats", description: "Manage your subscription and team members", href: "/portal/billing" },
     { title: "Support Requests", description: "Get help from the DONNA team", href: "/portal/support" },
     { title: "Can DONNA...", description: "See what DONNA is capable of", href: "/portal/can-donna" },
@@ -81,7 +81,7 @@ export default async function PortalDashboardPage() {
           <p className="text-xs uppercase tracking-widest text-cyan-400/90 font-medium">Strategic partner</p>
           <p className="text-lg font-semibold text-foreground mt-1">Open partner command center</p>
           <p className="text-sm text-muted-foreground mt-1">
-            Sales, commission documents, lead tools, and onboarding — separate from member billing and community.
+            Sales, commission documents, lead tools, and onboarding, separate from member billing and community.
           </p>
         </Link>
       ) : null}

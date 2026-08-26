@@ -54,10 +54,10 @@ export default function PrivacyPage() {
             <p className="text-foreground/80">
               For privacy requests or questions, email{" "}
               <a
-                href="mailto:info@bemdonna.com"
+                href="mailto:derek@aidonna.co"
                 className="text-accent hover:text-accent/80 transition-colors"
               >
-                info@bemdonna.com
+                derek@aidonna.co
               </a>
               .
             </p>

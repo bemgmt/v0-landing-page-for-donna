@@ -10,7 +10,7 @@ export default function Footer() {
     <footer className="border-t border-white/10 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto flex flex-col items-center gap-4 text-center">
         <p className="text-sm uppercase tracking-[0.3em] text-foreground/60">
-          AI operational infrastructure for SMBs
+          DONNA runs the business. DIN connects the industry.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-foreground/60">
           <Link href="/what-is-donna" className="hover:text-foreground transition-colors">
@@ -34,6 +34,9 @@ export default function Footer() {
           <Link href="/industries/real-estate" className="hover:text-foreground transition-colors">
             Real estate
           </Link>
+          <Link href="/investors" className="hover:text-foreground transition-colors">
+            Investors
+          </Link>
           <Link href="/contact" className="hover:text-foreground transition-colors">
             Contact
           </Link>
@@ -47,10 +50,10 @@ export default function Footer() {
             Security
           </Link>
           <a
-            href="mailto:info@bemdonna.com"
+            href="mailto:derek@aidonna.co"
             className="hover:text-foreground transition-colors"
             onClick={() =>
-              pushDataLayer({ event: "outbound_click", link_url: "mailto:info@bemdonna.com", link_text: "email" })
+              pushDataLayer({ event: "outbound_click", link_url: "mailto:derek@aidonna.co", link_text: "email" })
             }
           >
             Email

@@ -36,10 +36,10 @@ export default function ReturnPolicyPage() {
             <p className="text-foreground/80">
               Email us at{' '}
               <a
-                href="mailto:info@bemdonna.com"
+                href="mailto:derek@aidonna.co"
                 className="text-accent hover:text-accent/80 transition-colors"
               >
-                info@bemdonna.com
+                derek@aidonna.co
               </a>{' '}
               with your name, the email used for the account, the sign-up date, and your request.
               If you are requesting a refund for a billing charge, please include the invoice or payment ID.
@@ -50,7 +50,7 @@ export default function ReturnPolicyPage() {
             <h2 className="text-2xl font-semibold mb-3">Refund Timing</h2>
             <p className="text-foreground/80">
               Approved refunds are issued to the original payment method within
-              5–10 business days after approval.
+              5 to 10 business days after approval.
             </p>
           </div>
 

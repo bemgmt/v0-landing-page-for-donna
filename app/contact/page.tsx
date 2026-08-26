@@ -6,7 +6,7 @@ import { generatePageMetadata } from "@/lib/metadata"
 export const metadata: Metadata = generatePageMetadata({
   title: "Contact",
   description:
-    "Request access to DONNA — discovery calls, early adopter program, and general inquiries via the site form or email.",
+    "Request access to DONNA for discovery calls, the early adopter program, and general inquiries through the site form or email.",
   path: "/contact",
 })
 
@@ -14,13 +14,13 @@ export default function ContactPage() {
   return (
     <MarketingSubpageShell
       title="Contact & request access"
-      lead="Tell us about your operation. We’ll follow up with next steps — no spam, no pressure."
+      lead="Tell us about your operation. We’ll follow up with next steps, with no spam and no pressure."
     >
       <div className="glass-card p-6 rounded-xl space-y-6">
         <div>
           <h2 className="text-xl font-semibold mb-2">Discovery call</h2>
           <p className="text-foreground/80 mb-3">
-            The fastest path is the early adopter interest form on the homepage — it feeds directly to our team.
+            The fastest path is the early adopter interest form on the homepage because it feeds directly to our team.
           </p>
           <Link
             href="/#demo-form"
@@ -32,8 +32,8 @@ export default function ContactPage() {
         <div>
           <h2 className="text-xl font-semibold mb-2">Email</h2>
           <p className="text-foreground/80">
-            <a href="mailto:info@bemdonna.com" className="text-accent hover:underline">
-              info@bemdonna.com
+            <a href="mailto:derek@aidonna.co" className="text-accent hover:underline">
+              derek@aidonna.co
             </a>
           </p>
         </div>
