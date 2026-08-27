@@ -1,30 +1,105 @@
-import type { Metadata } from 'next'
-import { Breadcrumb } from '@/components/breadcrumb'
-import { generatePageMetadata } from '@/lib/metadata'
-import { breadcrumbListSchema } from '@/lib/schema-markup'
-import { 
-  TrendingUp, 
-  Users, 
-  DollarSign, 
-  Target, 
-  Zap, 
-  Phone, 
-  Mail, 
-  MessageSquare, 
-  Calendar,
+import type { Metadata } from "next"
+import Link from "next/link"
+import {
+  ArrowRight,
   Building2,
-  BarChart3,
-  Globe,
-  Shield,
-  Rocket
-} from 'lucide-react'
+  CalendarRange,
+  CircleDollarSign,
+  Handshake,
+  Landmark,
+  Network,
+  ShieldCheck,
+  Sparkles,
+  Target,
+  Workflow,
+} from "lucide-react"
+import { Breadcrumb } from "@/components/breadcrumb"
+import { generatePageMetadata } from "@/lib/metadata"
+import { breadcrumbListSchema } from "@/lib/schema-markup"
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "Investor relations",
+  title: "Investor Overview",
   description:
-    "Investment overview for DONNA — AI operational infrastructure for SMBs with unified communications, coordination, and execution, built on AWS-native foundations.",
+    "DONNA is building the intelligence network for real estate, beginning with operational infrastructure inside each participating business.",
   path: "/investors",
 })
+
+const safeTiers = [
+  { commitment: "$500,000", cap: "$18M", discount: "10%" },
+  { commitment: "$1,000,000", cap: "$15M", discount: "15%" },
+  { commitment: "$2,000,000", cap: "$12M", discount: "20%" },
+]
+
+const allocation = [
+  { label: "Product + engineering", amount: "$800K", share: "40%" },
+  { label: "Market entry + brand", amount: "$600K", share: "30%" },
+  { label: "Sales + onboarding", amount: "$400K", share: "20%" },
+  { label: "Operations + security + legal", amount: "$200K", share: "10%" },
+]
+
+const marketMetrics = [
+  {
+    value: "$1.88B",
+    label: "U.S. TAM",
+    detail: "209,120 employer firms across five real-estate operating segments",
+  },
+  {
+    value: "$1.36B",
+    label: "Brokerage SAM",
+    detail: "150,892 employer brokerage firms at the planning midpoint",
+  },
+  {
+    value: "$900K",
+    label: "100-account SOM",
+    detail: "100 customer accounts at a $9,000 blended annual subscription value",
+  },
+]
+
+const whyRealEstate = [
+  {
+    title: "Multi-business workflows",
+    body: "Each transaction depends on organizations that operate through separate systems.",
+    Icon: Building2,
+  },
+  {
+    title: "Relationship-led distribution",
+    body: "Associations and industry groups already connect the businesses DIN is designed to serve.",
+    Icon: Handshake,
+  },
+  {
+    title: "Visible operational pain",
+    body: "Missed follow-through, handoff friction, and stalled work are concrete and observable.",
+    Icon: Target,
+  },
+  {
+    title: "Expansion path",
+    body: "Real estate is the proving ground for a broader SMB operating platform over time.",
+    Icon: Sparkles,
+  },
+]
+
+const team = [
+  {
+    name: "Derek Talbird",
+    role: "Founder and CEO",
+    body: "Derek developed DONNA after more than 15 years across business development, technology, marketing, and operational systems, where he repeatedly saw capable employees burdened by fragmented tools and administrative work. Through Bird's Eye Management Services, founded in 2021, he began modernizing organizations' digital operations and expanded into practical AI consulting in 2022. He has taught AI through the West San Gabriel Valley Association of REALTORS and serves as Secretary and Education Chair for the Monterey Park Chamber of Commerce, where his programs have reached more than 200 people.",
+  },
+  {
+    name: "Alexander Ray Williams",
+    role: "Co-Founder of DONNA · Head of AI Innovation at Infinite Reality",
+    body: "Alexander is a multidisciplinary AI engineer and product builder whose work spans AI agents, full-stack applications, voice interfaces, mobile products, spatial computing, and immersive digital experiences. At DONNA, he helps lead technical architecture, AI systems, product engineering, and DIN development.",
+  },
+  {
+    name: "Domenica Romaniello, MSPM, PMP",
+    role: "Chief of Staff",
+    body: "Domenica is a certified Project Management Professional and Special Projects Manager at the USC Norris Comprehensive Cancer Center. At DONNA, she translates strategy into operating plans and coordinates team priorities.",
+  },
+  {
+    name: "Lourdes Ahn",
+    role: "Strategic Advisor",
+    body: "Lourdes is a senior HR and organizational leadership executive specializing in strategic HR, change management, executive coaching, governance, and organizational transformation. She advises DONNA on workforce strategy, governance, and responsible scaling.",
+  },
+]
 
 export default function InvestorsPage() {
   const breadcrumbJsonLd = {
@@ -37,385 +112,243 @@ export default function InvestorsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <div className="container mx-auto px-4 py-8">
         <Breadcrumb />
 
-        {/* Title Section */}
-        <section className="py-12 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            <span className="gradient-text">DONNA</span> Investment Opportunity
+        <header className="mx-auto max-w-5xl py-16 text-center md:py-24">
+          <p className="mb-5 text-xs font-semibold uppercase tracking-[0.3em] text-accent">Investor overview · Pre-revenue</p>
+          <h1 className="text-4xl font-semibold leading-tight md:text-6xl lg:text-7xl">
+            Building the intelligence network for real estate.
           </h1>
-          <p className="text-xl text-foreground/70 max-w-4xl mx-auto leading-relaxed">
-            DONNA is AI operational infrastructure for SMBs — not a single-purpose chatbot, but a layer that
-            unifies communication, coordination, and execution. Built on AWS-native foundations with voice,
-            email, SMS, and workflow automation in one system.
+          <p className="mx-auto mt-7 max-w-3xl text-lg leading-relaxed text-foreground/70 md:text-xl">
+            DONNA provides operational intelligence inside a business. The DONNA Intelligence Network is the long-term infrastructure for participating businesses to coordinate across the industry.
           </p>
-        </section>
+          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <a href="mailto:derek@aidonna.co" className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-semibold text-background hover:bg-accent/90">
+              Request investor materials <ArrowRight className="h-4 w-4" aria-hidden />
+            </a>
+            <Link href="/donna-intelligence-network" className="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 font-medium text-foreground/80 hover:bg-white/5">
+              Explore DIN
+            </Link>
+          </div>
+        </header>
 
-        {/* Problem Section */}
-        <section className="py-12 max-w-6xl mx-auto">
-          <div className="glass-card p-8 rounded-xl">
-            <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-              <Target className="h-8 w-8 text-accent" />
-              The Problem
-            </h2>
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              <p className="text-foreground/80 mb-4">
-                Businesses are overwhelmed by routine admin. Workers spend an average of <strong>3.6 hours a day on email alone</strong>. 
-                Response times are slow, causing lost revenue. Tools are fragmented. CRM, email, phone, SMS, and chat all operate 
-                in separate silos. Admin labor costs continue rising.
-              </p>
-              <p className="text-foreground/80">
-                No existing AI solution combines voice, email, SMS, meeting participation, and task execution in one affordable system.
+        <main className="mx-auto max-w-6xl space-y-8 pb-20">
+          <section className="grid gap-8 rounded-3xl border border-white/10 bg-white/[0.025] p-7 md:grid-cols-2 md:p-10">
+            <div>
+              <p className="mb-4 text-xs uppercase tracking-[0.25em] text-foreground/50">The problem</p>
+              <h2 className="text-3xl font-semibold md:text-4xl">People are the connective tissue between disconnected systems.</h2>
+            </div>
+            <div className="space-y-4 text-lg leading-relaxed text-foreground/70">
+              <p>Real-estate transactions move across agents, lenders, escrow, title, inspectors, insurance, vendors, documents, inboxes, calendars, and databases.</p>
+              <p>The industry has software. It lacks shared operational infrastructure.</p>
+            </div>
+          </section>
+
+          <section className="grid gap-6 md:grid-cols-2">
+            <div className="rounded-3xl border border-accent/20 bg-accent/[0.045] p-7 md:p-9">
+              <p className="mb-6 text-xs font-semibold uppercase tracking-[0.25em] text-accent">Product today · Configuration-dependent</p>
+              <Workflow className="mb-6 h-8 w-8 text-accent" aria-hidden />
+              <h2 className="text-3xl font-semibold">DONNA runs the business.</h2>
+              <p className="mt-4 leading-relaxed text-foreground/70">Communication, calendar, contacts, leads, knowledge, files, and governed actions share operational context inside a configured workspace.</p>
+            </div>
+            <div className="rounded-3xl border border-primary/20 bg-primary/[0.045] p-7 md:p-9">
+              <p className="mb-6 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Roadmap + long-term vision</p>
+              <Network className="mb-6 h-8 w-8 text-primary" aria-hidden />
+              <h2 className="text-3xl font-semibold">DIN connects the industry.</h2>
+              <p className="mt-4 leading-relaxed text-foreground/70">Permissioned coordination, provider discovery, and privacy-preserving network intelligence between participating businesses.</p>
+            </div>
+          </section>
+
+          <section className="grid gap-6 md:grid-cols-2">
+            <div className="rounded-3xl border border-accent/20 bg-accent/[0.045] p-7 md:p-9">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-accent">Mission</p>
+              <h2 className="text-3xl font-semibold">Transform how work gets done.</h2>
+              <p className="mt-4 leading-relaxed text-foreground/70">Make businesses more efficient so people have the freedom to focus, thrive, and do their best work.</p>
+            </div>
+            <div className="rounded-3xl border border-primary/20 bg-primary/[0.045] p-7 md:p-9">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Vision</p>
+              <h2 className="text-3xl font-semibold">Change how businesses work together.</h2>
+              <p className="mt-4 leading-relaxed text-foreground/70">Build permissioned intelligence networks that help businesses retain customers, lower advertising spend, and operate more efficiently without pooling private data or reducing headcount.</p>
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-white/10 p-7 md:p-10">
+            <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+              <div>
+                <p className="mb-4 text-xs uppercase tracking-[0.25em] text-foreground/50">Why real estate first</p>
+                <h2 className="text-3xl font-semibold md:text-4xl">A dense, repeatable coordination environment.</h2>
+              </div>
+              <div className="grid gap-6 sm:grid-cols-2">
+                {whyRealEstate.map(({ title, body, Icon }) => (
+                  <div key={title} className="border-t border-white/10 pt-5">
+                    <Icon className="mb-4 h-5 w-5 text-accent" aria-hidden />
+                    <h3 className="font-semibold">{title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground/60">{body}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-white/10 bg-white/[0.02] p-7 md:p-10">
+            <div className="grid gap-9 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+              <div>
+                <p className="mb-4 text-xs uppercase tracking-[0.25em] text-foreground/50">Bottom-up market model</p>
+                <h2 className="text-3xl font-semibold md:text-4xl">A focused entry market with room to expand.</h2>
+              </div>
+              <p className="max-w-2xl text-sm leading-relaxed text-foreground/55">
+                The management model uses U.S. Census employer-firm counts and the confirmed $500 and $1,000 monthly account subscriptions. It excludes nonemployer firms, future industries, international expansion, added seats, usage expansion, and potential DIN monetization.
               </p>
             </div>
-          </div>
-        </section>
-
-        {/* Opportunity Section */}
-        <section className="py-12 max-w-6xl mx-auto">
-          <div className="glass-card p-8 rounded-xl">
-            <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-              <TrendingUp className="h-8 w-8 text-accent" />
-              The Opportunity
-            </h2>
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              <p className="text-foreground/80 mb-4">
-                AI assistants are the <strong>fastest-growing sector in SaaS</strong>. Small and mid-sized businesses lack access 
-                to powerful AI that is affordable and easy to deploy.
-              </p>
-              <p className="text-foreground/80">
-                DONNA fills the market gap as hybrid horizontal plus vertical operational intelligence — designed
-                for real estate, hospitality, health and beauty, contractors, and associations.
-              </p>
+            <div className="mt-9 grid gap-5 md:grid-cols-3">
+              {marketMetrics.map((metric) => (
+                <div key={metric.label} className="border-t border-white/15 pt-5">
+                  <p className="text-3xl font-semibold text-accent">{metric.value}</p>
+                  <h3 className="mt-2 font-semibold">{metric.label}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-foreground/55">{metric.detail}</p>
+                </div>
+              ))}
             </div>
-          </div>
-        </section>
-
-        {/* What is DONNA Section */}
-        <section className="py-12 max-w-6xl mx-auto">
-          <div className="glass-card p-8 rounded-xl">
-            <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-              <Zap className="h-8 w-8 text-accent" />
-              What is DONNA?
-            </h2>
-            <p className="text-lg text-foreground/80 mb-6">
-              DONNA runs operational workflows across communications, customer service, scheduling, lead
-              qualification, data lookup, task execution, and in-meeting presence. Unlike simple chatbots, DONNA is
-              built to coordinate work across email, phone, SMS, voice, chat, and internal operations at once.
+            <p className="mt-7 text-xs leading-relaxed text-foreground/40">
+              These figures are planning estimates, not achieved revenue or market share. The detailed methodology appears in the investor diligence materials.
             </p>
+          </section>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-              <div className="p-6 rounded-lg border border-accent/20 bg-accent/5">
-                <Calendar className="h-8 w-8 text-accent mb-3" />
-                <h3 className="font-bold mb-2">Secretary Bot</h3>
-                <p className="text-sm text-foreground/70">
-                  Attends meetings, transcribes, summarizes, and executes tasks. Provides follow-up emails, 
-                  schedules appointments, and retrieves needed information.
-                </p>
+          <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+            <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-7 md:p-9">
+              <p className="mb-4 text-xs uppercase tracking-[0.25em] text-foreground/50">Early-adopter business model</p>
+              <h2 className="text-3xl font-semibold">Simple account pricing. Built-in team capacity.</h2>
+              <div className="mt-8 grid gap-5 sm:grid-cols-2">
+                <div className="border-t border-accent/35 pt-5">
+                  <p className="text-sm font-medium text-accent">Core DONNA</p>
+                  <p className="mt-2 text-3xl font-semibold">$500<span className="text-sm font-normal text-foreground/45"> / month</span></p>
+                  <p className="mt-2 text-sm text-foreground/65">Three total seats</p>
+                </div>
+                <div className="border-t border-primary/35 pt-5">
+                  <p className="text-sm font-medium text-primary">Full Access DONNA</p>
+                  <p className="mt-2 text-3xl font-semibold">$1,000<span className="text-sm font-normal text-foreground/45"> / month</span></p>
+                  <p className="mt-2 text-sm text-foreground/65">Six total seats</p>
+                </div>
               </div>
-              <div className="p-6 rounded-lg border border-accent/20 bg-accent/5">
-                <Mail className="h-8 w-8 text-accent mb-3" />
-                <h3 className="font-bold mb-2">Email Bot</h3>
-                <p className="text-sm text-foreground/70">
-                  Reads full email threads, understands context, writes intelligent replies, and maintains 
-                  long-running conversations.
-                </p>
-              </div>
-              <div className="p-6 rounded-lg border border-accent/20 bg-accent/5">
-                <Phone className="h-8 w-8 text-accent mb-3" />
-                <h3 className="font-bold mb-2">Voice Agent</h3>
-                <p className="text-sm text-foreground/70">
-                  Answers inbound calls, books appointments, collects information, and handles customer support. 
-                  Built with ElevenLabs voice, Whisper transcription, and Verizon VOIP.
-                </p>
-              </div>
-              <div className="p-6 rounded-lg border border-accent/20 bg-accent/5">
-                <MessageSquare className="h-8 w-8 text-accent mb-3" />
-                <h3 className="font-bold mb-2">Chatbot</h3>
-                <p className="text-sm text-foreground/70">
-                  Integrates into any website. White-labeled, reads policies, SOPs, and FAQs, and converts 
-                  traffic into leads with intelligent reasoning.
-                </p>
-              </div>
+              <p className="mt-7 text-sm leading-relaxed text-foreground/55">Available to the first 100 customer accounts. Both plans include a 30-day free trial, require a credit card, and are subject to platform usage limits.</p>
             </div>
-          </div>
-        </section>
-
-        {/* Market Validation */}
-        <section className="py-12 max-w-6xl mx-auto">
-          <div className="glass-card p-8 rounded-xl">
-            <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-              <Shield className="h-8 w-8 text-accent" />
-              Market Validation
-            </h2>
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              <p className="text-foreground/80 mb-4">
-                DONNA is being built <strong>AWS Native</strong>, leveraging AWS Connect, Bedrock, QuickSuite, and Semantics. 
-                Verizon VOIP pathways provide telecom-grade reliability.
-              </p>
-              <p className="text-foreground/80">
-                Early demand is strong across chambers, associations, and small business networks. Waitlist numbers continue 
-                growing with high demo conversion rates.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Pricing */}
-        <section className="py-12 max-w-6xl mx-auto">
-          <div className="glass-card p-8 rounded-xl">
-            <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-              <DollarSign className="h-8 w-8 text-accent" />
-              Pricing Model
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="p-6 rounded-lg border border-accent/20 bg-accent/5">
-                <h3 className="text-xl font-bold mb-4">Retail</h3>
-                <ul className="space-y-2 text-foreground/80">
-                  <li>• $1,500/mo</li>
-                  <li>• $5,000/mo</li>
-                  <li>• $12k+/mo</li>
-                </ul>
-              </div>
-              <div className="p-6 rounded-lg border border-accent/20 bg-accent/5">
-                <h3 className="text-xl font-bold mb-4">Wholesale</h3>
-                <ul className="space-y-2 text-foreground/80">
-                  <li>• $12k/mo plus $25k–$50k setup</li>
-                  <li>• Optional revenue share</li>
-                </ul>
-              </div>
-              <div className="p-6 rounded-lg border border-accent/20 bg-accent/5">
-                <h3 className="text-xl font-bold mb-4">Early Adopter</h3>
-                <p className="text-foreground/80">$5,000</p>
-              </div>
-              <div className="p-6 rounded-lg border border-accent/20 bg-accent/5">
-                <h3 className="text-xl font-bold mb-4">Early Waitlist</h3>
-                <p className="text-foreground/80">$1,000</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Profit Margin */}
-        <section className="py-12 max-w-6xl mx-auto">
-          <div className="glass-card p-8 rounded-xl">
-            <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-              <BarChart3 className="h-8 w-8 text-accent" />
-              Profit Margin
-            </h2>
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              <p className="text-foreground/80 mb-4">
-                Running DONNA for <strong>100,000 users on AWS costs under $20k per month</strong>. With a target ARPU of 
-                roughly $5,000/mo at scale, DONNA maintains an <strong className="text-accent">87% profit margin</strong>. 
-                exceptionally high for SaaS.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Revenue Projections */}
-        <section className="py-12 max-w-6xl mx-auto">
-          <div className="glass-card p-8 rounded-xl">
-            <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-              <Rocket className="h-8 w-8 text-accent" />
-              Revenue & User Projections
-            </h2>
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              <p className="text-foreground/80 mb-4">
-                DONNA's <strong>150,000-user goal by December 2026</strong> is supported through:
-              </p>
-              <ul className="list-disc list-inside space-y-2 text-foreground/80">
-                <li>Retail SaaS subscriptions</li>
-                <li>White-label licensing</li>
-                <li>Powerhouse vertical partnerships</li>
-                <li>Strategic expo keynotes</li>
+            <div className="rounded-3xl border border-white/10 p-7 md:p-9">
+              <p className="mb-4 text-xs uppercase tracking-[0.25em] text-foreground/50">Go-to-market</p>
+              <h2 className="text-3xl font-semibold">Build density through trusted networks.</h2>
+              <ul className="mt-7 space-y-4 text-foreground/70">
+                <li className="flex gap-3"><Handshake className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden /> Associations and concentrated industry communities</li>
+                <li className="flex gap-3"><Landmark className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden /> Professional groups, memberships, and partnership access</li>
+                <li className="flex gap-3"><CalendarRange className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden /> Booths, events, podcasts, education, and founder-led demonstrations</li>
               </ul>
+              <p className="mt-7 text-sm text-foreground/50">The strategy prioritizes relationship-led market entry rather than cold outbound as the primary motion.</p>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Marketing Strategy */}
-        <section className="py-12 max-w-6xl mx-auto">
-          <div className="glass-card p-8 rounded-xl">
-            <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-              <Globe className="h-8 w-8 text-accent" />
-              Marketing Strategy
-            </h2>
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              <p className="text-foreground/80 mb-4">
-                The marketing plan leverages Derek's roles in WSGVR and the Monterey Park Chamber. DONNA will appear in:
-              </p>
-              <ul className="list-disc list-inside space-y-2 text-foreground/80 mb-4">
-                <li>4 Small Business Expos</li>
-                <li>4 major AI events</li>
-                <li>2 major installations (CAR/NAR)</li>
-              </ul>
-              <p className="text-foreground/80">
-                Ace PR drives national awareness. Two signature events hosted directly by Derek introduce DONNA to 
-                hundreds of businesses.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Competitive Landscape */}
-        <section className="py-12 max-w-6xl mx-auto">
-          <div className="glass-card p-8 rounded-xl">
-            <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-              <Building2 className="h-8 w-8 text-accent" />
-              Competitive Landscape
-            </h2>
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              <p className="text-foreground/80 mb-4">
-                Kore.AI, Cognigy, Gong, and Drift dominate the enterprise segment but are <strong>too expensive and complex 
-                for SMBs</strong>. They lack DONNA's multi-channel integration, in-meeting participation, or white-label 
-                vertical approach.
-              </p>
-              <p className="text-foreground/80">
-                Smaller AI competitors offer limited features without voice, email integration, or workflow execution. 
-                <strong> DONNA provides more tools at a fraction of the cost.</strong>
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Business Model */}
-        <section className="py-12 max-w-6xl mx-auto">
-          <div className="glass-card p-8 rounded-xl">
-            <h2 className="text-3xl font-bold mb-6">Business Model</h2>
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              <p className="text-foreground/80 mb-4">
-                DONNA monetizes through:
-              </p>
-              <ul className="list-disc list-inside space-y-2 text-foreground/80">
-                <li>Monthly SaaS subscriptions</li>
-                <li>White-label licensing</li>
-                <li>Wholesale distribution</li>
-                <li>Enterprise customization</li>
-                <li>Add-on functionality</li>
-              </ul>
-              <p className="text-foreground/80 mt-4">
-                Scalability is built into the model.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* SAFE Structure */}
-        <section className="py-12 max-w-6xl mx-auto">
-          <div className="glass-card p-8 rounded-xl">
-            <h2 className="text-3xl font-bold mb-6">SAFE Structure</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="p-6 rounded-lg border border-accent/20 bg-accent/5">
-                <h3 className="text-xl font-bold mb-3">$50k Tier</h3>
-                <ul className="space-y-2 text-foreground/80">
-                  <li>• 20% discount</li>
-                  <li>• $8M valuation cap</li>
-                </ul>
+          <section className="rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/[0.07] via-transparent to-accent/[0.05] p-7 md:p-10">
+            <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+              <div>
+                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Planned Network Partner Program</p>
+                <h2 className="text-3xl font-semibold md:text-4xl">Exchange preferred economics for distribution and network density.</h2>
+                <p className="mt-5 leading-relaxed text-foreground/70">
+                  Qualified associations, brokerages, franchises, enterprises, and membership organizations could earn preferred account-based terms by committing to concentrated adoption, coordinated onboarding, and continued DIN participation.
+                </p>
+                <a href="mailto:derek@aidonna.co?subject=DONNA%20Network%20Partner%20Program" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-accent hover:text-accent/80">
+                  Discuss a qualified rollout <ArrowRight className="h-4 w-4" aria-hidden />
+                </a>
               </div>
-              <div className="p-6 rounded-lg border border-accent/20 bg-accent/5">
-                <h3 className="text-xl font-bold mb-3">$100k Tier</h3>
-                <ul className="space-y-2 text-foreground/80">
-                  <li>• 20% discount</li>
-                  <li>• $7M valuation cap</li>
-                </ul>
-              </div>
-              <div className="p-6 rounded-lg border border-accent/20 bg-accent/5">
-                <h3 className="text-xl font-bold mb-3">$300k Tier</h3>
-                <ul className="space-y-2 text-foreground/80">
-                  <li>• 20% discount</li>
-                  <li>• $5M valuation cap</li>
-                </ul>
+              <div className="grid gap-5 sm:grid-cols-2">
+                {[
+                  ["Account-based", "Qualification is measured using active customer accounts or workspaces, not included seats."],
+                  ["Contracted", "Annual terms and minimum monthly commitments are intended to protect recurring revenue."],
+                  ["Verified", "Periodic account certification keeps preferred terms tied to actual adoption."],
+                  ["Separate", "Organizational terms would not stack with individual referral or partner benefits unless expressly agreed."],
+                ].map(([title, body]) => (
+                  <div key={title} className="border-t border-white/15 pt-5">
+                    <h3 className="font-semibold">{title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground/60">{body}</p>
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="mt-6 p-6 rounded-lg bg-accent/10 border border-accent/30">
-              <p className="text-foreground/80">
-                <strong>Fund Allocation:</strong> AWS buildout, telecom integration, marketing, expos, PR, and sales expansion.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Payout Scenarios */}
-        <section className="py-12 max-w-6xl mx-auto">
-          <div className="glass-card p-8 rounded-xl">
-            <h2 className="text-3xl font-bold mb-6">Payout Scenarios</h2>
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              <p className="text-foreground/80 mb-4">
-                Three valuation scenarios demonstrate investor upside:
-              </p>
-              <ol className="list-decimal list-inside space-y-3 text-foreground/80">
-                <li>Valuation meeting the cap</li>
-                <li>Valuation at $15M</li>
-                <li>Valuation at $50M+</li>
-              </ol>
-              <p className="text-foreground/80 mt-4">
-                Each showing meaningful equity returns under the SAFE structure.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Roadmap */}
-        <section className="py-12 max-w-6xl mx-auto">
-          <div className="glass-card p-8 rounded-xl">
-            <h2 className="text-3xl font-bold mb-6">Roadmap</h2>
-            <div className="space-y-6">
-              <div className="p-6 rounded-lg border border-accent/20 bg-accent/5">
-                <h3 className="text-xl font-bold mb-3">2025</h3>
-                <ul className="list-disc list-inside space-y-1 text-foreground/80">
-                  <li>Beta release</li>
-                  <li>Voice agent expansion</li>
-                  <li>AWS migration</li>
-                </ul>
-              </div>
-              <div className="p-6 rounded-lg border border-accent/20 bg-accent/5">
-                <h3 className="text-xl font-bold mb-3">2026</h3>
-                <ul className="list-disc list-inside space-y-1 text-foreground/80">
-                  <li>White-label rollout</li>
-                  <li>Vertical expansion</li>
-                  <li>Expo keynotes</li>
-                </ul>
-              </div>
-              <div className="p-6 rounded-lg border border-accent/20 bg-accent/5">
-                <h3 className="text-xl font-bold mb-3">2027–2028</h3>
-                <ul className="list-disc list-inside space-y-1 text-foreground/80">
-                  <li>Agent marketplace</li>
-                  <li>Enterprise workforce automation</li>
-                  <li>International scaling</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Closing */}
-        <section className="py-12 max-w-6xl mx-auto">
-          <div className="glass-card p-8 rounded-xl text-center">
-            <h2 className="text-3xl font-bold mb-6">Join Us</h2>
-            <p className="text-lg text-foreground/80 mb-8 max-w-3xl mx-auto">
-              DONNA is high-margin, scalable operational intelligence infrastructure with a strong AWS foundation and
-              telecom reach. With demand building across SMBs, DONNA is positioned to become the execution layer
-              millions of businesses run on.
+            <p className="mt-8 border-t border-white/10 pt-5 text-xs leading-relaxed text-foreground/45">
+              Exact partner rates remain under development. No Network Partner discount, referral reduction, or DIN monetization is included in the current market sizing or base financial projection.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="mailto:investors@bemdonna.com"
-                className="px-8 py-3 rounded-lg bg-accent text-background hover:bg-accent/90 transition-all font-semibold glow-accent hover:shadow-[0_0_30px_rgba(132,204,255,0.5)]"
-              >
-                Contact Investors Relations
-              </a>
+          </section>
+
+          <section className="rounded-3xl border border-white/10 p-7 md:p-10">
+            <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="mb-4 text-xs uppercase tracking-[0.25em] text-foreground/50">Current stage</p>
+                <h2 className="text-3xl font-semibold md:text-4xl">Pre-revenue, with a 24-month commercialization plan.</h2>
+              </div>
+              <p className="max-w-sm text-sm leading-relaxed text-foreground/55">DONNA has raised $0 in outside investor capital. No customer traction, conversion, revenue, retention, or network-effect claims are presented as achieved.</p>
             </div>
-            <p className="text-foreground/60 mt-6">
-              investors@bemdonna.com
-            </p>
-          </div>
-        </section>
+            <div className="grid gap-5 md:grid-cols-4">
+              {["Verify product-market fit", "Onboard the first 100 accounts", "Produce customer evidence", "Repeat the entry model in a second industry during months 18 to 24"].map((item, index) => (
+                <div key={item} className="border-t border-white/10 pt-5">
+                  <p className="text-xs tabular-nums text-accent">0{index + 1}</p>
+                  <p className="mt-3 font-medium">{item}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-white/10 p-7 md:p-10">
+            <div className="mb-9 max-w-3xl">
+              <p className="mb-4 text-xs uppercase tracking-[0.25em] text-foreground/50">Founding and management team</p>
+              <h2 className="text-3xl font-semibold md:text-4xl">Built by operators, technologists, and organizational leaders.</h2>
+              <p className="mt-4 leading-relaxed text-foreground/60">AI DONNA, Co. was incorporated in Delaware on May 26, 2026.</p>
+            </div>
+            <div className="grid gap-7 md:grid-cols-2">
+              {team.map((member) => (
+                <article key={member.name} className="border-t border-white/15 pt-5">
+                  <h3 className="text-xl font-semibold">{member.name}</h3>
+                  <p className="mt-1 text-sm font-medium text-accent">{member.role}</p>
+                  <p className="mt-4 text-sm leading-relaxed text-foreground/65">{member.body}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="grid gap-6 lg:grid-cols-2">
+            <div className="rounded-3xl border border-accent/20 bg-gradient-to-br from-accent/[0.06] to-transparent p-7 md:p-9">
+              <div className="flex items-center gap-3 text-accent"><CircleDollarSign className="h-6 w-6" aria-hidden /><p className="text-xs font-semibold uppercase tracking-[0.25em]">$2M aggregate SAFE cap</p></div>
+              <h2 className="mt-6 text-3xl font-semibold">Larger commitments receive stronger economics.</h2>
+              <div className="mt-8 overflow-hidden rounded-2xl border border-white/10">
+                <div className="grid grid-cols-3 bg-white/[0.04] px-4 py-3 text-xs uppercase tracking-[0.15em] text-foreground/45"><span>Commitment</span><span>Valuation cap</span><span>Discount</span></div>
+                {safeTiers.map((tier) => (
+                  <div key={tier.commitment} className="grid grid-cols-3 border-t border-white/10 px-4 py-4 text-sm"><span className="font-medium">{tier.commitment}</span><span>{tier.cap}</span><span>{tier.discount}</span></div>
+                ))}
+              </div>
+              <p className="mt-5 text-xs leading-relaxed text-foreground/45">The round closes when aggregate commitments reach $2M. Terms are subject to counsel review and definitive SAFE agreements.</p>
+            </div>
+
+            <div className="rounded-3xl border border-white/10 p-7 md:p-9">
+              <p className="mb-4 text-xs uppercase tracking-[0.25em] text-foreground/50">Proposed 24-month allocation</p>
+              <h2 className="text-3xl font-semibold">Fund product depth and relationship-led market entry.</h2>
+              <div className="mt-8 space-y-5">
+                {allocation.map((item) => (
+                  <div key={item.label}>
+                    <div className="mb-2 flex items-center justify-between gap-4 text-sm"><span>{item.label}</span><span className="text-foreground/55">{item.amount} · {item.share}</span></div>
+                    <div className="h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-gradient-to-r from-accent to-primary" style={{ width: item.share }} /></div>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-6 text-xs leading-relaxed text-foreground/45">Illustrative allocation pending the final operating model, compensation plan, and hiring schedule.</p>
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-primary/20 bg-gradient-to-r from-primary/[0.08] via-accent/[0.05] to-transparent p-8 text-center md:p-12">
+            <ShieldCheck className="mx-auto h-8 w-8 text-accent" aria-hidden />
+            <h2 className="mx-auto mt-6 max-w-3xl text-3xl font-semibold md:text-5xl">Real estate is the proving ground. DIN is the network.</h2>
+            <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-foreground/65">DONNA is raising up to $2M to deepen the product, acquire the first 100 customer accounts, and build a repeatable path into the industry through trusted networks.</p>
+            <a href="mailto:derek@aidonna.co" className="mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-semibold text-background hover:bg-accent/90">Contact investor relations <ArrowRight className="h-4 w-4" aria-hidden /></a>
+          </section>
+
+          <p className="text-center text-xs leading-relaxed text-foreground/40">This page is for informational purposes only and does not constitute an offer to sell or a solicitation to purchase securities.</p>
+        </main>
       </div>
     </div>
   )

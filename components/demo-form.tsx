@@ -66,7 +66,7 @@ export default function DemoForm() {
         setTimeout(() => setSubmitSuccess(false), 5000)
       } else {
         console.error("Form submission error:", data)
-        alert(`Error: ${data.error || "Failed to send email. Please try again or contact us at info@bemdonna.com"}`)
+        alert(`Error: ${data.error || "Failed to send email. Please try again or contact us at derek@aidonna.co"}`)
       }
     } catch (error) {
       console.error("Error submitting form:", error)
@@ -82,7 +82,7 @@ export default function DemoForm() {
         <div className="glass-card p-8 rounded-xl glow-accent text-center">
           <h2 className="text-3xl font-bold mb-2 gradient-text">Early adopter interest</h2>
           <p className="text-foreground/70 mb-6">
-            On the fence? Tell us a bit about your operation — we&apos;ll reach out to schedule a short discovery call
+            On the fence? Tell us a bit about your operation. We&apos;ll reach out to schedule a short discovery call
             with a DONNA rep (no pressure).
           </p>
 

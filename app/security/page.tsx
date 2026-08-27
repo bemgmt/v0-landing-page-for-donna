@@ -36,7 +36,16 @@ export default function SecurityPage() {
             <p className="text-foreground/80">
               Member access uses industry-standard authentication. Administrative access is limited, logged,
               and reviewed as appropriate for the product stage. Secrets and keys are stored in secure
-              environment configuration—not in source code.
+              environment configuration, not in source code.
+            </p>
+          </div>
+
+          <div className="glass-card p-6 rounded-xl">
+            <h2 className="text-2xl font-semibold mb-3">AI safety &amp; oversight</h2>
+            <p className="text-foreground/80">
+              DONNA uses confirmation-aware workflows, permission boundaries, recipient resolution, and controls
+              designed to reduce prompt-injection risk from retrieved emails, documents, and websites. Action and
+              activity records support oversight; available audit views depend on the deployment and configuration.
             </p>
           </div>
 
@@ -45,10 +54,10 @@ export default function SecurityPage() {
             <p className="text-foreground/80">
               If you believe you have found a security vulnerability, please email{" "}
               <a
-                href="mailto:info@bemdonna.com"
+                href="mailto:derek@aidonna.co"
                 className="text-accent hover:text-accent/80 transition-colors"
               >
-                info@bemdonna.com
+                derek@aidonna.co
               </a>{" "}
               with a concise description and steps to reproduce. We appreciate responsible disclosure.
             </p>

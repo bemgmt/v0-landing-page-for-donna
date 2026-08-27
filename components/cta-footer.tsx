@@ -10,7 +10,7 @@ export default function CTAFooter() {
           Ready to Transform Your <span className="gradient-text">Office Operations?</span>
         </h2>
         <p className="text-foreground/70 mb-8 text-lg max-w-2xl mx-auto">
-          Join hundreds of businesses using DONNA to handle calls, emails, and scheduling automatically.
+          Join the early adopter program and help shape the operating network for real estate.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -39,7 +39,7 @@ export default function CTAFooter() {
         </div>
 
         <p className="text-foreground/50 text-sm mt-6">
-          30-day free trial • No credit card required • Setup in minutes
+          30-day free trial • Credit card required • Plan usage limits apply
         </p>
       </div>
     </section>

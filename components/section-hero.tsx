@@ -7,7 +7,7 @@ import { track } from "@vercel/analytics"
 import { onPricingCtaNavClick } from "@/lib/pricing-cta-nav"
 
 export default function SectionHero() {
-  const { ref, inView } = useInView({ threshold: 0.3, once: true })
+  const { ref, inView } = useInView({ threshold: 0.3, triggerOnce: true })
 
   useEffect(() => {
     if (inView) {
@@ -16,7 +16,7 @@ export default function SectionHero() {
   }, [inView])
 
   const handleScrollToNext = () => {
-    const nextSection = document.getElementById("follow-through-problem")
+    const nextSection = document.getElementById("network-problem")
     nextSection?.scrollIntoView({ behavior: "smooth" })
   }
 
@@ -44,35 +44,43 @@ export default function SectionHero() {
       <div className="max-w-3xl mx-auto text-center relative z-10 pt-20 pb-12">
         <div className="absolute inset-x-0 -top-8 mx-auto h-64 w-64 sm:h-80 sm:w-80 rounded-full bg-accent/20 blur-[120px] opacity-80 -z-10 pointer-events-none" />
         <p className="text-xs sm:text-sm tracking-[0.3em] text-foreground/60 uppercase mb-4">
-          Real estate operations
+          The DONNA Intelligence Network
         </p>
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-semibold mb-5 animate-fade-in wow-glow leading-tight">
-          The Operational Layer for Real Estate.
+          The Intelligence Network for Real Estate.
         </h1>
         <p className="text-base sm:text-lg md:text-xl text-foreground/80 mb-4 max-w-2xl mx-auto animate-slide-up px-2 leading-relaxed">
-          DONNA is the neural infrastructure that unifies your communication, coordination, and execution into one continuous system.
+          Real estate already operates through agents, lenders, escrow, title, inspectors, insurance, and vendors. Their systems do not.
         </p>
         <p className="text-lg sm:text-xl md:text-2xl font-medium text-foreground mb-8 px-2 animate-slide-up">
-          Nothing gets missed. Everything moves.
+          DONNA runs the business. DIN connects the industry.
         </p>
-        <div className="flex flex-col items-center gap-4">
-          <Link
-            href="/#pricing"
-            onClick={(e) => onPricingCtaNavClick("hero_primary", e)}
-            className="px-7 py-3 rounded-full animated-edge-button text-foreground hover:bg-white/20 transition-all duration-300 font-semibold text-base sm:text-lg refract-on-hover animate-slide-up relative z-10 inline-flex items-center justify-center"
-            style={{ animationDelay: "200ms" }}
-          >
-            <span className="relative z-10">Deploy DONNA</span>
-          </Link>
+        <div className="flex flex-col items-center gap-5">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/#pricing"
+              onClick={(e) => onPricingCtaNavClick("hero_primary", e)}
+              className="px-7 py-3 rounded-full bg-accent text-background hover:bg-accent/90 transition-all duration-300 font-semibold text-base sm:text-lg animate-slide-up relative z-10 inline-flex items-center justify-center"
+              style={{ animationDelay: "200ms" }}
+            >
+              <span className="relative z-10">Join the Network</span>
+            </Link>
+            <Link
+              href="/#connected-transaction"
+              className="px-7 py-3 rounded-full animated-edge-button text-foreground hover:bg-white/20 transition-all duration-300 font-semibold text-base sm:text-lg animate-slide-up relative z-10 inline-flex items-center justify-center"
+            >
+              See how DIN works
+            </Link>
+          </div>
           <p className="text-xs sm:text-sm text-foreground/65 max-w-md px-2">
-            No contracts. 30-day free trial. Early adopters lock in long-term advantages.
+            Operational intelligence for your business. Network intelligence for the industry.
           </p>
           <button
             type="button"
             onClick={handleScrollToNext}
             className="text-xs sm:text-sm uppercase tracking-[0.35em] text-foreground/60 hover:text-foreground transition-colors"
           >
-            Scroll to understand
+            See the operating problem
           </button>
         </div>
       </div>

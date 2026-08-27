@@ -18,8 +18,8 @@ export default function PortalProfileMissing({ email }: Props) {
         <div className="flex flex-col items-center gap-2 mb-8">
           <p className="text-sm text-muted-foreground">
             If the issue persists, please contact{" "}
-            <a href="mailto:info@bemdonna.com" className="text-cyan-300 hover:underline">
-              info@bemdonna.com
+            <a href="mailto:derek@aidonna.co" className="text-cyan-300 hover:underline">
+              derek@aidonna.co
             </a>
           </p>
         </div>
