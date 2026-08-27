@@ -22,6 +22,7 @@ export default function SectionHero() {
 
   return (
     <section
+      id="top"
       ref={ref}
       className="relative min-h-[100svh] flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
