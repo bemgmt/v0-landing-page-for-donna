@@ -1,4 +1,3 @@
-import Image from "next/image"
 import Link from "next/link"
 import {
   ArrowRight,
@@ -10,10 +9,9 @@ import {
   Network,
   Search,
   ShieldCheck,
-  Sparkles,
   Users2,
-  Workflow,
 } from "lucide-react"
+import NetworkSignalRail from "@/components/network-signal-rail"
 
 const transactionParticipants = [
   { label: "Agent", detail: "Relationship and representation", Icon: Users2 },
@@ -21,33 +19,6 @@ const transactionParticipants = [
   { label: "Escrow + title", detail: "Documents and dependencies", Icon: FileCheck2 },
   { label: "Inspection", detail: "Scheduling and findings", Icon: Search },
   { label: "Insurance + vendors", detail: "Services and follow-through", Icon: Building2 },
-]
-
-const networkPrinciples = [
-  {
-    title: "Coordinate",
-    body: "Create clearer requests, handoffs, milestones, and next steps across participating businesses.",
-    status: "Network roadmap",
-    Icon: Workflow,
-  },
-  {
-    title: "Discover",
-    body: "Help real-estate businesses identify relevant participating providers when work needs to move.",
-    status: "Long-term vision",
-    Icon: Search,
-  },
-  {
-    title: "Learn",
-    body: "Develop governed, privacy-preserving patterns about delays, bottlenecks, and better operating practices.",
-    status: "Long-term vision",
-    Icon: Sparkles,
-  },
-  {
-    title: "Govern",
-    body: "Keep permissions, confirmations, professional judgment, and accountability with the people responsible.",
-    status: "Product principle",
-    Icon: ShieldCheck,
-  },
 ]
 
 const currentCapabilities = [
@@ -164,35 +135,7 @@ export default function DinHomepage() {
         </div>
       </section>
 
-      <section className="relative border-t border-white/5 bg-white/[0.015] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-        <div className="mx-auto max-w-6xl">
-          <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
-            <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-3">
-              <Image
-                src="/DINscreenshot.png"
-                alt="DONNA Intelligence Network product concept interface"
-                width={1200}
-                height={800}
-                className="h-auto w-full rounded-2xl"
-              />
-              <p className="px-3 pb-2 pt-4 text-xs leading-relaxed text-foreground/45">Product concept shown for the network direction; availability varies by deployment.</p>
-            </div>
-            <div>
-              <p className="mb-4 text-xs uppercase tracking-[0.3em] text-foreground/55">How the network creates value</p>
-              <div className="grid gap-6 sm:grid-cols-2">
-                {networkPrinciples.map(({ title, body, status, Icon }) => (
-                  <div key={title} className="border-l border-white/15 pl-5">
-                    <Icon className="mb-4 h-6 w-6 text-accent" aria-hidden />
-                    <h3 className="text-xl font-semibold">{title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-foreground/65">{body}</p>
-                    <p className="mt-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-primary">{status}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <NetworkSignalRail />
 
       <section id="product" className="relative scroll-mt-20 border-t border-white/5 px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-6xl">
@@ -282,7 +225,7 @@ export default function DinHomepage() {
         </div>
       </section>
 
-      <section className="relative border-t border-white/5 bg-white/[0.015] px-4 py-16 sm:px-6 lg:px-8">
+      <section id="early-access" className="relative scroll-mt-20 border-t border-white/5 bg-white/[0.015] px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 rounded-3xl border border-accent/20 bg-gradient-to-r from-accent/[0.08] via-primary/[0.08] to-transparent p-8 md:flex-row md:items-center md:justify-between md:p-10">
           <div className="max-w-3xl">
             <div className="mb-4 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.25em] text-accent">

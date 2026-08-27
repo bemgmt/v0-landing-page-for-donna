@@ -13,6 +13,7 @@ import CheckoutStatusBanner from "@/components/checkout-status-banner"
 import PromoLandingBanner from "@/components/promo-landing-banner"
 import StandaloneHomePortalCta from "@/components/standalone-home-portal-cta"
 import FAQ from "@/components/faq"
+import MobileSiteSignal from "@/components/mobile-site-signal"
 import { generatePageMetadata } from "@/lib/metadata"
 import { marketingFaqs } from "@/lib/faq-content"
 import {
@@ -65,6 +66,7 @@ export default function Home() {
       <ScrollCue />
       <ScrollbarFade />
       <MinimalHeader />
+      <MobileSiteSignal />
       <StandaloneHomePortalCta />
       <BackgroundAnimation />
       <div className="ambient-layer" aria-hidden="true" />
