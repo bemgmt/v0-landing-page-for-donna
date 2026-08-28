@@ -1,25 +1,7 @@
 import Link from "next/link"
-import {
-  ArrowRight,
-  Building2,
-  CalendarCheck2,
-  FileCheck2,
-  Handshake,
-  Landmark,
-  Network,
-  Search,
-  ShieldCheck,
-  Users2,
-} from "lucide-react"
+import { ArrowRight, CalendarCheck2, Handshake, Network } from "lucide-react"
+import HorizontalSignalRail from "@/components/horizontal-signal-rail"
 import NetworkSignalRail from "@/components/network-signal-rail"
-
-const transactionParticipants = [
-  { label: "Agent", detail: "Relationship and representation", Icon: Users2 },
-  { label: "Lender", detail: "Financing milestones", Icon: Landmark },
-  { label: "Escrow + title", detail: "Documents and dependencies", Icon: FileCheck2 },
-  { label: "Inspection", detail: "Scheduling and findings", Icon: Search },
-  { label: "Insurance + vendors", detail: "Services and follow-through", Icon: Building2 },
-]
 
 const currentCapabilities = [
   {
@@ -113,21 +95,7 @@ export default function DinHomepage() {
               This is the DIN direction: each business keeps its own systems, permissions, data, and professional authority while the network helps make appropriate handoffs visible and actionable.
             </p>
           </div>
-          <div className="relative grid gap-4 lg:grid-cols-5">
-            <div className="absolute left-[8%] right-[8%] top-8 hidden h-px bg-gradient-to-r from-transparent via-accent/45 to-transparent lg:block" aria-hidden />
-            {transactionParticipants.map(({ label, detail, Icon }, index) => (
-              <div key={label} className="relative rounded-2xl border border-white/10 bg-black/40 p-5">
-                <div className="mb-5 flex items-center justify-between">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-accent/30 bg-accent/10">
-                    <Icon className="h-6 w-6 text-accent" aria-hidden />
-                  </div>
-                  <span className="text-xs tabular-nums text-foreground/35">0{index + 1}</span>
-                </div>
-                <h3 className="font-semibold text-foreground">{label}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-foreground/60">{detail}</p>
-              </div>
-            ))}
-          </div>
+          <HorizontalSignalRail variant="transaction" />
           <div className="mt-8 flex items-start gap-3 rounded-2xl border border-primary/20 bg-primary/[0.06] p-5 text-sm leading-relaxed text-foreground/70">
             <Network className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden />
             Connected transaction workflows are roadmap and vision capabilities unless separately confirmed for a specific deployment.
@@ -205,20 +173,7 @@ export default function DinHomepage() {
             <p className="mb-4 text-xs uppercase tracking-[0.3em] text-foreground/55">Trust is infrastructure</p>
             <h2 className="text-3xl font-semibold sm:text-4xl md:text-5xl wow-glow">Autonomy should expand only where it is authorized and proven.</h2>
           </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {[
-              ["Human accountability", "People retain authority over judgment, fiduciary responsibilities, and consequential decisions."],
-              ["Permissioned execution", "External actions follow workspace permissions, confirmation policies, and recipient resolution."],
-              ["Safer context handling", "Controls are designed to reduce prompt-injection risk from retrieved emails, documents, and websites."],
-              ["Operational records", "Action and activity records support oversight; available audit views depend on the deployment."],
-            ].map(([title, body]) => (
-              <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.025] p-6">
-                <ShieldCheck className="mb-5 h-6 w-6 text-accent" aria-hidden />
-                <h3 className="font-semibold">{title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-foreground/65">{body}</p>
-              </div>
-            ))}
-          </div>
+          <HorizontalSignalRail variant="trust" />
           <p className="mx-auto mt-8 max-w-3xl text-center text-sm leading-relaxed text-foreground/50">
             DONNA does not claim certifications, universal integration coverage, or unrestricted autonomy unless separately documented for the applicable deployment.
           </p>
