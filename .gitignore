@@ -31,6 +31,8 @@ next-env.d.ts
 *.docx
 *.doc
 *.pdf
+!public/downloads/learn/Meet-the-Major-AI-Models.pdf
+!public/downloads/learn/executivesummary.pdf
 Landing page update (final).txt
 
 # Stripe migration scripts

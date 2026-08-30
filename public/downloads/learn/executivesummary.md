@@ -2,15 +2,15 @@
 
 ## Executive summary
 
-The package below is designed as a copy-and-paste class handout for your AI workshop. It follows the same teaching logic already established in your slide deck: AI gets more useful when it has business context, and the simplest way to provide that context is through four clear files that function like an “AI Employee Handbook.” The deliverable is written for non-technical small business owners, keeps the language plain, and is structured so attendees can fill in the blanks and use the files right away. fileciteturn0file0
+The package below is designed as a copy-and-paste class handout for your AI workshop. It follows the same teaching logic already established in your slide deck: AI gets more useful when it has business context, and the simplest way to provide that context is through four clear files that function like an “AI Employee Handbook.” The deliverable is written for non-technical small business owners, keeps the language plain, and is structured so attendees can fill in the blanks and use the files right away.
 
 ## Why these four files work
 
-Your current deck separates context into four roles: who the person is, how the brand sounds, what the company knows, and what rules the AI must follow. That separation is valuable because it makes the files easier to maintain, reduces contradictions, and lets business owners update one part of their context without rewriting everything else. The document below preserves that structure and converts it into practical templates with examples, short and long samples, prompt snippets, and simple upkeep guidance. fileciteturn0file0
+Your current deck separates context into four roles: who the person is, how the brand sounds, what the company knows, and what rules the AI must follow. That separation is valuable because it makes the files easier to maintain, reduces contradictions, and lets business owners update one part of their context without rewriting everything else. The document below preserves that structure and converts it into practical templates with examples, short and long samples, prompt snippets, and simple upkeep guidance.
 
 ## How to demo them in class
 
-The cleanest class demo is the one your deck already points toward: run a generic business prompt with no files attached, show the weak result, then upload the four Markdown files and run the exact same prompt again. That before-and-after sequence makes the lesson visible in seconds: better tone, better specificity, better accuracy, and better alignment to the business. From there, you can naturally transition into your coding preview and DONNA mention as the “what comes next” section of the workshop. fileciteturn0file0
+The cleanest class demo is the one your deck already points toward: run a generic business prompt with no files attached, show the weak result, then upload the four Markdown files and run the exact same prompt again. That before-and-after sequence makes the lesson visible in seconds: better tone, better specificity, better accuracy, and better alignment to the business. From there, you can naturally transition into your coding preview and DONNA mention as the “what comes next” section of the workshop.
 
 ## Concatenated Markdown files
 
