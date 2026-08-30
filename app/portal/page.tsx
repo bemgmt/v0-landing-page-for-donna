@@ -52,7 +52,8 @@ export default async function PortalDashboardPage() {
   ])
 
   // Ensure member has a referral promo code
-  const promoCodes = await ensureReferralPromoCode(profile.id, user.email ?? profile.email)
+  const referralEmail = user.email ?? profile.email
+  const promoCodes = referralEmail ? await ensureReferralPromoCode(profile.id, referralEmail) : []
 
   const quickLinks: ActionItem[] = [
     { title: "Open DONNA App", href: DONNA_APP_HANDOFF_URL },
