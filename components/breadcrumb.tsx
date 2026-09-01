@@ -3,6 +3,19 @@
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 
+function formatBreadcrumbLabel(path: string) {
+  return decodeURIComponent(path)
+    .split('-')
+    .map((word) => {
+      const normalized = word.toLowerCase()
+      if (normalized === 'donna' || normalized === 'faq' || normalized === 'din') {
+        return normalized.toUpperCase()
+      }
+      return word.charAt(0).toUpperCase() + word.slice(1)
+    })
+    .join(' ')
+}
+
 export function Breadcrumb() {
   const pathname = usePathname()
   const paths = pathname.split('/').filter(Boolean)
@@ -18,7 +31,7 @@ export function Breadcrumb() {
         {paths.map((path, index) => {
           const href = '/' + paths.slice(0, index + 1).join('/')
           const isLast = index === paths.length - 1
-          const displayName = path.charAt(0).toUpperCase() + path.slice(1)
+          const displayName = formatBreadcrumbLabel(path)
           
           return (
             <li key={href} className="flex items-center">

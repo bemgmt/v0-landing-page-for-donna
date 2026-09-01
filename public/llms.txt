@@ -18,6 +18,7 @@ Important pages (this deployment):
 - Early Adopter Program: https://aidonna.co/early-adopter-program
 - DONNA Intelligence Network: https://aidonna.co/donna-intelligence-network
 - FAQ: https://aidonna.co/faq
+- Getting Started: https://aidonna.co/getting-started
 - Capabilities & Documentation: https://aidonna.co/docs
 - Contact / request access: https://aidonna.co/contact
 - Industries Overview: https://aidonna.co/industries

@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { Breadcrumb } from "@/components/breadcrumb"
 import { generatePageMetadata } from "@/lib/metadata"
 
@@ -37,6 +38,13 @@ export default function PrivacyPage() {
               We use data to provide and secure the product, authenticate users, communicate about your
               account, analyze reliability and performance, and comply with law. We do not sell your personal
               information.
+            </p>
+            <p className="mt-3 text-sm text-foreground/65">
+              Before connecting business information, review the knowledge and permission steps in the{" "}
+              <Link href="/getting-started" className="text-accent hover:underline">
+                DONNA setup guide
+              </Link>
+              .
             </p>
           </div>
 

@@ -122,9 +122,12 @@ export default function DinHomepage() {
               </div>
             ))}
           </div>
-          <div className="mt-10">
+          <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
             <Link href="/docs" className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-accent/80">
               Review the capability framework <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+            <Link href="/getting-started" className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-accent/80">
+              Set up DONNA for real estate <ArrowRight className="h-4 w-4" aria-hidden />
             </Link>
           </div>
         </div>

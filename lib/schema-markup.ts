@@ -84,3 +84,34 @@ export function breadcrumbListSchema(items: { name: string; path: string }[]) {
     })),
   }
 }
+
+export function webPageSchema({
+  name,
+  description,
+  path,
+  dateModified,
+}: {
+  name: string
+  description: string
+  path: string
+  dateModified: string
+}) {
+  const base = getSiteUrl()
+  return {
+    "@type": "WebPage",
+    name,
+    description,
+    url: `${base}${path}`,
+    dateModified,
+    isPartOf: {
+      "@type": "WebSite",
+      name: "DONNA",
+      url: base,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "DONNA",
+      url: base,
+    },
+  }
+}

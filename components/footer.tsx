@@ -28,6 +28,9 @@ export default function Footer() {
           <Link href="/faq" className="hover:text-foreground transition-colors">
             FAQ
           </Link>
+          <Link href="/getting-started" className="hover:text-foreground transition-colors">
+            Getting Started
+          </Link>
           <Link href="/learn" className="hover:text-foreground transition-colors">
             Class Materials
           </Link>

@@ -21,6 +21,16 @@ export default function RealEstateIndustryPage() {
           DONNA aligns agents, staff, and partners around the same timeline: offers, inspections, title, and closing
           tasks stay visible and executed. It is infrastructure for the deal — not a novelty chat window.
         </p>
+        <div className="rounded-lg border border-accent/20 bg-accent/5 p-5">
+          <h2 className="text-xl font-semibold">How to get set up</h2>
+          <p className="mt-2 text-foreground/70">
+            Connect supported tools, teach DONNA how your business works, add your approved knowledge, choose your
+            permission boundaries, and test the setup before expanding automation.
+          </p>
+          <Link href="/getting-started" className="mt-3 inline-flex min-h-11 items-center text-accent hover:underline">
+            Follow the six-step getting-started guide →
+          </Link>
+        </div>
         <p>
           Explore the{" "}
           <Link href="/" className="text-accent hover:underline">

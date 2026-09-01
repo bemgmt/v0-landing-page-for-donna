@@ -32,6 +32,10 @@ export default function WhatIsDonnaPage() {
           <Link href="/faq" className="text-accent hover:underline">
             FAQ
           </Link>
+          , follow the{" "}
+          <Link href="/getting-started" className="text-accent hover:underline">
+            real-estate setup guide
+          </Link>
           , explore the{" "}
           <Link href="/donna-intelligence-network" className="text-accent hover:underline">
             DONNA Intelligence Network

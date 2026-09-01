@@ -4,11 +4,10 @@ import { PUBLIC_SITEMAP_PATHS } from "@/lib/public-routes"
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = getSiteUrl()
-  const now = new Date()
 
   return PUBLIC_SITEMAP_PATHS.map((entry) => ({
     url: `${base}${entry.path === "/" ? "/" : entry.path}`,
-    lastModified: now,
+    ...(entry.lastModified ? { lastModified: entry.lastModified } : {}),
     changeFrequency: entry.changeFrequency ?? "monthly",
     priority: entry.priority ?? 0.5,
   }))

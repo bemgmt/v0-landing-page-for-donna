@@ -15,7 +15,7 @@ import StandaloneHomePortalCta from "@/components/standalone-home-portal-cta"
 import FAQ from "@/components/faq"
 import MobileSiteSignal from "@/components/mobile-site-signal"
 import { generatePageMetadata } from "@/lib/metadata"
-import { marketingFaqs } from "@/lib/faq-content"
+import { featuredMarketingFaqs } from "@/lib/faq-content"
 import {
   faqSchema,
   organizationSchema,
@@ -51,7 +51,7 @@ export default function Home() {
           "Early adopter access for the first 100 customer accounts",
         ],
       }),
-      faqSchema(marketingFaqs),
+      faqSchema(featuredMarketingFaqs),
     ],
   }
 

@@ -44,6 +44,13 @@ export default function DocsPage() {
             <li>Slack, telephony, SMS, contact, lead, and business-knowledge access.</li>
             <li>Workspace permissions, confirmation policies, auto-send settings, templates, and escalation rules.</li>
           </ul>
+          <p className="text-sm text-muted-foreground">
+            See how these pieces come together in the{" "}
+            <Link href="/getting-started" className="text-accent hover:underline">
+              DONNA real-estate setup guide
+            </Link>
+            .
+          </p>
         </section>
 
         <section className="glass-card p-6 md:p-8 rounded-xl space-y-4">

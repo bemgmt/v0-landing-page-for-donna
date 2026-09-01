@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { Breadcrumb } from "@/components/breadcrumb"
 import { generatePageMetadata } from "@/lib/metadata"
 
@@ -46,6 +47,13 @@ export default function SecurityPage() {
               DONNA uses confirmation-aware workflows, permission boundaries, recipient resolution, and controls
               designed to reduce prompt-injection risk from retrieved emails, documents, and websites. Action and
               activity records support oversight; available audit views depend on the deployment and configuration.
+            </p>
+            <p className="mt-3 text-sm text-foreground/65">
+              The{" "}
+              <Link href="/getting-started#permissions-heading" className="text-accent hover:underline">
+                real-estate setup guide
+              </Link>{" "}
+              explains how to start with conservative permission boundaries and expand only after testing.
             </p>
           </div>
 
