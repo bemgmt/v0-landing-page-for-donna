@@ -17,7 +17,6 @@ import {
   FileCheck,
   Cpu,
   BrainCircuit,
-  Coffee,
   Calendar,
   MapPin,
   Clock
@@ -440,33 +439,20 @@ export default function LearnPage() {
                   AI for Business Workshop
                 </h2>
                 <p className="text-base text-foreground/80 leading-relaxed">
-                  Join us live for an interactive session on how to train AI to run your business operations. The class is <strong className="text-accent">completely free</strong>, and we will be serving <strong className="text-primary">fresh donuts & hot coffee</strong>!
+                  Join us live at the Citrus Valley Association of REALTORS® for an interactive session on how to train AI to support your business operations.
                 </p>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm text-foreground/60">
                   <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                    <Calendar className="w-4 h-4 text-accent" /> June 11th
+                    <Calendar className="w-4 h-4 text-accent" /> September 3, 2026
                   </span>
                   <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                    <Clock className="w-4 h-4 text-accent" /> 11:30 AM – 12:30 PM
+                    <Clock className="w-4 h-4 text-accent" /> Begins at 9:00 AM
                   </span>
                   <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                    <MapPin className="w-4 h-4 text-emerald-400" /> Monterey Park, CA
-                  </span>
-                  <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                    <Coffee className="w-4 h-4 text-amber-400" /> Free Donuts & Coffee
+                    <MapPin className="w-4 h-4 text-emerald-400" /> Citrus Valley Association of REALTORS®
                   </span>
                 </div>
               </div>
-              
-              <a
-                href="https://www.montereyparkchamber.org/events/ai-for-business"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full md:w-auto shrink-0 inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-accent to-primary text-black font-extrabold text-base rounded-xl hover:opacity-95 active:scale-[0.98] transition-all duration-300 shadow-lg glow-accent group/btn cursor-pointer"
-              >
-                RSVP Now
-                <ExternalLink className="w-5 h-5 transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
-              </a>
             </div>
           </div>
 
