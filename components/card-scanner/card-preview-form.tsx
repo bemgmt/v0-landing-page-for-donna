@@ -8,6 +8,8 @@ type CardPreviewFormProps = {
   onChange: (next: BusinessCardExtraction) => void
   eventTag: string
   onEventTagChange: (v: string) => void
+  notes: string
+  onNotesChange: (v: string) => void
   onSave: () => void
   saving: boolean
 }
@@ -55,6 +57,8 @@ export function CardPreviewForm({
   onChange,
   eventTag,
   onEventTagChange,
+  notes,
+  onNotesChange,
   onSave,
   saving,
 }: CardPreviewFormProps) {
@@ -107,11 +111,27 @@ export function CardPreviewForm({
         />
         <FormField
           id="event_tag"
-          label="Event Tag (optional)"
+          label="Event / Location (optional)"
           value={eventTag}
           onChange={onEventTagChange}
           placeholder="e.g. DONNA Launch Event June 2026"
         />
+        <div className="space-y-1.5">
+          <label
+            htmlFor="notes"
+            className="text-xs font-medium uppercase tracking-wider text-muted-foreground"
+          >
+            Notes / Conversation Topics (optional)
+          </label>
+          <textarea
+            id="notes"
+            value={notes}
+            onChange={(event) => onNotesChange(event.target.value)}
+            rows={5}
+            placeholder="Personal notes, pertinent details, follow-ups, or topics you discussed"
+            className="w-full resize-y rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-cyan-500/50 focus:outline-none focus:ring-1 focus:ring-cyan-500/30 transition-colors"
+          />
+        </div>
       </div>
 
       <button
