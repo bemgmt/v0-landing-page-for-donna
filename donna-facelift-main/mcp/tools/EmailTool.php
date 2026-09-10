@@ -202,8 +202,13 @@ class ContactTool extends BaseMCPTool {
                 'action' => [
                     'type' => 'string',
                     'required' => true,
-                    'description' => 'Action to perform: search, add, update, delete, list',
-                    'enum' => ['search', 'add', 'update', 'delete', 'list']
+                    'description' => 'Action to perform: search, add, update, delete, list, scan_card',
+                    'enum' => ['search', 'add', 'update', 'delete', 'list', 'scan_card']
+                ],
+                'image' => [
+                    'type' => 'string',
+                    'required' => false,
+                    'description' => 'Base64 image or URL of business card when action is scan_card'
                 ],
                 'query' => [
                     'type' => 'string',
@@ -253,6 +258,11 @@ class ContactTool extends BaseMCPTool {
                     
                 case 'list':
                     return $this->listContacts($parameters, $context);
+                    
+                case 'scan_card':
+                    require_once __DIR__ . '/CardScanTool.php';
+                    $cardScanner = new CardScanTool();
+                    return $cardScanner->execute($parameters, $context);
                     
                 default:
                     return $this->createResponse(false, null, "Contact action '$action' not yet implemented");

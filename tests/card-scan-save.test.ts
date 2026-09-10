@@ -42,11 +42,41 @@ describe("card save email workflow", () => {
     expect(response.status).toBe(200)
     expect(await response.json()).toMatchObject({ success: true, id: "saved-id", email_sent: false })
   })
-  it("does not save or send without an administrator session", async () => {
+  it("does not save or send without an administrator session or token", async () => {
     mocks.auth.mockResolvedValue(null)
     expect((await POST(request())).status).toBe(403)
     expect(mocks.insert).not.toHaveBeenCalled()
     expect(mocks.send).not.toHaveBeenCalled()
+  })
+  it("allows saving with a valid server Bearer token even when admin session is null", async () => {
+    mocks.auth.mockResolvedValue(null)
+    process.env.DONNA_MCP_TOKEN = "test-secret-token"
+
+    const tokenReq = new Request("https://example.com/api/card-scanner/save", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer test-secret-token",
+      },
+      body: JSON.stringify({
+        lead: {
+          full_name: "Token Lead",
+          company: "Acme",
+          job_title: "CEO",
+          email: "ceo@acme.com",
+          phone: "123",
+          website: "acme.com",
+        },
+      }),
+    })
+
+    const response = await POST(tokenReq)
+    expect(response.status).toBe(200)
+    expect(await response.json()).toMatchObject({ id: "saved-id", email_sent: true })
+    expect(mocks.insert).toHaveBeenCalledWith(
+      expect.objectContaining({ full_name: "Token Lead", scanned_by: null })
+    )
+
+    delete process.env.DONNA_MCP_TOKEN
   })
   it("does not email when persistence fails", async () => {
     mocks.insert.mockReturnValue({ select: () => ({ single: async () => ({ data: null, error: new Error("Database unavailable") }) }) })

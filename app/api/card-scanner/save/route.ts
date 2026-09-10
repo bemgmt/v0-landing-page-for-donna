@@ -1,5 +1,5 @@
 import { Buffer } from "node:buffer"
-import { randomUUID } from "node:crypto"
+import { randomUUID, timingSafeEqual } from "node:crypto"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import {
@@ -10,6 +10,20 @@ import { CARD_SCAN_MODEL } from "@/lib/card-scanner/extract-card"
 import { requireAdmin } from "@/lib/card-scanner/require-admin"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { sendCardScanAlert } from "@/lib/email/send-card-scan-alert"
+
+function isAuthorizedServerToken(request: Request): boolean {
+  const expected = process.env.DONNA_MCP_TOKEN || process.env.DONNA_BILLING_TOKEN
+  const authorization = request.headers.get("authorization") ?? ""
+  const supplied = authorization.startsWith("Bearer ") ? authorization.slice(7).trim() : ""
+  if (!expected || !supplied) return false
+
+  const expectedBytes = Buffer.from(expected)
+  const suppliedBytes = Buffer.from(supplied)
+  return (
+    expectedBytes.length === suppliedBytes.length &&
+    timingSafeEqual(expectedBytes, suppliedBytes)
+  )
+}
 
 const saveBodySchema = z.object({
   lead: businessCardExtractionSchema,
@@ -68,12 +82,16 @@ export async function POST(request: Request) {
 
     const { lead, ocr_markdown, event_tag, notes, image } = parsed.data
 
-    const session = await requireAdmin()
-    if (!session) {
-      return NextResponse.json({ error: "Admin access required" }, { status: 403 })
-    }
+    const isServerAuth = isAuthorizedServerToken(request)
+    let scanned_by: string | null = null
 
-    const scanned_by = session.profile.id
+    if (!isServerAuth) {
+      const session = await requireAdmin()
+      if (!session) {
+        return NextResponse.json({ error: "Admin access required" }, { status: 403 })
+      }
+      scanned_by = session.profile.id
+    }
     const supabase = createAdminClient()
 
     const insertRow = {

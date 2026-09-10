@@ -15,6 +15,7 @@ require_once __DIR__ . '/../mcp/MCPTool.php';
 require_once __DIR__ . '/../mcp/tools/EmailTool.php';
 require_once __DIR__ . '/../mcp/tools/InboxTool.php';
 require_once __DIR__ . '/../mcp/tools/EmailReplyTool.php';
+require_once __DIR__ . '/../mcp/tools/CardScanTool.php';
 
 try {
     // Initialize MCP Server
@@ -30,6 +31,7 @@ try {
     $mcpServer->registerTool('contact', new ContactTool());
     $mcpServer->registerTool('inbox', new InboxTool());
     $mcpServer->registerTool('email_reply', new EmailReplyTool());
+    $mcpServer->registerTool('card_scanner', new CardScanTool());
     
     // Get request data
     $input = file_get_contents('php://input');
